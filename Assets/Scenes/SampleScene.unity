@@ -648,6 +648,38 @@ PrefabInstance:
       propertyPath: m_Name
       value: 2Handed Warrior
       objectReference: {fileID: 0}
+    - target: {fileID: 7176300833385260298, guid: 338097dc3c0187f42a8a49e673ed32d4, type: 3}
+      propertyPath: gravity
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 7176300833385260298, guid: 338097dc3c0187f42a8a49e673ed32d4, type: 3}
+      propertyPath: walkSpeed
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7176300833385260298, guid: 338097dc3c0187f42a8a49e673ed32d4, type: 3}
+      propertyPath: inAirSpeed
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7176300833385260298, guid: 338097dc3c0187f42a8a49e673ed32d4, type: 3}
+      propertyPath: jumpHeight
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7176300833385260298, guid: 338097dc3c0187f42a8a49e673ed32d4, type: 3}
+      propertyPath: groundFriction
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 7176300833385260298, guid: 338097dc3c0187f42a8a49e673ed32d4, type: 3}
+      propertyPath: doubleJumpHeight
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7176300833385260298, guid: 338097dc3c0187f42a8a49e673ed32d4, type: 3}
+      propertyPath: jumpAcceleration
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7176300833385260298, guid: 338097dc3c0187f42a8a49e673ed32d4, type: 3}
+      propertyPath: movementAcceleration
+      value: 100
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 338097dc3c0187f42a8a49e673ed32d4, type: 3}
 --- !u!1 &1313002951
