@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+/**
+ * Based on Mina Pêcheux tutorial at:
+ * https://medium.com/geekculture/how-to-create-a-simple-behaviour-tree-in-unity-c-3964c84c060e
+ * https://github.com/MinaPecheux/UnityTutorials-BehaviourTrees
+ */
 
 namespace BehaviorTree
 {
@@ -10,7 +15,6 @@ namespace BehaviorTree
     {
         RUNNING, SUCCESS, FAILURE
     }
-
     
     public class Node : MonoBehaviour
     {
@@ -18,9 +22,10 @@ namespace BehaviorTree
         protected NodeState state;
 
         public Node parent;
-        private List<Node> children = new List<Node>();
-        
-        
+        protected List<Node> children = new List<Node>();
+
+        private Dictionary<string, object> _dataContext = new Dictionary<string, object>();
+
         public Node() 
         {
             parent = null;
@@ -36,6 +41,53 @@ namespace BehaviorTree
             node.parent = this;
             children.Add(node);
         }
+
+        public virtual NodeState Evaluate() => NodeState.FAILURE;
+
+        public void SetData(string key, object value)
+        {
+            _dataContext[key] = value;
+        }
+
+        
+        public object GetData(string key)
+        {
+            object value = null;
+            if (_dataContext.TryGetValue(key, out value)) 
+                return value;
+            
+            Node node = parent;
+            while (node != null)
+            {
+                value = node.GetData(key);
+                if (value != null) 
+                    return value;
+                
+                node = node.parent;
+            }
+            
+            return null;
+        }
+
+
+        public bool ClearData(string key)
+        {
+            if (_dataContext.ContainsKey(key))
+            {
+                _dataContext.Remove(key);
+                return true;
+            }
+
+            Node node = parent;
+            while (node != null)
+            {
+                bool cleared = node.ClearData(key);
+                if (cleared) return true;
+                node = node.parent;
+            }
+
+            return false;
+        }
         
         
         
@@ -43,3 +95,14 @@ namespace BehaviorTree
     
     
 }
+
+
+
+
+
+
+
+
+
+
+
