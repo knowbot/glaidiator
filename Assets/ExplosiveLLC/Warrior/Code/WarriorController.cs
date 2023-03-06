@@ -297,7 +297,6 @@ namespace WarriorAnims
 		{
 			if (canAction) {
 				if (inputAttack) {
-
 					// Running attack.
 					if (isMoving && canRunAttack) { RunningAttack(1); }
 					else { AttackChain(); }
