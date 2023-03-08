@@ -25,16 +25,12 @@ namespace WarriorAnims
 		#region Inputs
 
 		// Inputs.
-		[HideInInspector] public bool inputAiming;
-		[HideInInspector] public float inputAimVertical = 0;
-		[HideInInspector] public float inputAimHorizontal = 0;
 		[HideInInspector] public bool inputAttack;
 		[HideInInspector] public bool inputAttackMove;
 		[HideInInspector] public bool inputAttackRanged;
 		[HideInInspector] public bool inputAttackSpecial;
 		[HideInInspector] public bool inputBlock;
 		[HideInInspector] public bool inputDeath;
-		[HideInInspector] public bool inputJump;
 		[HideInInspector] public bool inputLightHit;
 		[HideInInspector] public bool inputRoll;
 		[HideInInspector] public bool inputSheath;
@@ -43,7 +39,6 @@ namespace WarriorAnims
 		[HideInInspector] public float inputHorizontal = 0;
 
 		[HideInInspector] public Vector3 moveInput;
-		[HideInInspector] public Vector2 aimInput;
 
 		private bool useInputSystem;
 
@@ -59,7 +54,6 @@ namespace WarriorAnims
 		[HideInInspector] public bool isDead = false;
 		[HideInInspector] public bool isBlocking = false;
 		[HideInInspector] public bool isTargeting = false;
-		[HideInInspector] public bool jumpAttack;
 		[HideInInspector] public bool sheathed;
 		[HideInInspector] public bool waitingOnWeapons = true;
 		[HideInInspector] public bool useRootMotion = false;
@@ -75,13 +69,7 @@ namespace WarriorAnims
 
 		public bool canMove { get { return _canMove; } }
 		private bool _canMove = true;
-
-		public bool canJump { get { return _canJump && !sheathed && !isDead; } }
-		private bool _canJump = true;
-
-		public bool canDoubleJump { get { return _canDoubleJump && !sheathed; } }
-		private bool _canDoubleJump = false;
-
+		
 		public bool canRunAttack { get { return warrior == Warrior.Archer || warrior == Warrior.Crossbow || warrior == Warrior.TwoHanded; } }
 
 		// Animation speed control. (doesn't affect lock timing)
@@ -166,15 +154,12 @@ namespace WarriorAnims
 				// Use input from WarriorInputController / Input Manager.
 				if (!useInputSystem) {
 					if (warriorInputController != null) {
-						inputAiming = warriorInputController.inputAiming;
-						aimInput = warriorInputController.aimInput;
 						inputAttack = warriorInputController.inputAttack;
 						inputAttackMove = warriorInputController.inputAttackMove;
 						inputAttackRanged = warriorInputController.inputAttackRanged;
 						inputAttackSpecial = warriorInputController.inputAttackSpecial;
 						inputBlock = warriorInputController.hasBlockInput;
 						inputDeath = warriorInputController.inputDeath;
-						inputJump = warriorInputController.inputJump;
 						inputLightHit = warriorInputController.inputLightHit;
 						inputTarget = warriorInputController.hasTargetInput;
 						moveInput = warriorInputController.moveInput;
@@ -183,15 +168,12 @@ namespace WarriorAnims
 				// Use input from WarriorInputSystemController / Warrior Input Actions.
 				else {
 					if (warriorInputSystemController != null) {
-						inputAiming = warriorInputSystemController.inputAiming;
-						aimInput = warriorInputSystemController.aimInput;
 						inputAttack = warriorInputSystemController.inputAttack;
 						inputAttackMove = warriorInputSystemController.inputAttackMove;
 						inputAttackRanged = warriorInputSystemController.inputAttackRanged;
 						inputAttackSpecial = warriorInputSystemController.inputAttackSpecial;
 						inputBlock = warriorInputSystemController.inputBlock;
 						inputDeath = warriorInputSystemController.inputDeath;
-						inputJump = warriorInputSystemController.inputJump;
 						inputLightHit = warriorInputSystemController.inputLightHit;
 						inputTarget = warriorInputSystemController.inputTarget;
 						moveInput = warriorInputSystemController.moveInput;
@@ -205,12 +187,6 @@ namespace WarriorAnims
 		/// </summary>
 		public bool HasMoveInput()
 		{ return moveInput != Vector3.zero; }
-
-		/// <summary>
-		/// Checks aim input and returns if active.
-		/// </summary>
-		public bool HasAimInput()
-		{ return aimInput != Vector2.zero; }
 
 		/// <summary>
 		/// Checks block input and returns if true/false.
@@ -248,10 +224,6 @@ namespace WarriorAnims
 				}
 				DeathRevive();
 			}
-			// Character is in air.
-			else {
-				if (inputAttack) { JumpAttack(); }
-			}
 
 			UpdateAnimationSpeed();
 		}
@@ -265,31 +237,7 @@ namespace WarriorAnims
 		#endregion
 
 		#region Combat
-
-		/// <summary>
-		/// Warrior jumps.
-		/// </summary>
-		public void Jump()
-		{
-			// Turn IK off for Crossbow Warrior.
-			if (warrior == Warrior.Crossbow && ikHands != null) { ikHands.SetIKOff(); }
-		}
-
-		/// <summary>
-		/// Warrior lands.
-		/// </summary>
-		public void Land()
-		{
-			LockJump(false);
-			LockDoubleJump(true);
-
-			// Turn IK on for Crossbow Warrior.
-			if (warrior == Warrior.Crossbow && ikHands != null) { ikHands.BlendIK(true, 0.5f, 0.25f); }
-
-			// Lock Warrior if JumpAttacked.
-			if (jumpAttack) { Lock(true, true, true, true, 0, warriorTiming.TimingLock(warrior, "jumpattack")); }
-		}
-
+		
 		/// <summary>
 		/// The different attack types.
 		/// </summary>
@@ -319,7 +267,7 @@ namespace WarriorAnims
 		public void Attack(int attackNumber)
 		{
 			if (canAction) {
-				Lock(true, true, true, true, 0, warriorTiming.TimingLock(warrior, ("attack" + attackNumber.ToString())));
+				Lock(true, true, true, 0, warriorTiming.TimingLock(warrior, ("attack" + attackNumber.ToString())));
 				SetAnimatorInt("Action", attackNumber);
 				SetAnimatorTrigger(AnimatorTrigger.AttackTrigger);
 				if (warrior == Warrior.Spearman && attackNumber == 4 && ikHands != null)
@@ -354,7 +302,7 @@ namespace WarriorAnims
 			StopAllCoroutines();
 			SetAnimatorInt("Action", 1);
 			SetAnimatorTrigger(AnimatorTrigger.AttackTrigger);
-			Lock(true, true, true, true, 0, warriorTiming.TimingLock(warrior, "attack1"));
+			Lock(true, true, true, 0, warriorTiming.TimingLock(warrior, "attack1"));
 			ChainWindow((warriorTiming.TimingChain(warrior, "attack1start")), (warriorTiming.TimingChain(warrior, "attack1end")));
 			attack = 1;
 			yield return null;
@@ -369,7 +317,7 @@ namespace WarriorAnims
 			canChain = false;
 			SetAnimatorInt("Action", 2);
 			SetAnimatorTrigger(AnimatorTrigger.AttackTrigger);
-			Lock(true, true, true, true, 0, warriorTiming.TimingLock(warrior, "attack2"));
+			Lock(true, true, true, 0, warriorTiming.TimingLock(warrior, "attack2"));
 			ChainWindow((warriorTiming.TimingChain(warrior, "attack2start")), (warriorTiming.TimingChain(warrior, "attack2end")));
 			attack = 2;
 			yield return null;
@@ -383,7 +331,7 @@ namespace WarriorAnims
 			StopAllCoroutines();
 			SetAnimatorInt("Action", 3);
 			SetAnimatorTrigger(AnimatorTrigger.AttackTrigger);
-			Lock(true, true, true, true, 0, warriorTiming.TimingLock(warrior, "attack3"));
+			Lock(true, true, true, 0, warriorTiming.TimingLock(warrior, "attack3"));
 			if (warrior == Warrior.Hammer
 				|| warrior == Warrior.Spearman
 				|| warrior == Warrior.TwoHanded && ikHands != null) {
@@ -411,25 +359,6 @@ namespace WarriorAnims
 		}
 
 		/// <summary>
-		/// Attack while in the air.  Slams down to the ground.
-		/// </summary>
-		public void JumpAttack()
-		{
-			Debug.Log("JumpAttack");
-			if (warrior == Warrior.Karate
-				|| warrior == Warrior.Brute
-				|| warrior == Warrior.Hammer
-				|| warrior == Warrior.Spearman
-				|| warrior == Warrior.Swordsman
-				|| warrior == Warrior.TwoHanded
-				|| warrior == Warrior.Crossbow
-				|| warrior == Warrior.Mage) {
-				jumpAttack = true;
-				warriorMovementController.dropping = true;
-			}
-		}
-
-		/// <summary>
 		/// Special attack, or powerup buff.
 		/// </summary>
 		public void SpecialAttack(int attackNumber)
@@ -437,7 +366,7 @@ namespace WarriorAnims
 			specialAttack = attackNumber;
 			SetAnimatorInt("Action", attackNumber);
 			SetAnimatorTrigger(AnimatorTrigger.AttackSpecialTrigger);
-			Lock(true, true, true, true, 0, warriorTiming.TimingLock(warrior, ("special" + attackNumber.ToString())));
+			Lock(true, true, true, 0, warriorTiming.TimingLock(warrior, ("special" + attackNumber.ToString())));
 			if (warrior == Warrior.Crossbow || warrior == Warrior.Hammer && ikHands != null)
 			{ ikHands.SetIKPause(warriorTiming.TimingLock(warrior, "special" + attackNumber.ToString())); }
 		}
@@ -450,7 +379,7 @@ namespace WarriorAnims
 			specialAttack = attackNumber;
 			SetAnimatorInt("Action", attackNumber);
 			SetAnimatorTrigger(AnimatorTrigger.AttackMoveTrigger);
-			Lock(true, true, true, true, 0, warriorTiming.TimingLock(warrior, ("move" + attackNumber.ToString())));
+			Lock(true, true, true, 0, warriorTiming.TimingLock(warrior, ("move" + attackNumber.ToString())));
 			if (warrior == Warrior.Hammer && ikHands != null)
 			{ ikHands.SetIKPause(warriorTiming.TimingLock(warrior, "move" + attackNumber.ToString())); }
 		}
@@ -463,7 +392,7 @@ namespace WarriorAnims
 			specialAttack = attackNumber;
 			SetAnimatorInt("Action", attackNumber);
 			SetAnimatorTrigger(AnimatorTrigger.AttackRanged);
-			Lock(true, true, true, true, 0, warriorTiming.TimingLock(warrior, ("range" + attackNumber.ToString())));
+			Lock(true, true, true, 0, warriorTiming.TimingLock(warrior, ("range" + attackNumber.ToString())));
 			if (warrior == Warrior.TwoHanded) { StartCoroutine(_TwoHandedRangeAttack()); }
 		}
 
@@ -512,7 +441,7 @@ namespace WarriorAnims
 		public void BlockBreak()
 		{
 			SetAnimatorTrigger(AnimatorTrigger.BlockBreakTrigger);
-			Lock(true, true, true, true, 0, 1f);
+			Lock(true, true, true, 0, 1f);
 			if (warrior == Warrior.TwoHanded && ikHands != null) { ikHands.SetIKPause(0.9f); }
 		}
 
@@ -532,7 +461,7 @@ namespace WarriorAnims
 		{
 			SetAnimatorInt("Action", 1);
 			SetAnimatorTrigger(AnimatorTrigger.LightHitTrigger);
-			Lock(true, true, true, true, 0, warriorTiming.TimingLock(warrior, ("lighthit1".ToString())));
+			Lock(true, true, true, 0, warriorTiming.TimingLock(warrior, ("lighthit1".ToString())));
 		}
 
 		/// <summary>
@@ -556,7 +485,7 @@ namespace WarriorAnims
 		public void Death()
 		{
 			SetAnimatorTrigger(AnimatorTrigger.DeathTrigger);
-			Lock(true, true, true, false, 0.1f, 0f);
+			Lock(true, true, false, 0.1f, 0f);
 			if (warrior == Warrior.Crossbow || warrior == Warrior.TwoHanded && ikHands != null) { ikHands.SetIKOff(); }
 			isDead = true;
 		}
@@ -567,7 +496,7 @@ namespace WarriorAnims
 		public void Revive()
 		{
 			SetAnimatorTrigger(AnimatorTrigger.ReviveTrigger);
-			Lock(true, true, true, true, 0, warriorTiming.TimingLock(warrior, "revive"));
+			Lock(true, true, true, 0, warriorTiming.TimingLock(warrior, "revive"));
 			isDead = false;
 			if (warrior == Warrior.Crossbow || warrior == Warrior.TwoHanded && ikHands != null) { ikHands.BlendIK(true, 1f, 0.25f); }
 		}
@@ -582,8 +511,8 @@ namespace WarriorAnims
 		public void Dash(int dash)
 		{
 			// Knight has 2 sets of Dashes.
-			if (dash < 0) { Lock(true, true, true, true, 0, warriorTiming.TimingLock(warrior, "dash2")); }
-			else { Lock(true, true, true, true, 0, warriorTiming.TimingLock(warrior, "dash")); }
+			if (dash < 0) { Lock(true, true, true, 0, warriorTiming.TimingLock(warrior, "dash2")); }
+			else { Lock(true, true, true, 0, warriorTiming.TimingLock(warrior, "dash")); }
 
 			SetAnimatorInt("Action", dash);
 			SetAnimatorTrigger(AnimatorTrigger.DashTrigger);
@@ -601,23 +530,22 @@ namespace WarriorAnims
 		/// <param name="timed">If set to <c>true</c> timed.</param>
 		/// <param name="delayTime">Delay time.</param>
 		/// <param name="lockTime">Lock time.</param>
-		public void Lock(bool lockMovement, bool lockAction, bool lockJump, bool timed, float delayTime, float lockTime)
+		public void Lock(bool lockMovement, bool lockAction, bool timed, float delayTime, float lockTime)
 		{
 			if (co != null) { StopCoroutine(co); }
-			co = StartCoroutine(_Lock(lockMovement, lockAction, lockJump, timed, delayTime, lockTime));
+			co = StartCoroutine(_Lock(lockMovement, lockAction, timed, delayTime, lockTime));
 		}
 
 		//Timed -1 = infinite, 0 = no, 1 = yes.
-		public IEnumerator _Lock(bool lockMovement, bool lockAction, bool lockJump, bool timed, float delayTime, float lockTime)
+		public IEnumerator _Lock(bool lockMovement, bool lockAction, bool timed, float delayTime, float lockTime)
 		{
 			if (delayTime > 0) { yield return new WaitForSeconds(delayTime); }
 			if (lockMovement) { LockMove(true); }
 			if (lockAction) { LockAction(true); }
-			if (lockJump) { LockJump(true); }
 			if (timed) {
 				if (lockTime > 0) {
 					yield return new WaitForSeconds(lockTime);
-					UnLock(lockMovement, lockAction, lockJump);
+					UnLock(lockMovement, lockAction);
 				}
 			}
 		}
@@ -646,27 +574,15 @@ namespace WarriorAnims
 		/// </summary>
 		public void LockBlock(bool b)
 		{ _canBlock = !b; }
-
-		/// <summary>
-		/// Keep character from jumping.
-		/// </summary>
-		public void LockJump(bool b)
-		{ _canJump = !b; }
-
-		/// <summary>
-		/// Keep character from double jumping.
-		/// </summary>
-		public void LockDoubleJump(bool b)
-		{ _canDoubleJump = !b; }
+		
 
 		/// <summary>
 		/// Let character move and act again.
 		/// </summary>
-		private void UnLock(bool movement, bool actions, bool jump)
+		private void UnLock(bool movement, bool actions)
 		{
 			if (movement) { LockMove(false); }
 			if (actions) { LockAction(false); }
-			if (jump) { LockJump(false); }
 		}
 
 		#endregion
@@ -794,7 +710,7 @@ namespace WarriorAnims
 				}
 			}
 			StartCoroutine(_HideShowWeapons(hideshow));
-			Lock(true, true, true, true, 0, warriorTiming.TimingLock(warrior, "sheath"));
+			Lock(true, true, true, 0, warriorTiming.TimingLock(warrior, "sheath"));
 		}
 
 		/// <summary>
@@ -824,10 +740,10 @@ namespace WarriorAnims
 			Debug.Log("CONTROLLER SETTINGS---------------------------");
 			Debug.Log($"useInputSystem:{useInputSystem}   allowedInput:{allowedInput}   isMoving:{isMoving}     " +
 				$"isDead:{isDead}    isBlocking:{isBlocking}    isTargeting:{isTargeting}     " +
-				$"jumpAttack:{jumpAttack}    sheathed:{sheathed}    waitingOnWeapons:{waitingOnWeapons}     " +
+				$"sheathed:{sheathed}    waitingOnWeapons:{waitingOnWeapons}     " +
 				$"useRootMotion:{useRootMotion}    canChain:{canChain}    attack:{attack}     " +
-				$"specialAttack:{specialAttack}    canAction:{canAction}    canDoubleJump:{canDoubleJump}     " +
-				$"canMove:{canMove}    canJump:{canJump}    attack:{attack}     " +
+				$"specialAttack:{specialAttack}    canAction:{canAction}" +
+				$"canMove:{canMove}    attack:{attack}     " +
 				$"animationSpeed:{animationSpeed}");
 		}
 
@@ -838,7 +754,7 @@ namespace WarriorAnims
 		{
 			Debug.Log("ANIMATOR SETTINGS---------------------------");
 			Debug.Log($"Moving:{animator.GetBool("Moving")}   Targeting:{animator.GetBool("Targeting")}   Stunned:{animator.GetBool("Stunned")}     " +
-				$"Blocking:{animator.GetBool("Blocking")}    Weapons:{animator.GetBool("Weapons")}    Jumping:{animator.GetInteger("Jumping")}     " +
+				$"Blocking:{animator.GetBool("Blocking")}    Weapons:{animator.GetBool("Weapons")}     " +
 				$"Action:{animator.GetInteger("Action")}    TriggerNumber:{animator.GetInteger("TriggerNumber")}    Velocity X:{animator.GetFloat("Velocity X")}     " +
 				$"Velocity Z:{animator.GetFloat("Velocity Z")}");
 		}

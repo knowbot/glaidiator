@@ -4,24 +4,18 @@ namespace WarriorAnims
 {
 	public class WarriorInputController:MonoBehaviour
 	{
-		[HideInInspector] public bool inputAiming;
-		[HideInInspector] public float inputAimHorizontal = 0;
-		[HideInInspector] public float inputAimVertical = 0;
 		[HideInInspector] public bool inputAttack;
 		[HideInInspector] public bool inputAttackMove;
 		[HideInInspector] public bool inputAttackRanged;
 		[HideInInspector] public bool inputAttackSpecial;
 		[HideInInspector] public float inputBlockTarget = 0;
 		[HideInInspector] public bool inputDeath;
-		[HideInInspector] public bool inputJump;
 		[HideInInspector] public bool inputLightHit;
 		[HideInInspector] public bool inputRoll;
-		[HideInInspector] public bool inputTarget;
 		[HideInInspector] public float inputHorizontal = 0;
 		[HideInInspector] public float inputVertical = 0;
 
 		public Vector3 moveInput { get { return CameraRelativeInput(inputHorizontal, inputVertical); } }
-		public Vector2 aimInput { get { return CameraRelativeInput(inputAimHorizontal, inputAimVertical); } }
 
 		private void Update()
 		{
@@ -34,16 +28,12 @@ namespace WarriorAnims
 		/// </summary>
 		private void Inputs()
 		{
-			inputAiming = Input.GetButton("Aiming");
-			inputAimHorizontal = Input.GetAxisRaw("AimHorizontal");
-			inputAimVertical = Input.GetAxisRaw("AimVertical");
 			inputAttack = Input.GetButtonDown("Attack");
 			inputAttackMove = Input.GetButtonDown("AttackMove");
 			inputAttackRanged = Input.GetButtonDown("AttackRanged");
 			inputAttackSpecial = Input.GetButtonDown("AttackSpecial");
 			inputBlockTarget = Input.GetAxisRaw("BlockTarget");
 			inputDeath = Input.GetButtonDown("Death");
-			inputJump = Input.GetButtonDown("Jump");
 			inputLightHit = Input.GetButtonDown("LightHit");
 			inputTarget = Input.GetButton("Target");
 			inputHorizontal = Input.GetAxisRaw("Horizontal");
