@@ -10,6 +10,7 @@ namespace BehaviorTree
         private Node _root = null;
 
         public Node currentNode;
+        public Node _current;
         
         protected void Start()
         {
