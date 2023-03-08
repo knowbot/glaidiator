@@ -12,6 +12,7 @@ namespace WarriorAnims
 		[HideInInspector] public bool inputDeath;
 		[HideInInspector] public bool inputLightHit;
 		[HideInInspector] public bool inputRoll;
+		[HideInInspector] public bool inputTarget;
 		[HideInInspector] public float inputHorizontal = 0;
 		[HideInInspector] public float inputVertical = 0;
 
@@ -69,6 +70,8 @@ namespace WarriorAnims
 		/// </summary>
 		private Vector3 CameraRelativeInput(float inputX, float inputZ)
 		{
+			inputX = Mathf.Round(inputX);
+			inputZ = Mathf.Round(inputZ);
 			// Forward vector relative to the camera along the x-z plane.
 			Vector3 forward = Camera.main.transform.TransformDirection(Vector3.forward);
 			forward.y = 0;
@@ -76,7 +79,7 @@ namespace WarriorAnims
 
 			// Right vector relative to the camera always orthogonal to the forward vector.
 			Vector3 right = new Vector3(forward.z, 0, -forward.x);
-			Vector3 relativeVelocity = inputHorizontal * right + inputVertical * forward;
+			Vector3 relativeVelocity = Mathf.Round(inputHorizontal) * right + Mathf.Round(inputVertical) * forward;
 
 			// Reduce input for diagonal movement.
 			if (relativeVelocity.magnitude > 1) { relativeVelocity.Normalize(); }
