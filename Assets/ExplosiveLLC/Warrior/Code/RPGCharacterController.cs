@@ -50,11 +50,6 @@ namespace RPGCharacterAnims
 		[HideInInspector] public IKHands ikHands;
 
 		/// <summary>
-		/// Target for Aiming/Strafing.
-		/// </summary>
-		public Transform target;
-
-		/// <summary>
 		/// Returns whether the character can take actions.
 		/// </summary>
 		public bool canAction => _canAction && !isNavigating;
@@ -238,10 +233,7 @@ namespace RPGCharacterAnims
 
             // Unlock actions and movement.
             Unlock(true, true);
-
-			// Set Aim Input.
-			SetAimInput(target.transform.position);
-		}
+        }
 
 		#endregion
 

@@ -9,7 +9,6 @@ namespace WarriorAnims
 
 		[Header("Components")]
 		public Warrior warrior;
-		public GameObject target;
 		public GameObject weapon;
 		private Rigidbody rb;
 		[HideInInspector] public SuperCharacterController superCharacterController;
@@ -34,7 +33,6 @@ namespace WarriorAnims
 		[HideInInspector] public bool inputLightHit;
 		[HideInInspector] public bool inputRoll;
 		[HideInInspector] public bool inputSheath;
-		[HideInInspector] public bool inputTarget;
 		[HideInInspector] public float inputVertical = 0;
 		[HideInInspector] public float inputHorizontal = 0;
 
@@ -53,7 +51,6 @@ namespace WarriorAnims
 		[HideInInspector] public bool isMoving;
 		[HideInInspector] public bool isDead = false;
 		[HideInInspector] public bool isBlocking = false;
-		[HideInInspector] public bool isTargeting = false;
 		[HideInInspector] public bool sheathed;
 		[HideInInspector] public bool waitingOnWeapons = true;
 		[HideInInspector] public bool useRootMotion = false;
@@ -161,8 +158,7 @@ namespace WarriorAnims
 						inputBlock = warriorInputController.hasBlockInput;
 						inputDeath = warriorInputController.inputDeath;
 						inputLightHit = warriorInputController.inputLightHit;
-						inputTarget = warriorInputController.hasTargetInput;
-						moveInput = warriorInputController.moveInput;
+						moveInput = warriorInputController.MoveInput;
 					}
 				}
 				// Use input from WarriorInputSystemController / Warrior Input Actions.
@@ -175,7 +171,6 @@ namespace WarriorAnims
 						inputBlock = warriorInputSystemController.inputBlock;
 						inputDeath = warriorInputSystemController.inputDeath;
 						inputLightHit = warriorInputSystemController.inputLightHit;
-						inputTarget = warriorInputSystemController.inputTarget;
 						moveInput = warriorInputSystemController.moveInput;
 					}
 				}
@@ -193,12 +188,7 @@ namespace WarriorAnims
 		/// </summary>
 		public bool HasBlockInput()
 		{ return inputBlock; }
-
-		/// <summary>
-		/// Checks block input and returns if true/false.
-		/// </summary>
-		public bool HasTargetInput()
-		{ return inputTarget; }
+		
 
 		/// <summary>
 		/// Shuts off input from WarriorInputController or WarriorInputSystemController. GUI still enabled.
@@ -220,7 +210,6 @@ namespace WarriorAnims
 				if (canAction) {
 					Blocking();
 					if (inputLightHit) { GetHit(); }
-					if (!isBlocking && !sheathed) { Targeting(); }
 				}
 				DeathRevive();
 			}
@@ -443,15 +432,6 @@ namespace WarriorAnims
 			SetAnimatorTrigger(AnimatorTrigger.BlockBreakTrigger);
 			Lock(true, true, true, 0, 1f);
 			if (warrior == Warrior.TwoHanded && ikHands != null) { ikHands.SetIKPause(0.9f); }
-		}
-
-		/// <summary>
-		/// Character will strafe around target.
-		/// </summary>
-		private void Targeting()
-		{
-			isTargeting = HasTargetInput();
-			SetAnimatorBool("Targeting", HasTargetInput());
 		}
 
 		/// <summary>
@@ -739,7 +719,7 @@ namespace WarriorAnims
 		{
 			Debug.Log("CONTROLLER SETTINGS---------------------------");
 			Debug.Log($"useInputSystem:{useInputSystem}   allowedInput:{allowedInput}   isMoving:{isMoving}     " +
-				$"isDead:{isDead}    isBlocking:{isBlocking}    isTargeting:{isTargeting}     " +
+				$"isDead:{isDead}    isBlocking:{isBlocking}       " +
 				$"sheathed:{sheathed}    waitingOnWeapons:{waitingOnWeapons}     " +
 				$"useRootMotion:{useRootMotion}    canChain:{canChain}    attack:{attack}     " +
 				$"specialAttack:{specialAttack}    canAction:{canAction}" +
@@ -753,7 +733,7 @@ namespace WarriorAnims
 		public void AnimatorDebug()
 		{
 			Debug.Log("ANIMATOR SETTINGS---------------------------");
-			Debug.Log($"Moving:{animator.GetBool("Moving")}   Targeting:{animator.GetBool("Targeting")}   Stunned:{animator.GetBool("Stunned")}     " +
+			Debug.Log($"Moving:{animator.GetBool("Moving")}    Stunned:{animator.GetBool("Stunned")}     " +
 				$"Blocking:{animator.GetBool("Blocking")}    Weapons:{animator.GetBool("Weapons")}     " +
 				$"Action:{animator.GetInteger("Action")}    TriggerNumber:{animator.GetInteger("TriggerNumber")}    Velocity X:{animator.GetFloat("Velocity X")}     " +
 				$"Velocity Z:{animator.GetFloat("Velocity Z")}");

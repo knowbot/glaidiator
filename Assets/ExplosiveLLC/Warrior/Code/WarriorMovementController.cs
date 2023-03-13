@@ -7,8 +7,6 @@ namespace WarriorAnims
 		[Header("Components")]
 		private WarriorController warriorController;
 
-		[SerializeField] public PlayerSimulator playerSim;
-
 		[Header("Movement")]
 		public float runSpeed = 6f;
 		private readonly float rotationSpeed = 100f;
@@ -47,10 +45,8 @@ namespace WarriorAnims
 		// Put any code in here you want to run AFTER the state's update function.  This is run regardless of what state you're in.
 		protected override void LateGlobalSuperUpdate()
 		{
-			Vector3 temp = transform.position;
 			// Move the player by our velocity every frame.
 			transform.position += currentVelocity * warriorController.superCharacterController.deltaTime;
-			playerSim.RunSim(transform.position - temp);
 
 			// If alive and is moving, set animator.
 			if (!warriorController.isDead && warriorController.canMove && !warriorController.isBlocking) {

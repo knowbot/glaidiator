@@ -20,8 +20,6 @@ namespace WarriorAnims
 		[HideInInspector] public bool inputJump;
 		[HideInInspector] public bool inputLightHit;
 		[HideInInspector] public bool inputRoll;
-		[HideInInspector] public bool inputTarget;
-		[HideInInspector] public bool inputTargetKey;
 		[HideInInspector] public float inputHorizontal = 0;
 		[HideInInspector] public float inputVertical = 0;
 		[HideInInspector] public Vector3 moveInput;
