@@ -3,37 +3,40 @@ using System.Collections.Generic;
 using UnityEngine;
 using BehaviorTree;
 
-public class CheckEnemyInAttackRange : Node
+namespace BasicAI
 {
-    private Transform _transform;
-    //private Animator _animator;
-
-    public CheckEnemyInAttackRange(Transform transform)
+    public class CheckEnemyInAttackRange : Node
     {
-        _transform = transform;
-    }
+        private Transform _transform;
+        //private Animator _animator;
 
-    public override NodeState Evaluate()
-    {
-
-        object t = GetData("target");
-        if (t == null)
+        public CheckEnemyInAttackRange(Transform transform)
         {
+            _transform = transform;
+        }
+
+        public override NodeState Evaluate()
+        {
+
+            object t = GetData("target");
+            if (t == null)
+            {
+                state = NodeState.FAILURE;
+                return state;
+            }
+
+            Transform target = (Transform)t;
+            if (Vector3.Distance(_transform.position, target.position) <= GuardBT.attackRange)
+            {
+                // check = true
+
+                state = NodeState.SUCCESS;
+                return state;
+            }
+
+
             state = NodeState.FAILURE;
             return state;
         }
-
-        Transform target = (Transform)t;
-        if (Vector3.Distance(_transform.position, target.position) <= GuardBT.attackRange)
-        {
-            // check = true
-            
-            state = NodeState.SUCCESS;
-            return state;
-        }
-        
-        
-        state = NodeState.FAILURE;
-        return state;
     }
 }
