@@ -8,10 +8,13 @@ namespace BehaviorTree
     public abstract class Tree : MonoBehaviour
     {
         private Node _root = null;
+
+        public Node currentNode;
         
         protected void Start()
         {
             _root = SetupTree();
+            Debug.Log(_root.GetType() + " init");
         }
 
         private void Update()
@@ -20,6 +23,11 @@ namespace BehaviorTree
         }
 
         protected abstract Node SetupTree();
+
+        public Node GetRoot()
+        {
+            return _root;
+        }
     }
     
     

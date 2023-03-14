@@ -3,27 +3,42 @@ using System.Collections.Generic;
 using UnityEngine;
 using BehaviorTree;
 
-public class TaskGoToTarget : Node
+namespace BasicAI
 {
-
-    private Transform _transform;
-
-    public TaskGoToTarget(Transform transform)
-    {
-        _transform = transform;
-    }
-    
-    public override NodeState Evaluate()
+    public class TaskGoToTarget : Node
     {
 
-        Transform target = (Transform)GetData("target");
+        private Transform _transform;
 
-        if (Vector3.Distance(_transform.position, target.position) > 0.01f)
+        public TaskGoToTarget(Transform transform)
         {
-            // move to target
+            _transform = transform;
         }
-        
-        state = NodeState.RUNNING;
-        return state;
+
+        public override NodeState Evaluate()
+        {
+            Transform target = (Transform)GetData("target");
+            if (target == null)
+            {
+                state = NodeState.FAILURE;
+                return state;
+            }
+            
+
+            var currPos = _transform.position;
+            var targetPos = target.position;
+            Debug.DrawLine(currPos, targetPos, Color.red);
+
+            if (Vector3.Distance(currPos, targetPos) > 0.01f)
+            {
+                _transform.position =
+                    Vector3.MoveTowards(currPos, targetPos, GuardBT.speed * Time.deltaTime);
+
+                _transform.LookAt(targetPos);
+            }
+
+            state = NodeState.RUNNING;
+            return state;
+        }
     }
 }

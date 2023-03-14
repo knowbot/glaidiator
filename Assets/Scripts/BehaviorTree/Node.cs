@@ -16,7 +16,7 @@ namespace BehaviorTree
         RUNNING, SUCCESS, FAILURE
     }
     
-    public class Node : MonoBehaviour
+    public class Node
     {
 
         protected NodeState state;
