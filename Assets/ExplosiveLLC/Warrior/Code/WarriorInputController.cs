@@ -15,7 +15,7 @@ namespace WarriorAnims
 		[HideInInspector] public bool inputBlock;
 		[HideInInspector] public bool inputDeath;
 		[HideInInspector] public bool inputLightHit;
-		[HideInInspector] public bool inputRoll;
+		[HideInInspector] public bool inputDodge;
 		[HideInInspector] public Vector2 inputMove = Vector2.zero;
 
 		public Vector3 MoveInput => CameraRelativeInput();
@@ -55,6 +55,7 @@ namespace WarriorAnims
 			inputDeath = Input.GetButtonDown("Death");
 			inputLightHit = Input.GetButtonDown("LightHit");
 			inputMove = _playerActions.Gameplay.Move.ReadValue<Vector2>();
+			inputDodge = _playerActions.Gameplay.Dodge.WasPressedThisFrame();
 		}
 
 		private void Toggles()
