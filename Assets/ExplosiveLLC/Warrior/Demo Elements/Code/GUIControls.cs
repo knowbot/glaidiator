@@ -16,8 +16,6 @@ namespace WarriorAnims
 			// Character isn't dead or weapons sheathed.
 			if (!warriorController.isDead && !warriorController.sheathed) {
 				Attacking();
-				Jumping();
-				JumpAttack();
 
 				// If can act.
 				if (warriorController.canAction) {
@@ -150,36 +148,6 @@ namespace WarriorAnims
 						if (GUI.Button(new Rect(130, 85, 100, 30), "Attack4")) { warriorController.Attack(4); }
 						if (GUI.Button(new Rect(130, 115, 100, 30), "Attack5")) { warriorController.Attack(5); }
 					}
-				}
-			}
-		}
-
-		private void Jumping()
-		{
-			if ((warriorController.canJump || warriorController.canDoubleJump) && (!blockGui || !warriorController.isBlocking)) {
-				if (warriorController.MaintainingGround()) {
-					if (GUI.Button(new Rect(25, 175, 100, 30), "Jump")) {
-						if (warriorController.canJump) { warriorController.inputJump = true; ; }
-					}
-				}
-				if (warriorController.canDoubleJump) {
-					if (GUI.Button(new Rect(25, 175, 100, 30), "Double Jump")) { warriorController.inputJump = true; }
-				}
-			}
-		}
-
-		private void JumpAttack()
-		{
-			if (!warriorController.MaintainingGround()) {
-				if (warriorController.warrior == Warrior.Karate
-					|| warriorController.warrior == Warrior.Brute
-					|| warriorController.warrior == Warrior.Hammer
-					|| warriorController.warrior == Warrior.Spearman
-					|| warriorController.warrior == Warrior.Swordsman
-					|| warriorController.warrior == Warrior.TwoHanded
-					|| warriorController.warrior == Warrior.Crossbow
-					|| warriorController.warrior == Warrior.Mage) {
-					if (GUI.Button(new Rect(25, 85, 100, 30), "Jump Attack")) { warriorController.JumpAttack(); }
 				}
 			}
 		}

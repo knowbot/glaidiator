@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace WarriorAnims
+namespace WarriorAnims1
 {
 	public class CameraController:MonoBehaviour
 	{
