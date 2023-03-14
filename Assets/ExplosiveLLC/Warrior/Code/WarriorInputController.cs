@@ -52,8 +52,6 @@ namespace WarriorAnims
 			inputAttackRanged = _playerActions.Gameplay.AttackRanged.WasPressedThisFrame();
 			inputAttackSpecial = _playerActions.Gameplay.AttackHeavy.WasPressedThisFrame();
 			inputBlock = _playerActions.Gameplay.Block.IsPressed();
-			inputDeath = Input.GetButtonDown("Death");
-			inputLightHit = Input.GetButtonDown("LightHit");
 			inputMove = _playerActions.Gameplay.Move.ReadValue<Vector2>();
 			inputDodge = _playerActions.Gameplay.Dodge.WasPressedThisFrame();
 		}
