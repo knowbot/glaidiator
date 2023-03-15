@@ -741,7 +741,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6455139829038169830, guid: 7778632bf67024a46b1f78e3c03c216e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.12000084
+      value: 0.03
       objectReference: {fileID: 0}
     - target: {fileID: 6455139829038169830, guid: 7778632bf67024a46b1f78e3c03c216e, type: 3}
       propertyPath: m_LocalPosition.z
@@ -778,6 +778,14 @@ PrefabInstance:
     - target: {fileID: 6455139829038195398, guid: 7778632bf67024a46b1f78e3c03c216e, type: 3}
       propertyPath: m_Name
       value: Knight Warrior
+      objectReference: {fileID: 0}
+    - target: {fileID: 7439713988500215784, guid: 7778632bf67024a46b1f78e3c03c216e, type: 3}
+      propertyPath: clampToMovingGround
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7439713988500215797, guid: 7778632bf67024a46b1f78e3c03c216e, type: 3}
+      propertyPath: m_Mass
+      value: 0.0000001
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7778632bf67024a46b1f78e3c03c216e, type: 3}

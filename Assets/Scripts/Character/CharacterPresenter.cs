@@ -1,9 +1,10 @@
-﻿using Unity.VisualScripting;
-using UnityEngine;
-using UnityEngine.Serialization;
+﻿using UnityEngine;
 
-public class CharacterInputController: MonoBehaviour
+namespace Character
 {
+	public class CharacterPresenter: MonoBehaviour
+
+	{
 	private PlayerActions _playerActions;
 	private Camera _camera;
 	[HideInInspector] public bool inputAttackLight;
@@ -11,21 +12,20 @@ public class CharacterInputController: MonoBehaviour
 	[HideInInspector] public bool inputAttackRanged;
 	[HideInInspector] public bool inputBlock;
 	[HideInInspector] public bool inputDodge;
-	[HideInInspector] public Vector2 inputMove = Vector2.zero;
-
-	public Vector3 GetMove => CameraRelativeInput();
+	private Vector2 _inputMove;
+	public Vector3 InputMove => CameraRelativeInput();
 
 	private void Awake()
 	{
 		_playerActions = new PlayerActions();
-		if(!_camera) _camera = Camera.main;
+		if (!_camera) _camera = Camera.main;
 	}
 
 	private void OnEnable()
 	{
 		_playerActions.Gameplay.Enable();
 	}
-	
+
 	private void OnDisable()
 	{
 		_playerActions.Gameplay.Disable();
@@ -37,9 +37,6 @@ public class CharacterInputController: MonoBehaviour
 		Inputs();
 	}
 
-	/// <summary>
-	/// Input abstraction for easier asset updates using outside control schemes.
-	/// </summary>
 	private void Inputs()
 	{
 		inputAttackLight = _playerActions.Gameplay.AttackLight.WasPressedThisFrame();
@@ -47,17 +44,9 @@ public class CharacterInputController: MonoBehaviour
 		inputAttackRanged = _playerActions.Gameplay.AttackRanged.WasPressedThisFrame();
 		inputBlock = _playerActions.Gameplay.Block.IsPressed();
 		inputDodge = _playerActions.Gameplay.Dodge.WasPressedThisFrame();
-		inputMove = _playerActions.Gameplay.Move.ReadValue<Vector2>();
-	}
-	
-	public bool hasBlockInput
-	{
-		get { return inputBlock;  }
+		_inputMove = _playerActions.Gameplay.Move.ReadValue<Vector2>();
 	}
 
-	/// <summary>
-	/// Movement based off camera facing.
-	/// </summary>
 	private Vector3 CameraRelativeInput()
 	{
 		// Forward vector relative to the camera along the x-z plane.
@@ -67,9 +56,9 @@ public class CharacterInputController: MonoBehaviour
 
 		// Right vector relative to the camera always orthogonal to the forward vector.
 		Vector3 right = new Vector3(forward.z, 0, -forward.x);
-		Vector3 relativeVelocity = inputMove.x * right + inputMove.y * forward;
+		Vector3 relativeVelocity = _inputMove.x * right + _inputMove.y * forward;
 
 		return relativeVelocity;
 	}
+	}
 }
-
