@@ -22,11 +22,14 @@ namespace BehaviorTree
             _child = child;
         }
 
-        
-        public override NodeState Evaluate()
+        public Decorator(BTree btree, Node child)
         {
-            return state;
+            tree = btree;
+            _child = child;
         }
+        
+        
+        
     }
     
     

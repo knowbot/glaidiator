@@ -22,8 +22,9 @@ namespace BasicAI
 
         //private float _speed = 2f;
 
-        public TaskPatrol(Transform transform, List<Vector3> waypoints)
+        public TaskPatrol(BTree btree, Transform transform, List<Vector3> waypoints)
         {
+            tree = btree;
             _transform = transform;
             _currPos = _transform.position;
             _waypoints = waypoints;

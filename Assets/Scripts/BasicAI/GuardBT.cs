@@ -2,11 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using BehaviorTree;
-using Tree = BehaviorTree.Tree;
 
 namespace BasicAI
 {
-    public class GuardBT : Tree
+    public class GuardBT : BTree
     {
         private Transform _transform;
 
@@ -26,6 +25,7 @@ namespace BasicAI
             _transform = transform;
             //Node root = new TaskPatrol(transform, waypoints);
 
+            /*
             Node root = new Selector(new List<Node>
             {
                 new Sequence(new List<Node>
@@ -35,7 +35,16 @@ namespace BasicAI
                 }),
                 new TaskPatrol(_transform, waypoints),
             });
-
+            */
+            Node root = new Selector(this, new List<Node>
+            {
+                new Sequence(this, new List<Node>
+                {
+                    new CheckEnemyInRange(this, _transform),
+                    new TaskGoToTarget(this, _transform),
+                }),
+                new TaskPatrol(this, _transform, waypoints),
+            });
 
             return root;
         }
