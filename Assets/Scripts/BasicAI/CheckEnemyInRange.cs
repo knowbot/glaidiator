@@ -11,8 +11,9 @@ namespace BasicAI
 
         //private static int _enemyLayerMask = 1 << 6;
 
-        public CheckEnemyInRange(Transform transform)
+        public CheckEnemyInRange(BTree btree, Transform transform)
         {
+            tree = btree;
             _transform = transform;
         }
 
@@ -27,7 +28,8 @@ namespace BasicAI
                 if (colliders.Length > 1) // +1 since we find our own collider
                 {
                     //Debug.Log("targets = " + colliders.Length);
-                    parent.parent.SetData("target", colliders[0].transform);
+                    //parent.parent.SetData("target", colliders[0].transform);
+                    SetData("target", colliders[0].transform);
                     //Debug.Log("target at: " + colliders[0].transform.position);
 
                     state = NodeState.SUCCESS;
@@ -36,10 +38,8 @@ namespace BasicAI
 
                 state = NodeState.FAILURE;
                 return state;
-
             }
-
-
+            
             state = NodeState.SUCCESS;
             return state;
         }

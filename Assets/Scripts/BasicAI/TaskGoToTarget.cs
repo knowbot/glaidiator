@@ -10,8 +10,9 @@ namespace BasicAI
 
         private Transform _transform;
 
-        public TaskGoToTarget(Transform transform)
+        public TaskGoToTarget(BTree btree, Transform transform)
         {
+            tree = btree;
             _transform = transform;
         }
 
