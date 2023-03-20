@@ -34,5 +34,9 @@ namespace Character.Model
 		        Transform.Move(input, timeStep);
 	        }
         }
+
+        public void Attack() { }
+        
+
     }
 }
