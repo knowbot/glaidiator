@@ -86,9 +86,5 @@ namespace Character.Presenter
 		{
 			transform.rotation = _model.Transform.Rotation;
 		}
-
-		
-
-		
 	}
 }
