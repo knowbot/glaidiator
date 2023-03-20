@@ -10,8 +10,6 @@ namespace BehaviorTree
         public Selector() : base() {}
         public Selector(List<Node> children) : base(children) {}
 
-        public Selector(BTree btree, List<Node> children) : base(btree, children) {}
-
         public override NodeState Evaluate()
         {
             foreach (Node node in children)
