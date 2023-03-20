@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Character.Model;
 using UnityEngine;
 
 public class Environment : MonoBehaviour
@@ -13,8 +14,9 @@ public class Environment : MonoBehaviour
     public static double depth;
 
     
-    //private Dictionary<CharacterModel, Vector2> positions;
-    //private Dictionary<Vector2, CharacterModel> characters;
+    
+    private Dictionary<CharacterModel, Vector2> positions;
+    private Dictionary<Vector2, CharacterModel> characters;
     
     
 
