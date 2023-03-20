@@ -6,7 +6,7 @@ namespace BehaviorTree
 {
     public class Decorator : Node
     {
-        private Node _child;
+        protected Node _child;
 
         public Decorator() : base()
         {

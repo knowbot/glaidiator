@@ -7,7 +7,6 @@ namespace BehaviorTree
 
     public class Inverter : Decorator
     {
-        private Node _child;
         
         public Inverter() : base() {}
 

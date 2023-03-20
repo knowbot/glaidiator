@@ -6,7 +6,6 @@ namespace BehaviorTree
 {
     public class Repeater : Decorator
     {
-        private Node _child;
         private int _count = -1;
         
         public Repeater(Node child) // forever
@@ -22,17 +21,36 @@ namespace BehaviorTree
 
         public override NodeState Evaluate()
         {
-            state = _child.Evaluate();
-            
-            
+            state = NodeState.RUNNING;
+            NodeState childState = state;
             
             if (_count == -1)
             {
-                while (true)
+                while (true) // FIXME: less dirty solution?
                 {
-                    
+                    childState = _child.Evaluate();
                 }
             }
+            
+            if (_count > 0)
+            {
+                while (_count > 0)
+                {
+                    childState = _child.Evaluate();
+                    _count--;
+                }
+
+                state = childState;
+            }
+
+            /*
+            switch (_child.Evaluate())
+            {
+                case NodeState.FAILURE:
+                    
+            }
+            */
+            
 
             return state;
         }

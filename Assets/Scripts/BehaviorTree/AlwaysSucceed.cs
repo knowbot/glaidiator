@@ -7,7 +7,6 @@ namespace BehaviorTree
 
     public class AlwaysSucceed : Decorator
     {
-        private Node _child;
         
         public AlwaysSucceed(Node child)
         {
@@ -16,7 +15,21 @@ namespace BehaviorTree
 
         public override NodeState Evaluate()
         {
-            _child.Evaluate();
+            //_child.Evaluate();
+
+            switch (_child.Evaluate())
+            {
+                case NodeState.FAILURE:
+                    state = NodeState.SUCCESS;
+                    return state;
+                case NodeState.SUCCESS:
+                    state = NodeState.SUCCESS;
+                    return state;
+                case NodeState.RUNNING:
+                    state = NodeState.RUNNING;
+                    return state;
+            }
+            
             state = NodeState.SUCCESS;
             return state;
         }
