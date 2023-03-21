@@ -9,8 +9,9 @@ namespace Glaidiator
 		
 		private Camera _camera;
 		private PlayerActions _playerActions;
-
 		
+		public Animator animator;
+
 		public Vector3 InputMove => GetCameraRelativeMovement();
 
 		[HideInInspector] public bool inputAttackLight;
@@ -26,6 +27,7 @@ namespace Glaidiator
 			_transform = transform;
 			_playerActions = new PlayerActions();
 			_character = new Model.Character(_transform);
+			animator = GetComponentInChildren<Animator>();
 		}
 		
 		private void OnEnable()
@@ -35,6 +37,8 @@ namespace Glaidiator
 			// Register observer methods
 			_character.Movement.onPositionChanged += OnPositionChanged;
 			_character.Movement.onRotationChanged += OnRotationChanged;
+			_character.onMove += OnMove;
+			_character.onStop += OnStop;
 		}
 
 		private void OnDisable()
@@ -48,9 +52,10 @@ namespace Glaidiator
 		private void Update()
 		{
 			Inputs();
-			if (InputMove != Vector3.zero)
+			if (_inputMove != Vector2.zero)
 			{
 				_character.Move(InputMove, Time.deltaTime);
+				_inputMove = Vector2.zero;
 			}
 		
 		}
@@ -87,6 +92,20 @@ namespace Glaidiator
 		private void OnRotationChanged()
 		{
 			transform.rotation = _character.Movement.Rotation;
+		}
+
+		private void OnMove()
+		{
+			Debug.Log("bro move");
+			animator.SetBool("Moving", true);
+			animator.SetFloat("Velocity Z", _character.Movement.CurrVelocity.magnitude);
+		}
+
+		private void OnStop()
+		{
+			Debug.Log("bro stop");
+			animator.SetBool("Moving", false);
+			animator.SetFloat("Velocity Z", 0);
 		}
 	}
 }

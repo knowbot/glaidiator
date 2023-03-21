@@ -48,29 +48,29 @@ namespace WarriorAnims
 			// Move the player by our velocity every frame.
 			//transform.position += currentVelocity * warriorController.superCharacterController.deltaTime;
 
-			// If alive and is moving, set animator.
-			if (!warriorController.isDead && warriorController.canMove && !warriorController.isBlocking) {
-				if (currentVelocity.magnitude > 0 && warriorController.HasMoveInput()) {
-					warriorController.isMoving = true;
-					warriorController.SetAnimatorBool("Moving", true);
-					warriorController.SetAnimatorFloat("Velocity Z", currentVelocity.magnitude);
-				}
-				else {
-					warriorController.isMoving = false;
-					warriorController.SetAnimatorBool("Moving", false);
-					warriorController.SetAnimatorFloat("Velocity Z", 0);
-				}
-			}
-
-			if (warriorController.HasMoveInput() && warriorController.canMove && !warriorController.isBlocking)
-			{
-				RotateTowardsMovementDir();
-			}
-				
-
-			// Update animator with local movement values.
-			warriorController.SetAnimatorFloat("Velocity X", transform.InverseTransformDirection(currentVelocity).x);
-			warriorController.SetAnimatorFloat("Velocity Z", transform.InverseTransformDirection(currentVelocity).z);
+			// // If alive and is moving, set animator.
+			// if (!warriorController.isDead && warriorController.canMove && !warriorController.isBlocking) {
+			// 	if (currentVelocity.magnitude > 0 && warriorController.HasMoveInput()) {
+			// 		warriorController.isMoving = true;
+			// 		warriorController.SetAnimatorBool("Moving", true);
+			// 		warriorController.SetAnimatorFloat("Velocity Z", currentVelocity.magnitude);
+			// 	}
+			// 	else {
+			// 		warriorController.isMoving = false;
+			// 		warriorController.SetAnimatorBool("Moving", false);
+			// 		warriorController.SetAnimatorFloat("Velocity Z", 0);
+			// 	}
+			// }
+			//
+			// if (warriorController.HasMoveInput() && warriorController.canMove && !warriorController.isBlocking)
+			// {
+			// 	RotateTowardsMovementDir();
+			// }
+			// 	
+			//
+			// // Update animator with local movement values.
+			// warriorController.SetAnimatorFloat("Velocity X", transform.InverseTransformDirection(currentVelocity).x);
+			// warriorController.SetAnimatorFloat("Velocity Z", transform.InverseTransformDirection(currentVelocity).z);
 
 			warriorState = (WarriorState)currentState;
 		}

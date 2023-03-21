@@ -1,18 +1,18 @@
 ﻿using System;
-using JetBrains.Annotations;
-using RPGCharacterAnims.Actions;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Glaidiator.Model
 {
-    public class Character
+    public class Character : StateMachine
     {
 	    public Action onMove;
-
+	    public Action onStop;
 	    private bool _canMove = true;
 	    private bool _canAction = true;
 	    private Lock _lock = new Lock(0f, 0f);
-	    public enum State
+
+	    private enum CharacterState
 	    {
 		    Idle = 0,
 		    Move = 1,
@@ -22,14 +22,14 @@ namespace Glaidiator.Model
 	    }
 	    
         public readonly CharacterMovement Movement;
-        public State state = State.Idle;
 
         public Character(Transform transform)
         {
 	        Movement = new CharacterMovement(transform);
+	        CurrentState = CharacterState.Idle;
         }
 
-        public void Update(float deltaTime)
+        public override void Tick(float deltaTime)
         {
 	        bool locked = _lock.Tick(deltaTime);
         }
@@ -47,10 +47,30 @@ namespace Glaidiator.Model
         {
 	        _lock.SetLock(delay, duration);
         }
+
+        #region State Methods
+        private void Move_Enter()
+        {
+	        
+        }
         
+        private void Move_Tick(float deltaTime)
+        {
+	        
+        }
+        
+        private void Move_Exit()
+        {
+	        
+        }
+
+        #endregion
 
         public void Attack() { }
         public void Block() { }
         public void Dodge() { }
+        
+        private void OnMove() => onMove?.Invoke();
+        private void OnStop() => onStop?.Invoke();
     }
 }

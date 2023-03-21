@@ -12,7 +12,7 @@ namespace Glaidiator.Model
 	    
 	    private Vector3 _position;
 	    private Quaternion _rotation;
-	    private Vector3 _currVelocity;
+	    public Vector3 CurrVelocity { get; private set; }
 
 
 	    public CharacterMovement(Transform transform)
@@ -40,9 +40,8 @@ namespace Glaidiator.Model
 
 	    public void Move(Vector3 dir, float deltaTime)
 		{
-			Debug.Log("Tryna run!");
-			_currVelocity = dir * SPEED;
-			Position += _currVelocity * deltaTime;
+			CurrVelocity = dir * SPEED;
+			Position += CurrVelocity * deltaTime;
 		}
 
 	    public void Rotate(Vector3 dir, float deltaTime)
@@ -52,7 +51,7 @@ namespace Glaidiator.Model
 	    
 	    public void Stop()
 	    {
-		    _currVelocity = Vector3.zero;
+		    CurrVelocity = Vector3.zero;
 	    }
 
 		private void OnPositionChanged() => onPositionChanged?.Invoke();
