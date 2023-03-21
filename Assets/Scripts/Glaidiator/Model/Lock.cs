@@ -1,4 +1,4 @@
-﻿namespace Character.Model
+﻿namespace Glaidiator.Model
 {
     public class Lock
     {

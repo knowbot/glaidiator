@@ -3,14 +3,14 @@ using JetBrains.Annotations;
 using RPGCharacterAnims.Actions;
 using UnityEngine;
 
-namespace Character.Model
+namespace Glaidiator.Model
 {
-    public class CharacterModel
+    public class Character
     {
 	    public Action onMove;
 
-	    private bool _canMove;
-	    private bool _canAction;
+	    private bool _canMove = true;
+	    private bool _canAction = true;
 	    private Lock _lock = new Lock(0f, 0f);
 	    public enum State
 	    {
@@ -21,12 +21,12 @@ namespace Character.Model
 		    Dodge = 4
 	    }
 	    
-        public readonly CharacterTransform Transform;
+        public readonly CharacterMovement Movement;
         public State state = State.Idle;
 
-        public CharacterModel(Transform transform)
+        public Character(Transform transform)
         {
-	        Transform = new CharacterTransform(transform);
+	        Movement = new CharacterMovement(transform);
         }
 
         public void Update(float deltaTime)
@@ -38,7 +38,8 @@ namespace Character.Model
         {
 	        if (_canMove && input != Vector3.zero)
 	        {
-		        Transform.Move(input, deltaTime);
+		        Movement.Move(input, deltaTime);
+		        Movement.Rotate(input, deltaTime);
 	        }
         }
 

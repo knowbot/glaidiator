@@ -1,9 +1,9 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Character.Model
+namespace Glaidiator.Model
 {
-    public class CharacterTransform
+    public class CharacterMovement
     {
 	    public Action onPositionChanged;
 	    public Action onRotationChanged;
@@ -15,7 +15,7 @@ namespace Character.Model
 	    private Vector3 _currVelocity;
 
 
-	    public CharacterTransform(Transform transform)
+	    public CharacterMovement(Transform transform)
 	    {
 		    Position = transform.position;
 		    Rotation = transform.rotation;
@@ -40,6 +40,7 @@ namespace Character.Model
 
 	    public void Move(Vector3 dir, float deltaTime)
 		{
+			Debug.Log("Tryna run!");
 			_currVelocity = dir * SPEED;
 			Position += _currVelocity * deltaTime;
 		}

@@ -155,10 +155,10 @@ namespace WarriorAnims
 						inputAttackMove = warriorInputController.inputAttackMove;
 						inputAttackRanged = warriorInputController.inputAttackRanged;
 						inputAttackSpecial = warriorInputController.inputAttackSpecial;
-						inputBlock = warriorInputController.hasBlockInput;
+						//inputBlock = warriorInputController.hasBlockInput;
 						inputDeath = warriorInputController.inputDeath;
 						inputLightHit = warriorInputController.inputLightHit;
-						moveInput = warriorInputController.MoveInput;
+						// moveInput = warriorInputController.MoveInput;
 					}
 				}
 				// Use input from WarriorInputSystemController / Warrior Input Actions.

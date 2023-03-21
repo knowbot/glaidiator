@@ -1,28 +1,31 @@
-﻿using System;
-using Character.Model;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Character.Presenter
+namespace Glaidiator
 {
 	public class CharacterPresenter: MonoBehaviour
 	{
 		private Transform _transform;
-		private Model.CharacterModel _model;
+		private Model.Character _character;
 		
 		private Camera _camera;
 		private PlayerActions _playerActions;
-		[HideInInspector]public Vector2 inputMove;
+
+		
+		public Vector3 InputMove => GetCameraRelativeMovement();
+
 		[HideInInspector] public bool inputAttackLight;
 		[HideInInspector] public bool inputAttackHeavy;
 		[HideInInspector] public bool inputAttackRanged;
 		[HideInInspector] public bool inputBlock;
 		[HideInInspector] public bool inputDodge;
-        
+		[HideInInspector] private Vector2 _inputMove;
+
 		private void Awake()
 		{
 			if (!_camera) _camera = Camera.main;
 			_transform = transform;
 			_playerActions = new PlayerActions();
+			_character = new Model.Character(_transform);
 		}
 		
 		private void OnEnable()
@@ -30,23 +33,24 @@ namespace Character.Presenter
 			_playerActions.Gameplay.Enable();
 			
 			// Register observer methods
-			_model.Transform.onPositionChanged += OnPositionChanged;
-			_model.Transform.onRotationChanged += OnRotationChanged;
+			_character.Movement.onPositionChanged += OnPositionChanged;
+			_character.Movement.onRotationChanged += OnRotationChanged;
 		}
 
 		private void OnDisable()
 		{
 			_playerActions.Gameplay.Disable();
+			_character.Movement.onPositionChanged -= OnPositionChanged;
+			_character.Movement.onRotationChanged -= OnRotationChanged;
 		}
 
 		
 		private void Update()
 		{
 			Inputs();
-			Vector3 move = GetCameraRelativeMovement();
-			if (move != Vector3.zero)
+			if (InputMove != Vector3.zero)
 			{
-				_model.Move(move, Time.deltaTime);
+				_character.Move(InputMove, Time.deltaTime);
 			}
 		
 		}
@@ -59,7 +63,8 @@ namespace Character.Presenter
 			inputAttackRanged = _playerActions.Gameplay.AttackRanged.WasPressedThisFrame();
 			inputBlock = _playerActions.Gameplay.Block.IsPressed();
 			inputDodge = _playerActions.Gameplay.Dodge.WasPressedThisFrame();
-			inputMove = _playerActions.Gameplay.Move.ReadValue<Vector2>();
+			_inputMove = _playerActions.Gameplay.Move.ReadValue<Vector2>();
+			GetCameraRelativeMovement();
 		}
 		
 		public Vector3 GetCameraRelativeMovement()
@@ -68,23 +73,20 @@ namespace Character.Presenter
 			// Forward vector relative to the camera along the x-z plane.
 			forward.y = 0;
 			forward = forward.normalized;
-
 			// Right vector relative to the camera always orthogonal to the forward vector.
 			Vector3 right = new Vector3(forward.z, 0, -forward.x);
-			Vector3 relativeVelocity = inputMove.x * right + inputMove.y * forward;
-
-			return relativeVelocity;
+			return _inputMove.x * right + _inputMove.y * forward;
 		}
 		
 		// Observer methods
 		private void OnPositionChanged()
 		{
-			transform.position = _model.Transform.Position;
+			transform.position = _character.Movement.Position;
 		}
 		
 		private void OnRotationChanged()
 		{
-			transform.rotation = _model.Transform.Rotation;
+			transform.rotation = _character.Movement.Rotation;
 		}
 	}
 }

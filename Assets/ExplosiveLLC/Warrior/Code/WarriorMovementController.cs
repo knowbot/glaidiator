@@ -46,7 +46,7 @@ namespace WarriorAnims
 		protected override void LateGlobalSuperUpdate()
 		{
 			// Move the player by our velocity every frame.
-			transform.position += currentVelocity * warriorController.superCharacterController.deltaTime;
+			//transform.position += currentVelocity * warriorController.superCharacterController.deltaTime;
 
 			// If alive and is moving, set animator.
 			if (!warriorController.isDead && warriorController.canMove && !warriorController.isBlocking) {
@@ -138,7 +138,7 @@ namespace WarriorAnims
 			if (warriorController.moveInput != Vector3.zero)
 			{
 				if (debugMessages) { Debug.Log("RotateTowardsMovementDir"); }
-				transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(warriorController.moveInput), Time.deltaTime * rotationSpeed);
+				//transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(warriorController.moveInput), Time.deltaTime * rotationSpeed);
 			}
 		}
 	}

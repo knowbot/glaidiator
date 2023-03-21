@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Character.Model;
+using Glaidiator.Model;
 using UnityEngine;
 
 public class Environment : MonoBehaviour
@@ -15,8 +15,8 @@ public class Environment : MonoBehaviour
 
     
     
-    private Dictionary<CharacterModel, Vector2> positions;
-    private Dictionary<Vector2, CharacterModel> characters;
+    private Dictionary<Glaidiator.Model.Character, Vector2> positions;
+    private Dictionary<Vector2, Glaidiator.Model.Character> characters;
     
     
 
