@@ -5,13 +5,9 @@ namespace Glaidiator.Model
 {
     public class CharacterMovement
     {
-	    public Action onPositionChanged;
-	    public Action onRotationChanged;
 	    private const float SPEED = 6f;
 	    private const float ROT_SPEED = 100f;
-	    
-	    private Vector3 _position;
-	    private Quaternion _rotation;
+
 	    public Vector3 CurrVelocity { get; private set; }
 
 
@@ -20,23 +16,10 @@ namespace Glaidiator.Model
 		    Position = transform.position;
 		    Rotation = transform.rotation;
 	    }
-	    public Vector3 Position { 
-		    get => _position;
-		    set
-		    {
-			    _position = value;
-			    OnPositionChanged();
-		    }
-	    }
-	    public Quaternion Rotation { 
-		    get => _rotation;
-		    set
-		    {
-			    _rotation = value;
-			    OnRotationChanged();
-		    }
-	    }
-	    
+	    public Vector3 Position { get; private set; }
+
+	    public Quaternion Rotation { get; private set; }
+
 
 	    public void Move(Vector3 dir, float deltaTime)
 		{
@@ -53,8 +36,5 @@ namespace Glaidiator.Model
 	    {
 		    CurrVelocity = Vector3.zero;
 	    }
-
-		private void OnPositionChanged() => onPositionChanged?.Invoke();
-		private void OnRotationChanged() => onRotationChanged?.Invoke();
     }
 }
