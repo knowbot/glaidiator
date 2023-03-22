@@ -8,9 +8,9 @@ namespace Glaidiator.Model
     {
 	    public class State
 		{
-			public Action Tick = null;
-			public Action Enter = null;
-			public Action Exit = null;
+			public Action<float> Tick = TickDef;
+			public Action Enter = EnterExitDef;
+			public Action Exit = EnterExitDef;
 
 			public Enum current;
 		}
@@ -36,9 +36,9 @@ namespace Glaidiator.Model
 		{
 			state.Exit?.Invoke(); // call old state exit method
 			
-			state.Tick = ConfigureDelegate<Action>("Tick", null);
-			state.Enter = ConfigureDelegate<Action>("Enter", null);
-			state.Exit = ConfigureDelegate<Action>("Exit", null);
+			state.Tick = ConfigureDelegate<Action<float>>("Tick", TickDef);
+			state.Enter = ConfigureDelegate<Action>("Enter", EnterExitDef);
+			state.Exit = ConfigureDelegate<Action>("Exit", EnterExitDef);
 			
 			state.Enter?.Invoke(); // call new state enter method
 		}
@@ -70,10 +70,9 @@ namespace Glaidiator.Model
 			return returnValue as T;
 
 		}
-
-		/// <summary>
-		/// Message callback from the SuperCharacterController that runs the state specific update between global updates.
-		/// </summary>
+		
 		public abstract void Tick(float deltaTime);
+		private static void TickDef(float f) { }
+		private static void EnterExitDef() { }
     }
 }

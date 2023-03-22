@@ -12,14 +12,9 @@ namespace Glaidiator
 		
 		public Animator animator;
 
-		public Vector3 InputMove => GetCameraRelativeMovement();
-
-		[HideInInspector] public bool inputAttackLight;
-		[HideInInspector] public bool inputAttackHeavy;
-		[HideInInspector] public bool inputAttackRanged;
-		[HideInInspector] public bool inputBlock;
-		[HideInInspector] public bool inputDodge;
-		[HideInInspector] private Vector2 _inputMove;
+		private Input _inputs;
+		private static readonly int Moving = Animator.StringToHash("Moving");
+		private static readonly int VelocityZ = Animator.StringToHash("Velocity Z");
 
 		private void Awake()
 		{
@@ -35,8 +30,6 @@ namespace Glaidiator
 			_playerActions.Gameplay.Enable();
 			
 			// Register observer methods
-			_character.Movement.onPositionChanged += OnPositionChanged;
-			_character.Movement.onRotationChanged += OnRotationChanged;
 			_character.onMove += OnMove;
 			_character.onStop += OnStop;
 		}
@@ -44,35 +37,32 @@ namespace Glaidiator
 		private void OnDisable()
 		{
 			_playerActions.Gameplay.Disable();
-			_character.Movement.onPositionChanged -= OnPositionChanged;
-			_character.Movement.onRotationChanged -= OnRotationChanged;
+			_character.onMove -= OnMove;
+			_character.onStop -= OnStop;
 		}
 
 		
 		private void Update()
 		{
 			Inputs();
-			if (_inputMove != Vector2.zero)
-			{
-				_character.Move(InputMove, Time.deltaTime);
-				_inputMove = Vector2.zero;
-			}
-		
+			_character.SetInputs(_inputs);
+			_character.Tick(Time.deltaTime);
+			_inputs.move = Vector2.zero;
+
 		}
 		
 		
 		private void Inputs()
 		{
-			inputAttackLight = _playerActions.Gameplay.AttackLight.WasPressedThisFrame();
-			inputAttackHeavy = _playerActions.Gameplay.AttackHeavy.WasPressedThisFrame();
-			inputAttackRanged = _playerActions.Gameplay.AttackRanged.WasPressedThisFrame();
-			inputBlock = _playerActions.Gameplay.Block.IsPressed();
-			inputDodge = _playerActions.Gameplay.Dodge.WasPressedThisFrame();
-			_inputMove = _playerActions.Gameplay.Move.ReadValue<Vector2>();
-			GetCameraRelativeMovement();
+			_inputs.attackLight = _playerActions.Gameplay.AttackLight.WasPressedThisFrame();
+			_inputs.attackHeavy  = _playerActions.Gameplay.AttackHeavy.WasPressedThisFrame();
+			_inputs.attackRanged  = _playerActions.Gameplay.AttackRanged.WasPressedThisFrame();
+			_inputs.block  = _playerActions.Gameplay.Block.IsPressed();
+			_inputs.dodge  = _playerActions.Gameplay.Dodge.WasPressedThisFrame();
+			_inputs.move = GetCameraRelativeMovement(_playerActions.Gameplay.Move.ReadValue<Vector2>());
 		}
-		
-		public Vector3 GetCameraRelativeMovement()
+
+		private Vector3 GetCameraRelativeMovement(Vector2 movement)
 		{
 			Vector3 forward = _camera.transform.forward;
 			// Forward vector relative to the camera along the x-z plane.
@@ -80,32 +70,23 @@ namespace Glaidiator
 			forward = forward.normalized;
 			// Right vector relative to the camera always orthogonal to the forward vector.
 			Vector3 right = new Vector3(forward.z, 0, -forward.x);
-			return _inputMove.x * right + _inputMove.y * forward;
+			return movement.x * right + movement.y * forward;
 		}
 		
 		// Observer methods
-		private void OnPositionChanged()
-		{
-			transform.position = _character.Movement.Position;
-		}
-		
-		private void OnRotationChanged()
-		{
-			transform.rotation = _character.Movement.Rotation;
-		}
 
 		private void OnMove()
 		{
-			Debug.Log("bro move");
-			animator.SetBool("Moving", true);
-			animator.SetFloat("Velocity Z", _character.Movement.CurrVelocity.magnitude);
+			transform.position = _character.Movement.Position;
+			transform.rotation = _character.Movement.Rotation;
+			animator.SetBool(Moving, true);
+			animator.SetFloat(VelocityZ, _character.Movement.CurrVelocity.magnitude);
 		}
 
 		private void OnStop()
 		{
-			Debug.Log("bro stop");
-			animator.SetBool("Moving", false);
-			animator.SetFloat("Velocity Z", 0);
+			animator.SetBool(Moving, false);
+			animator.SetFloat(VelocityZ, 0);
 		}
 	}
 }

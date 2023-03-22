@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using RPGCharacterAnims.Actions;
 using UnityEngine;
 
 namespace Glaidiator.Model
 {
     public class Character : StateMachine
     {
+	    private Input _inputs;
 	    public Action onMove;
 	    public Action onStop;
-	    private bool _canMove = true;
-	    private bool _canAction = true;
-	    private Lock _lock = new Lock(0f, 0f);
+	    public bool CanMove = true;
+	    public bool CanAction = true;
+	    public bool IsMoving = false; 
+	    private Timer _lock = new Timer(0f, 0f);
 
 	    private enum CharacterState
 	    {
@@ -29,44 +32,58 @@ namespace Glaidiator.Model
 	        CurrentState = CharacterState.Idle;
         }
 
+        public void SetInputs(Input inputs)
+        {
+	        _inputs = inputs;
+        }
+        
         public override void Tick(float deltaTime)
         {
-	        bool locked = _lock.Tick(deltaTime);
-        }
-
-        public void Move(Vector3 input, float deltaTime)
-        {
-	        if (_canMove && input != Vector3.zero)
+	        if (!_lock.Active())
 	        {
-		        Movement.Move(input, deltaTime);
-		        Movement.Rotate(input, deltaTime);
+		        if (CanAction && _inputs.attackLight)
+			        CurrentState = CharacterState.Attack;
+		        else if (CanMove && _inputs.move != Vector3.zero)
+		        {
+			        CurrentState = CharacterState.Move;
+		        }
+		        else
+		        {
+			        CurrentState = CharacterState.Idle;
+		        }
 	        }
+	        state.Tick(deltaTime);
         }
 
         public void Lock(float delay, float duration)
         {
-	        _lock.SetLock(delay, duration);
+	        _lock.Set(delay, duration);
         }
 
-        #region State Methods
+        #region States
+
         private void Move_Enter()
         {
-	        
+	        IsMoving = true;
         }
         
         private void Move_Tick(float deltaTime)
         {
-	        
+	        Movement.Move(_inputs.move, deltaTime);
+	        Movement.Rotate(_inputs.move, deltaTime);
+	        OnMove();
         }
         
         private void Move_Exit()
         {
-	        
+	        IsMoving = false;
+	        Movement.Stop();
+	        OnStop();
         }
 
         #endregion
 
-        public void Attack() { }
+        public void Attack() {}
         public void Block() { }
         public void Dodge() { }
         
