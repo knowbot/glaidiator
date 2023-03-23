@@ -27,7 +27,7 @@ namespace Glaidiator.Model
 	    
 	    #region Attributes
 	    
-	    public readonly CharacterMovement Movement;
+	    public readonly Movement Movement;
 	    
 	    private Input _inputs;
 	    
@@ -48,7 +48,7 @@ namespace Glaidiator.Model
 
 	    public Character(Transform transform)
         {
-	        Movement = new CharacterMovement(transform);
+	        Movement = new Movement(transform);
 	        CurrentState = CharacterState.Idle;
 	        
 	        // init attacks

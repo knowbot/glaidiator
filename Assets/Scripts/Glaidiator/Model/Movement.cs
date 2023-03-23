@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Glaidiator.Model
 {
-    public class CharacterMovement
+    public class Movement
     {
 	    private const float SPEED = 6f;
 	    private const float ROT_SPEED = 100f;
@@ -11,7 +11,7 @@ namespace Glaidiator.Model
 	    public Vector3 CurrVelocity { get; private set; }
 
 
-	    public CharacterMovement(Transform transform)
+	    public Movement(Transform transform)
 	    {
 		    Position = transform.position;
 		    Rotation = transform.rotation;
