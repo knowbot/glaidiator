@@ -20,60 +20,60 @@ namespace WarriorAnims
 
 		// public Vector3 MoveInput => CameraRelativeInput();
 
-		// private void Awake()
-		// {
-		// 	// _playerActions = new PlayerActions();
-		// 	// if(!_camera) _camera = Camera.main;
-		// }
-		//
-		// private void OnEnable()
-		// {
-		// 	_playerActions.Gameplay.Enable();
-		// }
-		//
-		// private void OnDisable()
-		// {
-		// 	_playerActions.Gameplay.Disable();
-		// }
-		//
-		//
-		// private void Update()
-		// {
-		// 	Inputs();
-		// 	Toggles();
-		// }
-		//
-		// /// <summary>
-		// /// Input abstraction for easier asset updates using outside control schemes.
-		// /// </summary>
-		// private void Inputs()
-		// {
-		// 	inputAttack = _playerActions.Gameplay.AttackLight.WasPressedThisFrame();
-		// 	inputAttackRanged = _playerActions.Gameplay.AttackRanged.WasPressedThisFrame();
-		// 	inputAttackSpecial = _playerActions.Gameplay.AttackHeavy.WasPressedThisFrame();
-		// 	inputBlock = _playerActions.Gameplay.Block.IsPressed();
-		// 	inputMove = _playerActions.Gameplay.Move.ReadValue<Vector2>();
-		// 	inputDodge = _playerActions.Gameplay.Dodge.WasPressedThisFrame();
-		// }
-		//
-		// private void Toggles()
-		// {
-		// 	// Slow time toggle.
-		// 	if (Input.GetKeyDown(KeyCode.T)) {
-		// 		if (Time.timeScale != 1) { Time.timeScale = 1; }
-		// 		else { Time.timeScale = 0.125f; }
-		// 	}
-		// 	// Pause toggle.
-		// 	if (Input.GetKeyDown(KeyCode.P)) {
-		// 		if (Time.timeScale != 1) { Time.timeScale = 1; }
-		// 		else { Time.timeScale = 0f; }
-		// 	}
-		// }
-		//
-		// public bool hasBlockInput
-		// {
-		// 	get { return inputBlock;  }
-		// }
+		private void Awake()
+		{
+			_playerActions = new PlayerActions();
+			if(!_camera) _camera = Camera.main;
+		}
+		
+		private void OnEnable()
+		{
+			_playerActions.Gameplay.Enable();
+		}
+		
+		private void OnDisable()
+		{
+			_playerActions.Gameplay.Disable();
+		}
+		
+		
+		private void Update()
+		{
+			Inputs();
+			Toggles();
+		}
+		
+		/// <summary>
+		/// Input abstraction for easier asset updates using outside control schemes.
+		/// </summary>
+		private void Inputs()
+		{
+			inputAttack = _playerActions.Gameplay.AttackLight.WasPressedThisFrame();
+			inputAttackRanged = _playerActions.Gameplay.AttackRanged.WasPressedThisFrame();
+			inputAttackSpecial = _playerActions.Gameplay.AttackHeavy.WasPressedThisFrame();
+			inputBlock = _playerActions.Gameplay.Block.IsPressed();
+			// inputMove = _playerActions.Gameplay.Move.ReadValue<Vector2>();
+			inputDodge = _playerActions.Gameplay.Dodge.WasPressedThisFrame();
+		}
+		
+		private void Toggles()
+		{
+			// Slow time toggle.
+			if (Input.GetKeyDown(KeyCode.T)) {
+				if (Time.timeScale != 1) { Time.timeScale = 1; }
+				else { Time.timeScale = 0.125f; }
+			}
+			// Pause toggle.
+			if (Input.GetKeyDown(KeyCode.P)) {
+				if (Time.timeScale != 1) { Time.timeScale = 1; }
+				else { Time.timeScale = 0f; }
+			}
+		}
+		
+		public bool hasBlockInput
+		{
+			get { return inputBlock;  }
+		}
 
 		/// <summary>
 		/// Movement based off camera facing.

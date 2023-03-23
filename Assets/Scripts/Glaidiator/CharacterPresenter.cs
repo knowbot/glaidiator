@@ -4,17 +4,20 @@ namespace Glaidiator
 {
 	public class CharacterPresenter: MonoBehaviour
 	{
-		private Transform _transform;
+		// Model
 		private Model.Character _character;
 		
+		// Inputs
 		private Camera _camera;
 		private PlayerActions _playerActions;
-		
-		public Animator animator;
-
 		private Input _inputs;
+		
+		// View
+		[HideInInspector] private Transform _transform;
+		[HideInInspector] public Animator animator;
 		private static readonly int Moving = Animator.StringToHash("Moving");
 		private static readonly int VelocityZ = Animator.StringToHash("Velocity Z");
+
 
 		private void Awake()
 		{
@@ -37,6 +40,7 @@ namespace Glaidiator
 		private void OnDisable()
 		{
 			_playerActions.Gameplay.Disable();
+			// Deregister observer methods
 			_character.onMove -= OnMove;
 			_character.onStop -= OnStop;
 		}
@@ -44,11 +48,11 @@ namespace Glaidiator
 		
 		private void Update()
 		{
+			// Process inputs and pass them onto the model
 			Inputs();
 			_character.SetInputs(_inputs);
+			// Advance the model
 			_character.Tick(Time.deltaTime);
-			_inputs.move = Vector2.zero;
-
 		}
 		
 		
@@ -77,8 +81,8 @@ namespace Glaidiator
 
 		private void OnMove()
 		{
-			transform.position = _character.Movement.Position;
-			transform.rotation = _character.Movement.Rotation;
+			_transform.position = _character.Movement.Position;
+			_transform.rotation = _character.Movement.Rotation;
 			animator.SetBool(Moving, true);
 			animator.SetFloat(VelocityZ, _character.Movement.CurrVelocity.magnitude);
 		}

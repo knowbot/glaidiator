@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using RPGCharacterAnims.Actions;
 using UnityEngine;
@@ -7,14 +8,6 @@ namespace Glaidiator.Model
 {
     public class Character : StateMachine
     {
-	    private Input _inputs;
-	    public Action onMove;
-	    public Action onStop;
-	    public bool CanMove = true;
-	    public bool CanAction = true;
-	    public bool IsMoving = false; 
-	    private Timer _lock = new Timer(0f, 0f);
-
 	    private enum CharacterState
 	    {
 		    Idle = 0,
@@ -23,25 +16,63 @@ namespace Glaidiator.Model
 		    Block = 3,
 		    Dodge = 4
 	    }
-	    
-        public readonly CharacterMovement Movement;
 
-        public Character(Transform transform)
+	    #region Flags
+	    
+	    public bool CanMove = true;
+	    public bool CanAction = true;
+	    public bool IsMoving = false; 
+	    
+	    #endregion
+	    
+	    #region Attributes
+	    
+	    public readonly CharacterMovement Movement;
+	    
+	    private Input _inputs;
+	    
+	    private Timer _lock = new Timer(0f, 0f);
+
+	    private readonly Dictionary<string, Attack> _attacks = new Dictionary<string, Attack>();
+	    private List<IHasCooldown> _cooldowns  = new List<IHasCooldown>();
+	    private Attack? _activeAttack;
+	    #endregion
+
+	    #region Notifiers
+		
+	    public Action? onMove;
+	    public Action? onStop;
+	    
+	    #endregion
+
+
+	    public Character(Transform transform)
         {
 	        Movement = new CharacterMovement(transform);
 	        CurrentState = CharacterState.Idle;
+	        
+	        // init attacks
+	        _attacks.Add("atkLight", new Attack(1.0f, 10, 0.0f));
+	        _attacks.Add("atkHeavy", new Attack(2.0f, 25, 0.0f));
+	        _attacks.Add("atkRanged", new Attack(1.0f, 10, 2.0f));
         }
 
         public void SetInputs(Input inputs)
         {
 	        _inputs = inputs;
         }
+
+        private void SetCanFlags(bool movement, bool action)
+        {
+	        CanMove = movement;
+	        CanAction = action;
+        }
         
         public override void Tick(float deltaTime)
         {
-	        if (!_lock.Active())
+	        if (!_lock.Tick(deltaTime))
 	        {
-		        if (CanAction && _inputs.attackLight)
+		        if (CanAction && (_inputs.attackLight || _inputs.attackHeavy || _inputs.attackRanged))
 			        CurrentState = CharacterState.Attack;
 		        else if (CanMove && _inputs.move != Vector3.zero)
 		        {
@@ -52,15 +83,20 @@ namespace Glaidiator.Model
 			        CurrentState = CharacterState.Idle;
 		        }
 	        }
+
+	        for (int index = 0; index < _cooldowns.Count; index++)
+	        {
+		        IHasCooldown? cd = _cooldowns[index];
+		        if (cd.Tick(deltaTime))
+			        _cooldowns.RemoveAt(index);
+	        }
+
 	        state.Tick(deltaTime);
         }
 
-        public void Lock(float delay, float duration)
-        {
-	        _lock.Set(delay, duration);
-        }
-
         #region States
+
+        #region Move
 
         private void Move_Enter()
         {
@@ -83,7 +119,45 @@ namespace Glaidiator.Model
 
         #endregion
 
-        public void Attack() {}
+        #region Attack
+		
+        private void Attack_Enter()
+        {
+	        SetCanFlags(false, false);
+	        if (_inputs.attackLight)
+	        {
+		        _activeAttack = _attacks["attackLight"];
+	        }
+	        else if (_inputs.attackHeavy)
+	        {
+		        _activeAttack = _attacks["attackHeavy"];
+	        }
+	        else if (_inputs.attackRanged)
+	        {
+		        _activeAttack = _attacks["attackRanged"];
+	        }
+	        else
+	        {
+		        Debug.LogError("Trying to enter Attack state with no attack input.");
+	        }
+        }
+        
+        private void Attack_Tick(float deltaTime)
+        {
+	       // do activeattack stuff
+        }
+        
+        private void Attack_Exit()
+        {
+	        SetCanFlags(true, true);
+	        if (_activeAttack != null) _cooldowns.Add(_activeAttack);
+	        _activeAttack = null;
+        }
+
+        #endregion
+
+        #endregion
+        
         public void Block() { }
         public void Dodge() { }
         

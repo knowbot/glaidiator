@@ -120,15 +120,6 @@ namespace WarriorAnims
 
 			// Determine input source.
 			warriorInputController = GetComponent<WarriorInputController>();
-			if (warriorInputController != null) {
-				useInputSystem = false;
-			}
-			else {
-				warriorInputSystemController = GetComponent<WarriorInputSystemController>();
-				if (warriorInputSystemController != null) { useInputSystem = true; }
-				else { Debug.LogError("No inputs!"); }
-			}
-
 			// Setup Rigidbody.
 			rb = GetComponent<Rigidbody>();
 			if (rb != null) { rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ; }
@@ -147,32 +138,21 @@ namespace WarriorAnims
 		private void GetInput()
 		{
 			if (allowedInput) {
-
 				// Use input from WarriorInputController / Input Manager.
-				if (!useInputSystem) {
-					if (warriorInputController != null) {
-						inputAttack = warriorInputController.inputAttack;
-						inputAttackMove = warriorInputController.inputAttackMove;
-						inputAttackRanged = warriorInputController.inputAttackRanged;
-						inputAttackSpecial = warriorInputController.inputAttackSpecial;
-						//inputBlock = warriorInputController.hasBlockInput;
-						inputDeath = warriorInputController.inputDeath;
-						inputLightHit = warriorInputController.inputLightHit;
-						// moveInput = warriorInputController.MoveInput;
-					}
+				if (warriorInputController != null) {
+					inputAttack = warriorInputController.inputAttack;
+					inputAttackMove = warriorInputController.inputAttackMove;
+					inputAttackRanged = warriorInputController.inputAttackRanged;
+					inputAttackSpecial = warriorInputController.inputAttackSpecial;
+					inputBlock = warriorInputController.inputBlock;
+					inputDeath = warriorInputController.inputDeath;
+					inputLightHit = warriorInputController.inputLightHit;
+					moveInput = warriorInputController.inputMove;
+					Debug.Log("GOT IT CHIEF");
 				}
-				// Use input from WarriorInputSystemController / Warrior Input Actions.
-				else {
-					if (warriorInputSystemController != null) {
-						inputAttack = warriorInputSystemController.inputAttack;
-						inputAttackMove = warriorInputSystemController.inputAttackMove;
-						inputAttackRanged = warriorInputSystemController.inputAttackRanged;
-						inputAttackSpecial = warriorInputSystemController.inputAttackSpecial;
-						inputBlock = warriorInputSystemController.inputBlock;
-						inputDeath = warriorInputSystemController.inputDeath;
-						inputLightHit = warriorInputSystemController.inputLightHit;
-						moveInput = warriorInputSystemController.moveInput;
-					}
+				else
+				{
+					Debug.Log("no inputs");
 				}
 			}
 		}
@@ -234,6 +214,7 @@ namespace WarriorAnims
 		{
 			if (canAction) {
 				if (inputAttack) {
+					Debug.Log("DO SMTH");
 					// Running attack.
 					if (isMoving && canRunAttack) { RunningAttack(1); }
 					else { AttackChain(); }

@@ -737,11 +737,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cfc0152ad08436aa29ae05aa7b2c4d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputAttackLight: 0
-  inputAttackHeavy: 0
-  inputAttackRanged: 0
-  inputBlock: 0
-  inputDodge: 0
+  animator: {fileID: 0}
 --- !u!1001 &1651041254
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -805,7 +801,8 @@ PrefabInstance:
       propertyPath: debugMessages
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8996054383050675149, guid: 7778632bf67024a46b1f78e3c03c216e, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 7778632bf67024a46b1f78e3c03c216e, type: 3}
 --- !u!1 &1657242981
 GameObject:
