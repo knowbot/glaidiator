@@ -1,8 +1,10 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using Glaidiator.Model.Actions;
 using RPGCharacterAnims.Actions;
 using UnityEngine;
+using Attack = Glaidiator.Model.Actions.Attack;
 
 namespace Glaidiator.Model
 {
@@ -34,66 +36,84 @@ namespace Glaidiator.Model
 	    private Timer _lock = new Timer(0f, 0f);
 
 	    private readonly Dictionary<string, Attack> _attacks = new Dictionary<string, Attack>();
-	    private List<IHasCooldown> _cooldowns  = new List<IHasCooldown>();
-	    private Attack? _activeAttack;
+	    private List<AHasCooldown> _cooldowns  = new List<AHasCooldown>();
+	    private IAction? _activeAction;
 	    #endregion
 
-	    #region Notifiers
+	    #region Actions
 		
 	    public Action? onMove;
 	    public Action? onStop;
+	    public Action? onAttack;
+	    
+	    private void OnMove() => onMove?.Invoke();
+	    private void OnStop() => onStop?.Invoke();
+	    private void OnAttack() => onAttack?.Invoke();
 	    
 	    #endregion
 
+	    #region Initialization
 
 	    public Character(Transform transform)
-        {
-	        Movement = new Movement(transform);
-	        CurrentState = CharacterState.Idle;
+	    {
+		    Movement = new Movement(transform);
+		    CurrentState = CharacterState.Idle;
 	        
-	        // init attacks
-	        _attacks.Add("atkLight", new Attack(1.0f, 10, 0.0f));
-	        _attacks.Add("atkHeavy", new Attack(2.0f, 25, 0.0f));
-	        _attacks.Add("atkRanged", new Attack(1.0f, 10, 2.0f));
-        }
+		    // init attacks
+		    _attacks.Add("atkLight", new Attack(10f, 1.0f, false, false));
+		    _attacks.Add("atkHeavy", new Attack(25f, 2.0f, false, false));
+		    _attacks.Add("atkRanged", new Attack(10f, 1.0f, false, false, new CooldownData(1.0f)));
+	    }
 
-        public void SetInputs(Input inputs)
-        {
-	        _inputs = inputs;
-        }
 
-        private void SetCanFlags(bool movement, bool action)
-        {
-	        CanMove = movement;
-	        CanAction = action;
-        }
-        
-        public override void Tick(float deltaTime)
-        {
-	        if (!_lock.Tick(deltaTime))
-	        {
-		        if (CanAction && (_inputs.attackLight || _inputs.attackHeavy || _inputs.attackRanged))
-			        CurrentState = CharacterState.Attack;
-		        else if (CanMove && _inputs.move != Vector3.zero)
-		        {
-			        CurrentState = CharacterState.Move;
-		        }
-		        else
-		        {
-			        CurrentState = CharacterState.Idle;
-		        }
-	        }
+	    #endregion
 
-	        for (int index = 0; index < _cooldowns.Count; index++)
-	        {
-		        IHasCooldown? cd = _cooldowns[index];
-		        if (cd.Tick(deltaTime))
-			        _cooldowns.RemoveAt(index);
-	        }
+	    #region Setters
 
-	        state.Tick(deltaTime);
-        }
+	    public void SetInputs(Input inputs)
+	    {
+		    _inputs = inputs;
+	    }
 
+	    private void SetCanFlags(bool movement, bool action)
+	    {
+		    CanMove = movement;
+		    CanAction = action;
+	    }
+
+	    #endregion
+
+	    #region Update
+
+	    public override void Tick(float deltaTime)
+	    {
+		    if(!CanAction && _activeAction.)
+		    if (!_lock.Tick(deltaTime))
+		    {
+			    if (CanAction && (_inputs.attackLight || _inputs.attackHeavy || _inputs.attackRanged))
+				    CurrentState = CharacterState.Attack;
+			    else if (CanMove && _inputs.move != Vector3.zero)
+			    {
+				    CurrentState = CharacterState.Move;
+			    }
+			    else
+			    {
+				    CurrentState = CharacterState.Idle;
+			    }
+		    }
+
+		    for (int index = 0; index < _cooldowns.Count; index++)
+		    {
+			    AHasCooldown? cd = _cooldowns[index];
+			    if (cd.Tick(deltaTime))
+				    _cooldowns.RemoveAt(index);
+		    }
+
+		    state.Tick(deltaTime);
+	    }
+
+	    #endregion
+	    
         #region States
 
         #region Move
@@ -123,23 +143,25 @@ namespace Glaidiator.Model
 		
         private void Attack_Enter()
         {
-	        SetCanFlags(false, false);
 	        if (_inputs.attackLight)
 	        {
-		        _activeAttack = _attacks["attackLight"];
+		        _activeAction = _attacks["attackLight"];
 	        }
 	        else if (_inputs.attackHeavy)
 	        {
-		        _activeAttack = _attacks["attackHeavy"];
+		        _activeAction = _attacks["attackHeavy"];
 	        }
 	        else if (_inputs.attackRanged)
 	        {
-		        _activeAttack = _attacks["attackRanged"];
+		        _activeAction = _attacks["attackRanged"];
 	        }
 	        else
 	        {
 		        Debug.LogError("Trying to enter Attack state with no attack input.");
+		        return;
 	        }
+	        SetCanFlags(_activeAction.CanMove, _activeAction.CanAction);
+	        OnAttack();
         }
         
         private void Attack_Tick(float deltaTime)
@@ -150,18 +172,13 @@ namespace Glaidiator.Model
         private void Attack_Exit()
         {
 	        SetCanFlags(true, true);
-	        if (_activeAttack != null) _cooldowns.Add(_activeAttack);
-	        _activeAttack = null;
+	        // safe downcast to Attack type to put it on cooldown
+	        if (_activeAction is Attack a && a.HasCooldown()) _cooldowns.Add(a.SetOnCooldown());
+	        _activeAction = null;
         }
 
         #endregion
 
         #endregion
-        
-        public void Block() { }
-        public void Dodge() { }
-        
-        private void OnMove() => onMove?.Invoke();
-        private void OnStop() => onStop?.Invoke();
     }
 }
