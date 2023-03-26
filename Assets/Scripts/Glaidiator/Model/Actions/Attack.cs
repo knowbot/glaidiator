@@ -1,25 +1,24 @@
 ﻿namespace Glaidiator.Model.Actions
 {
-    public class Attack : AHasCooldown, IAction
+    public class Attack : AAction, IHasCooldown
     {
         public float Damage;
-        public float Duration { get; }
-        public bool CanMove { get; }
-        public bool CanAction { get; }
-        protected override CooldownData CooldownData { get; }
-
-        protected override Timer Cooldown { get; set; }
+        public Timer Cooldown { get; }
 
         // returns false if timer is missing/done/not started yet
         // returns true if timer is ticking
         // TODO: add hitbox info
-        public Attack(float damage, float duration, bool allowMove, bool allowAction, CooldownData cooldownData = default)
+        public Attack(float damage, float actionDuration, bool canMove, bool canAction, float cooldownDuration = 0f) :
+            base(actionDuration, canMove, canAction)
         {
             Damage = damage;
-            Duration = duration;
-            CanMove = allowMove;
-            CanAction = allowAction;
-            CooldownData = cooldownData;
+            Cooldown = new Timer(cooldownDuration);
+        }
+
+        public IHasCooldown SetOnCooldown()
+        {
+            Cooldown.Reset();
+            return this;
         }
     }
 }

@@ -4,28 +4,26 @@ namespace Glaidiator.Model
 {
     public class Timer
     {
-        private float _delay = 0f;
         private float _duration = 0f;
+        public float Duration { get; private set; }
 
-        public Timer(float delay, float duration)
+        public Timer(float duration)
         {
-            _delay = delay;
             _duration = duration;
+            Reset();
         }
-        
+        /**
+         * Returns TRUE if timer is ticking, false if not.
+         */
         public bool Tick(float deltaTime)
         {
-            _delay = Mathf.Max(_delay - deltaTime, 0f);
-            if (_delay > 0f)
-                return false;
             _duration = Mathf.Max(_duration - deltaTime, 0f);
-            return _duration == 0f;
+            return _duration > 0f;
         }
 
-        public void Set(float delay, float duration)
+        public void Reset()
         {
-            _delay = delay;
-            _duration = duration;
+            Duration = _duration;
         }
     }
 }
