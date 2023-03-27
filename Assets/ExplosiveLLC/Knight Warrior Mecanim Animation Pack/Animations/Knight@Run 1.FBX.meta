@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 1aaeb0cb67c673a46a21a023223a4aff
+guid: 9438259f3e69f914e82d1895f24e9dc4
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable:
@@ -65,138 +65,129 @@ ModelImporter:
     second: B_L_Forearm
   - first:
       1: 100040
-    second: B_L_ForeArmTwist
-  - first:
-      1: 100042
     second: B_L_Hand
   - first:
-      1: 100044
+      1: 100042
     second: B_L_Thigh
   - first:
-      1: 100046
+      1: 100044
     second: B_L_Toe0
   - first:
-      1: 100048
+      1: 100046
     second: B_L_UpperArm
   - first:
-      1: 100050
+      1: 100048
     second: B_Neck
   - first:
-      1: 100052
+      1: 100050
     second: B_Pelvis
   - first:
-      1: 100054
+      1: 100052
     second: B_R_Calf
   - first:
-      1: 100056
+      1: 100054
     second: B_R_Clavicle
   - first:
-      1: 100058
+      1: 100056
     second: B_R_Finger0
   - first:
-      1: 100060
+      1: 100058
     second: B_R_Finger01
   - first:
-      1: 100062
+      1: 100060
     second: B_R_Finger02
   - first:
-      1: 100064
+      1: 100062
     second: B_R_Finger1
   - first:
-      1: 100066
+      1: 100064
     second: B_R_Finger11
   - first:
-      1: 100068
+      1: 100066
     second: B_R_Finger12
   - first:
-      1: 100070
+      1: 100068
     second: B_R_Finger2
   - first:
-      1: 100072
+      1: 100070
     second: B_R_Finger21
   - first:
-      1: 100074
+      1: 100072
     second: B_R_Finger22
   - first:
-      1: 100076
+      1: 100074
     second: B_R_Finger3
   - first:
-      1: 100078
+      1: 100076
     second: B_R_Finger31
   - first:
-      1: 100080
+      1: 100078
     second: B_R_Finger32
   - first:
-      1: 100082
+      1: 100080
     second: B_R_Finger4
   - first:
-      1: 100084
+      1: 100082
     second: B_R_Finger41
   - first:
-      1: 100086
+      1: 100084
     second: B_R_Finger42
   - first:
-      1: 100088
+      1: 100086
     second: B_R_Foot
   - first:
-      1: 100090
+      1: 100088
     second: B_R_Forearm
   - first:
-      1: 100092
-    second: B_R_ForeArmTwist
-  - first:
-      1: 100094
+      1: 100090
     second: B_R_Hand
   - first:
-      1: 100096
+      1: 100092
     second: B_R_Thigh
   - first:
-      1: 100098
+      1: 100094
     second: B_R_Toe0
   - first:
-      1: 100100
+      1: 100096
     second: B_R_UpperArm
   - first:
-      1: 100102
+      1: 100098
     second: B_Spine
   - first:
-      1: 100104
+      1: 100100
     second: B_Spine1
   - first:
-      1: 100106
+      1: 100102
     second: B_Spine2
   - first:
-      1: 100108
+      1: 100104
     second: //RootNode
   - first:
-      1: 100110
-    second: Mesh_Male
-  - first:
-      1: 100112
-    second: Motion
-  - first:
-      1: 100114
+      1: 100106
     second: Mesh_Berserker
   - first:
-      1: 100116
+      1: 100108
+    second: Motion
+  - first:
+      1: 100110
     second: Mesh_Karate
   - first:
-      1: 100118
+      1: 100112
     second: Mesh_Ninja
   - first:
-      1: 100120
+      1: 100114
     second: Mesh_Brute
   - first:
-      1: 100122
+      1: 100116
     second: Mesh_Knight
   - first:
-      1: 100124
+      1: 100118
     second: Shield
   - first:
-      1: 100126
+      1: 100120
     second: Sword
   - first:
-      1: 100128
+      1: 100122
     second: Exporter
   - first:
       4: 400000
@@ -260,138 +251,129 @@ ModelImporter:
     second: B_L_Forearm
   - first:
       4: 400040
-    second: B_L_ForeArmTwist
-  - first:
-      4: 400042
     second: B_L_Hand
   - first:
-      4: 400044
+      4: 400042
     second: B_L_Thigh
   - first:
-      4: 400046
+      4: 400044
     second: B_L_Toe0
   - first:
-      4: 400048
+      4: 400046
     second: B_L_UpperArm
   - first:
-      4: 400050
+      4: 400048
     second: B_Neck
   - first:
-      4: 400052
+      4: 400050
     second: B_Pelvis
   - first:
-      4: 400054
+      4: 400052
     second: B_R_Calf
   - first:
-      4: 400056
+      4: 400054
     second: B_R_Clavicle
   - first:
-      4: 400058
+      4: 400056
     second: B_R_Finger0
   - first:
-      4: 400060
+      4: 400058
     second: B_R_Finger01
   - first:
-      4: 400062
+      4: 400060
     second: B_R_Finger02
   - first:
-      4: 400064
+      4: 400062
     second: B_R_Finger1
   - first:
-      4: 400066
+      4: 400064
     second: B_R_Finger11
   - first:
-      4: 400068
+      4: 400066
     second: B_R_Finger12
   - first:
-      4: 400070
+      4: 400068
     second: B_R_Finger2
   - first:
-      4: 400072
+      4: 400070
     second: B_R_Finger21
   - first:
-      4: 400074
+      4: 400072
     second: B_R_Finger22
   - first:
-      4: 400076
+      4: 400074
     second: B_R_Finger3
   - first:
-      4: 400078
+      4: 400076
     second: B_R_Finger31
   - first:
-      4: 400080
+      4: 400078
     second: B_R_Finger32
   - first:
-      4: 400082
+      4: 400080
     second: B_R_Finger4
   - first:
-      4: 400084
+      4: 400082
     second: B_R_Finger41
   - first:
-      4: 400086
+      4: 400084
     second: B_R_Finger42
   - first:
-      4: 400088
+      4: 400086
     second: B_R_Foot
   - first:
-      4: 400090
+      4: 400088
     second: B_R_Forearm
   - first:
-      4: 400092
-    second: B_R_ForeArmTwist
-  - first:
-      4: 400094
+      4: 400090
     second: B_R_Hand
   - first:
-      4: 400096
+      4: 400092
     second: B_R_Thigh
   - first:
-      4: 400098
+      4: 400094
     second: B_R_Toe0
   - first:
-      4: 400100
+      4: 400096
     second: B_R_UpperArm
   - first:
-      4: 400102
+      4: 400098
     second: B_Spine
   - first:
-      4: 400104
+      4: 400100
     second: B_Spine1
   - first:
-      4: 400106
+      4: 400102
     second: B_Spine2
   - first:
-      4: 400108
+      4: 400104
     second: //RootNode
   - first:
-      4: 400110
-    second: Mesh_Male
-  - first:
-      4: 400112
-    second: Motion
-  - first:
-      4: 400114
+      4: 400106
     second: Mesh_Berserker
   - first:
-      4: 400116
+      4: 400108
+    second: Motion
+  - first:
+      4: 400110
     second: Mesh_Karate
   - first:
-      4: 400118
+      4: 400112
     second: Mesh_Ninja
   - first:
-      4: 400120
+      4: 400114
     second: Mesh_Brute
   - first:
-      4: 400122
+      4: 400116
     second: Mesh_Knight
   - first:
-      4: 400124
+      4: 400118
     second: Shield
   - first:
-      4: 400126
+      4: 400120
     second: Sword
   - first:
-      4: 400128
+      4: 400122
     second: Exporter
   - first:
       43: 4300000
@@ -416,7 +398,7 @@ ModelImporter:
     second: Sword
   - first:
       74: 7400000
-    second: Attack2
+    second: Run
   - first:
       95: 9500000
     second: //RootNode
@@ -456,14 +438,14 @@ ModelImporter:
     resampleCurves: 1
     optimizeGameObjects: 0
     removeConstantScaleCurves: 0
-    motionNodeName: Motion
+    motionNodeName: 
     rigImportErrors: 
     rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: "\nClip 'Take 001' has import animation warnings that
       might lower retargeting quality:\nNote: Activate translation DOF on avatar
       to improve retargeting quality.\n\t'B_Spine' has translation animation that
-      will be discarded.\n\t'B_Spine1' has translation animation that will be discarded.\n"
+      will be discarded.\n"
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
@@ -477,22 +459,22 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Attack2
+      name: Run
       takeName: Take 001
       internalID: 7400000
-      firstFrame: 14
-      lastFrame: 40
+      firstFrame: 0
+      lastFrame: 16
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
-      loopBlend: 0
+      loopTime: 1
+      loopBlend: 1
       loopBlendOrientation: 1
       loopBlendPositionY: 1
-      loopBlendPositionXZ: 0
+      loopBlendPositionXZ: 1
       keepOriginalOrientation: 1
       keepOriginalPositionY: 1
       keepOriginalPositionXZ: 1

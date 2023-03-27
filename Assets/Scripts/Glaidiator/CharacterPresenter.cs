@@ -19,6 +19,7 @@ namespace Glaidiator
 		[HideInInspector] private Transform _transform;
 		[HideInInspector] public Animator animator;
 		private static readonly int Moving = Animator.StringToHash("Moving");
+		private static readonly int VelocityX = Animator.StringToHash("Velocity X");
 		private static readonly int VelocityZ = Animator.StringToHash("Velocity Z");
 		private static readonly int Action = Animator.StringToHash("Action");
 		private static readonly int Trigger = Animator.StringToHash("Trigger");
@@ -32,6 +33,7 @@ namespace Glaidiator
 			_playerActions = new PlayerActions();
 			_character = new Model.Character(_transform);
 			animator = GetComponentInChildren<Animator>();
+			animator.applyRootMotion = false;
 			displayState = GetComponentInChildren<TextMeshProUGUI>();
 		}
 		
@@ -93,7 +95,8 @@ namespace Glaidiator
 			_transform.position = _character.Movement.Position;
 			_transform.rotation = _character.Movement.Rotation;
 			animator.SetBool(Moving, true);
-			animator.SetFloat(VelocityZ, _character.Movement.CurrVelocity.magnitude);
+			animator.SetFloat(VelocityX, _transform.InverseTransformDirection(_character.Movement.CurrVelocity).x);
+			animator.SetFloat(VelocityZ, _transform.InverseTransformDirection(_character.Movement.CurrVelocity).z);
 		}
 
 		private void OnStop()
