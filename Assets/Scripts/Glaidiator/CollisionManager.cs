@@ -18,8 +18,8 @@ namespace Glaidiator
         public Character player;
         public Character boss;
     
-        private Dictionary<Character, Vector2> positions;
-        private Dictionary<Vector2, Character> characters;
+        //private Dictionary<Character, Vector2> positions;
+        //private Dictionary<Vector2, Character> characters;
 
         private List<ColBox> cols;
 
@@ -27,8 +27,8 @@ namespace Glaidiator
         private void Awake()
         {
             instance = this;
-            positions = new Dictionary<Character, Vector2>();
-            characters = new Dictionary<Vector2, Character>();
+            //positions = new Dictionary<Character, Vector2>();
+            //characters = new Dictionary<Vector2, Character>();
             cols = new List<ColBox>();
 
             //player.onMove += OnMove;
@@ -50,7 +50,7 @@ namespace Glaidiator
         void Start()
         {
             player = playerO.GetComponent<CharacterPresenter>().GetCharacter();
-            //boss = bossO.GetComponent<Character>();
+            //boss = bossO.GetComponent<CharacterPresenter>().GetCharacter();
             boss = GetTestBoss(bossO);
             
             if (player != null)
@@ -144,7 +144,10 @@ namespace Glaidiator
 
         public bool Update(float dTime)
         {
-            //Debug.DrawLine(_owner.Movement.Position, _owner.Movement.Position);
+            Debug.DrawLine(_owner.Movement.Position, _owner.Movement.Position + new Vector3(offset, 0f, offset), Color.magenta);
+            Debug.DrawLine(_owner.Movement.Position, _owner.Movement.Position + new Vector3(-offset, 0f, -offset), Color.magenta);
+            Debug.DrawLine(_owner.Movement.Position, _owner.Movement.Position + new Vector3(-offset, 0f, offset), Color.magenta);
+            Debug.DrawLine(_owner.Movement.Position, _owner.Movement.Position + new Vector3(offset, 0f, -offset), Color.magenta);
             
             if (_duration >= 0f) _duration -= dTime;
             
