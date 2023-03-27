@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using BehaviorTree;
 using Glaidiator.Model;
 using UnityEngine;
 
@@ -52,6 +53,9 @@ namespace Glaidiator
             player = playerO.GetComponent<CharacterPresenter>().GetCharacter();
             //boss = bossO.GetComponent<CharacterPresenter>().GetCharacter();
             boss = GetTestBoss(bossO);
+            //var temp = bossO.gameObject.GetComponent<AIContainer>().transform;
+            //boss.Movement = new Movement(temp);
+            
             
             if (player != null)
             {
