@@ -1,4 +1,8 @@
-﻿using TMPro;
+﻿using System.Linq;
+using Glaidiator.Model;
+using Glaidiator.Model.Actions;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -10,11 +14,11 @@ namespace Glaidiator
 		private Model.Character _character;
 		
 		// Inputs
-		private Camera _camera;
-		private PlayerActions _playerActions;
 		private Input _inputs;
 		public TextMeshProUGUI displayState;
-		
+		public TextMeshProUGUI displayCooldowns;
+		public AInputProvider Provider;
+
 		// View
 		[HideInInspector] private Transform _transform;
 		[HideInInspector] public Animator animator;
@@ -24,70 +28,53 @@ namespace Glaidiator
 		private static readonly int Action = Animator.StringToHash("Action");
 		private static readonly int Trigger = Animator.StringToHash("Trigger");
 		private static readonly int TriggerNumber = Animator.StringToHash("TriggerNumber");
+		private static readonly int Blocking = Animator.StringToHash("Blocking");
 
 
 		private void Awake()
 		{
-			if (!_camera) _camera = Camera.main;
 			_transform = transform;
-			_playerActions = new PlayerActions();
 			_character = new Model.Character(_transform);
 			animator = GetComponentInChildren<Animator>();
 			animator.applyRootMotion = false;
-			displayState = GetComponentInChildren<TextMeshProUGUI>();
 		}
-		
+
 		private void OnEnable()
 		{
-			_playerActions.Gameplay.Enable();
 			// Register observer methods
 			_character.onMove += OnMove;
 			_character.onStop += OnStop;
-			_character.onAttack += OnAttack;
+			_character.onAttackStart += OnAttackStart;
+			_character.onBlockStart += OnBlockStart;
+			_character.onBlockEnd += OnBlockEnd;
 		}
 
 		private void OnDisable()
 		{
-			_playerActions.Gameplay.Disable();
 			// Deregister observer methods
 			_character.onMove -= OnMove;
 			_character.onStop -= OnStop;
-			_character.onAttack -= OnAttack;
+			_character.onAttackStart -= OnAttackStart;
+			_character.onBlockStart -= OnBlockStart;
+			_character.onBlockEnd -= OnBlockEnd;
 		}
 
 		
 		private void Update()
 		{
 			// Process inputs and pass them onto the model
-			Inputs();
+			_inputs = Provider.GetInputs();
 			_character.SetInputs(_inputs);
 			// Advance the model
 			_character.Tick(Time.deltaTime);
 			displayState.text = _character.CurrentState.ToString();
-		}
-		
-		
-		private void Inputs()
-		{
-			_inputs.attackLight = _playerActions.Gameplay.AttackLight.WasPressedThisFrame();
-			_inputs.attackHeavy  = _playerActions.Gameplay.AttackHeavy.WasPressedThisFrame();
-			_inputs.attackRanged  = _playerActions.Gameplay.AttackRanged.WasPressedThisFrame();
-			_inputs.block  = _playerActions.Gameplay.Block.IsPressed();
-			_inputs.dodge  = _playerActions.Gameplay.Dodge.WasPressedThisFrame();
-			_inputs.move = GetCameraRelativeMovement(_playerActions.Gameplay.Move.ReadValue<Vector2>());
+			displayCooldowns.text = "";
+			foreach (IHasCooldown cd in _character.Cooldowns.OrderBy(cd => cd.Name))
+			{
+				displayCooldowns.text += cd.Name + ": " + cd.Cooldown.Duration.ToString("0.00") + "\n";
+			}
 		}
 
-		private Vector3 GetCameraRelativeMovement(Vector2 movement)
-		{
-			Vector3 forward = _camera.transform.forward;
-			// Forward vector relative to the camera along the x-z plane.
-			forward.y = 0;
-			forward = forward.normalized;
-			// Right vector relative to the camera always orthogonal to the forward vector.
-			Vector3 right = new Vector3(forward.z, 0, -forward.x);
-			return movement.x * right + movement.y * forward;
-		}
-		
 		// Observer methods
 
 		private void OnMove()
@@ -110,9 +97,26 @@ namespace Glaidiator
 			return _character;
 		}
 		
-		private void OnAttack()
+		private void OnAttackStart()
 		{
 			animator.SetInteger(Action, 1);
+			SetTriggers();
+		}
+
+		private void OnBlockStart()
+		{
+			animator.SetBool(Blocking, true);
+			SetTriggers();
+		}
+		
+		private void OnBlockEnd()
+		{
+			animator.SetBool(Blocking, false);
+		}
+
+
+		private void SetTriggers()
+		{
 			animator.SetTrigger(Trigger);
 			animator.SetInteger(TriggerNumber, _character.ActiveAction!.ID);
 		}
