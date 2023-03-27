@@ -178,6 +178,7 @@ namespace Glaidiator.Model
 		        return;
 	        }
 	        SetCanFlags(_activeAction.CanMove, _activeAction.CanAction);
+	        _activeAction.Start();
         }
         
         private void Attacking_Tick(float deltaTime)
