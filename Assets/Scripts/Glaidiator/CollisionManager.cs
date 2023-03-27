@@ -4,10 +4,10 @@ using UnityEngine;
 
 namespace Glaidiator
 {
-    public class Environment : MonoBehaviour
+    public class CollisionManager : MonoBehaviour
     {
 
-        public static Environment instance;
+        public static CollisionManager instance;
 
         // arena dimensions
         public static double width;
@@ -59,9 +59,24 @@ namespace Glaidiator
             foreach(ColBox col in cols)
             {
                 col.Update(Time.deltaTime);
-                
+            }
+
+            foreach (ColBox col in cols)
+            {
+                foreach (ColBox other in cols)
+                {
+                    if (col.Intersects(other))
+                    {
+                        if (col.GetColType() == ColBox.ColType.Attack && other.GetColType() == ColBox.ColType.Body)
+                        {
+                            // call 'other' get hit
+                        }
+                    }
+                }
             }
         }
+        
+        //private bool Intersects
     
         public static bool IsIntersectOther(Model.Character agent1)
         {
@@ -92,8 +107,8 @@ namespace Glaidiator
 
         private Vector2 _origin;
 
-        private Vector2 corner1;
-        private Vector2 corner2;
+        public Vector2 corner1;
+        public Vector2 corner2;
 
         private float offset = 0.75f; // radius of character footprint 2D topdown size
         private Vector2 offset2d = new Vector2(0.75f, 0.75f);
@@ -132,9 +147,26 @@ namespace Glaidiator
             _origin = new Vector2(_owner.Movement.Position.x, _owner.Movement.Position.z);
             corner1 = _origin - offset2d;
             corner2 = _origin + offset2d;
-
-
         }
-        
+
+        public bool Intersects(ColBox other)
+        {
+            if (_owner == other._owner) return false;
+            
+            if (other.corner1.x < (corner2.x) && //
+                (other.corner2.x) > corner1.x &&
+                other.corner1.y < (corner2.y) &&
+                (other.corner2.y) > corner1.y)
+            {
+                return true;
+            }
+            
+            return false;
+        }
+
+        public ColType GetColType()
+        {
+            return _colType;
+        }
     }
 }
