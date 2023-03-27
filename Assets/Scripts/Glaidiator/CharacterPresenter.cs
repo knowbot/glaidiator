@@ -19,6 +19,9 @@ namespace Glaidiator
 		[HideInInspector] public Animator animator;
 		private static readonly int Moving = Animator.StringToHash("Moving");
 		private static readonly int VelocityZ = Animator.StringToHash("Velocity Z");
+		private static readonly int Action = Animator.StringToHash("Action");
+		private static readonly int Trigger = Animator.StringToHash("Trigger");
+		private static readonly int TriggerNumber = Animator.StringToHash("TriggerNumber");
 
 
 		private void Awake()
@@ -34,10 +37,10 @@ namespace Glaidiator
 		private void OnEnable()
 		{
 			_playerActions.Gameplay.Enable();
-			
 			// Register observer methods
 			_character.onMove += OnMove;
 			_character.onStop += OnStop;
+			_character.onAttack += OnAttack;
 		}
 
 		private void OnDisable()
@@ -46,6 +49,7 @@ namespace Glaidiator
 			// Deregister observer methods
 			_character.onMove -= OnMove;
 			_character.onStop -= OnStop;
+			_character.onAttack -= OnAttack;
 		}
 
 		
@@ -95,6 +99,13 @@ namespace Glaidiator
 		{
 			animator.SetBool(Moving, false);
 			animator.SetFloat(VelocityZ, 0);
+		}
+
+		private void OnAttack()
+		{
+			animator.SetInteger(Action, 1);
+			animator.SetTrigger(Trigger);
+			animator.SetInteger(TriggerNumber, _character!.ActiveAction!.ID);
 		}
 	}
 }
