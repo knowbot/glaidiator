@@ -96,5 +96,10 @@ namespace Glaidiator
 			animator.SetBool(Moving, false);
 			animator.SetFloat(VelocityZ, 0);
 		}
+
+		public Model.Character GetCharacter()
+		{
+			return _character;
+		}
 	}
 }
