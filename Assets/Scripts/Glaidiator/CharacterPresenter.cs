@@ -1,5 +1,6 @@
 ﻿using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Glaidiator
 {
@@ -12,13 +13,16 @@ namespace Glaidiator
 		private Camera _camera;
 		private PlayerActions _playerActions;
 		private Input _inputs;
-		public TextMeshProUGUI DisplayState;
+		public TextMeshProUGUI displayState;
 		
 		// View
 		[HideInInspector] private Transform _transform;
 		[HideInInspector] public Animator animator;
 		private static readonly int Moving = Animator.StringToHash("Moving");
 		private static readonly int VelocityZ = Animator.StringToHash("Velocity Z");
+		private static readonly int Action = Animator.StringToHash("Action");
+		private static readonly int Trigger = Animator.StringToHash("Trigger");
+		private static readonly int TriggerNumber = Animator.StringToHash("TriggerNumber");
 
 
 		private void Awake()
@@ -28,16 +32,16 @@ namespace Glaidiator
 			_playerActions = new PlayerActions();
 			_character = new Model.Character(_transform);
 			animator = GetComponentInChildren<Animator>();
-			DisplayState = GetComponentInChildren<TextMeshProUGUI>();
+			displayState = GetComponentInChildren<TextMeshProUGUI>();
 		}
 		
 		private void OnEnable()
 		{
 			_playerActions.Gameplay.Enable();
-			
 			// Register observer methods
 			_character.onMove += OnMove;
 			_character.onStop += OnStop;
+			_character.onAttack += OnAttack;
 		}
 
 		private void OnDisable()
@@ -46,6 +50,7 @@ namespace Glaidiator
 			// Deregister observer methods
 			_character.onMove -= OnMove;
 			_character.onStop -= OnStop;
+			_character.onAttack -= OnAttack;
 		}
 
 		
@@ -56,7 +61,7 @@ namespace Glaidiator
 			_character.SetInputs(_inputs);
 			// Advance the model
 			_character.Tick(Time.deltaTime);
-			DisplayState.text = _character.CurrentState.ToString();
+			displayState.text = _character.CurrentState.ToString();
 		}
 		
 		
@@ -100,6 +105,13 @@ namespace Glaidiator
 		public Model.Character GetCharacter()
 		{
 			return _character;
+		}
+		
+		private void OnAttack()
+		{
+			animator.SetInteger(Action, 1);
+			animator.SetTrigger(Trigger);
+			animator.SetInteger(TriggerNumber, _character.ActiveAction!.ID);
 		}
 	}
 }

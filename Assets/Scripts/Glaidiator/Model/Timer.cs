@@ -4,7 +4,7 @@ namespace Glaidiator.Model
 {
     public class Timer
     {
-        private float _duration = 0f;
+        private readonly float _duration = 0f;
         public float Duration { get; private set; }
 
         public Timer(float duration)
@@ -17,8 +17,8 @@ namespace Glaidiator.Model
          */
         public bool Tick(float deltaTime)
         {
-            _duration = Mathf.Max(_duration - deltaTime, 0f);
-            return _duration > 0f;
+            Duration = Mathf.Max(Duration - deltaTime, 0f);
+            return Duration > 0f;
         }
 
         public void Reset()

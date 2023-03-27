@@ -48,9 +48,9 @@ namespace WarriorAnims
 		/// </summary>
 		private void Inputs()
 		{
-			inputAttack = _playerActions.Gameplay.AttackLight.WasPressedThisFrame();
-			inputAttackRanged = _playerActions.Gameplay.AttackRanged.WasPressedThisFrame();
-			inputAttackSpecial = _playerActions.Gameplay.AttackHeavy.WasPressedThisFrame();
+			// inputAttack = _playerActions.Gameplay.AttackLight.WasPressedThisFrame();
+			// inputAttackRanged = _playerActions.Gameplay.AttackRanged.WasPressedThisFrame();
+			// inputAttackSpecial = _playerActions.Gameplay.AttackHeavy.WasPressedThisFrame();
 			inputBlock = _playerActions.Gameplay.Block.IsPressed();
 			// inputMove = _playerActions.Gameplay.Move.ReadValue<Vector2>();
 			inputDodge = _playerActions.Gameplay.Dodge.WasPressedThisFrame();
