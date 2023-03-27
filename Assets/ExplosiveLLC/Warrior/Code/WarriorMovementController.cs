@@ -72,7 +72,7 @@ namespace WarriorAnims
 			// warriorController.SetAnimatorFloat("Velocity X", transform.InverseTransformDirection(currentVelocity).x);
 			// warriorController.SetAnimatorFloat("Velocity Z", transform.InverseTransformDirection(currentVelocity).z);
 
-			warriorState = (WarriorState)currentState;
+			//warriorState = (WarriorState)currentState;
 		}
 
 		#endregion

@@ -35,7 +35,7 @@ namespace Glaidiator.Model
 	    
 	    private Input _inputs;
 
-	    private readonly Dictionary<string, Attack> _attacks = new Dictionary<string, Attack>();
+	    private readonly Dictionary<string, AAction> _actions = new Dictionary<string, AAction>();
 	    private readonly List<IHasCooldown> _cooldowns  = new List<IHasCooldown>();
 	    public AAction? ActiveAction { get; private set; }
 	    #endregion
@@ -60,9 +60,10 @@ namespace Glaidiator.Model
 		    CurrentState = CharacterState.Idling;
 	        
 		    // init attacks
-		    _attacks.Add("atkLight", new Attack((int)ActionLookup.AttackLight, 10f, 1.0f, false, false));
-		    _attacks.Add("atkHeavy", new Attack((int)ActionLookup.AttackHeavy, 25f, 2.0f, false, false, 1.5f));
-		    _attacks.Add("atkRanged", new Attack((int)ActionLookup.AttackRanged, 10f, 1.5f, false, false, 4.0f));
+		    _actions.Add("atkLight", new Attack((int)ActionLookup.AttackLight, 10f, 0.9f, false, false));
+		    _actions.Add("atkHeavy", new Attack((int)ActionLookup.AttackHeavy, 25f, 1.8f, false, false, 1.5f));
+		    _actions.Add("atkRanged", new Attack((int)ActionLookup.AttackRanged, 10f, 1.5f, false, false, 4.0f));
+		    _actions.Add("block", new Block((int)ActionLookup.Block, 2.0f,false, false, 3.0f));
 	    }
 
 
@@ -161,18 +162,18 @@ namespace Glaidiator.Model
 		
         private void Attacking_Enter()
         {
-	        Attack attack;
+	        AAction attack;
 	        if (_inputs.attackLight)
 	        {
-		        attack = _attacks["atkLight"];
+		        attack = _actions["atkLight"];
 	        }
 	        else if (_inputs.attackHeavy)
 	        {
-		        attack = _attacks["atkHeavy"];
+		        attack = _actions["atkHeavy"];
 	        }
 	        else if (_inputs.attackRanged)
 	        {
-		        attack = _attacks["atkRanged"];
+		        attack = _actions["atkRanged"];
 	        }
 	        else
 	        {
@@ -180,7 +181,7 @@ namespace Glaidiator.Model
 		        return;
 	        }
 
-	        if (attack is null || _cooldowns.Contains(attack)) return;
+	        if (attack is null || _cooldowns.Contains((attack as Attack)!)) return;
 	        SetCanFlags(attack.CanMove, attack.CanAction);
 	        ActiveAction = attack;
 	        ActiveAction.Start();

@@ -15,6 +15,12 @@
             Cooldown = new Timer(cooldownDuration);
         }
 
+        public override AAction Start()
+        {
+            Duration.Reset();
+            return this;
+        }
+
         public IHasCooldown SetOnCooldown()
         {
             Cooldown.Reset();
