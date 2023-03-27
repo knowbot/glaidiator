@@ -15,7 +15,7 @@ namespace Glaidiator.Model
 			public Enum current;
 		}
 
-		public readonly State state = new State();
+		public State state = new State();
 
 		public Enum CurrentState
 		{

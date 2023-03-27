@@ -92,20 +92,19 @@ namespace Glaidiator.Model
 		    // init new state 
 		    Enum newState = CurrentState;
 
-		    if (_activeAction is null)
+		    // if not doing anything and not moving
+		    if (_activeAction is null || !_activeAction.Tick(deltaTime))
 		    {
 			    newState = CharacterState.Idling;
 		    }
-		    else  if (!_activeAction.Tick(deltaTime)) 
-		    {
-			    _activeAction = null;
-		    }
 
-
+		    // if can move and there is an input
 		    if (CanMove && _inputs.move != Vector3.zero) newState = CharacterState.Moving;
 
+		    // if can action
 		    if(CanAction)
 		    {
+			    // if there is an input
 			    if (_inputs.attackLight || _inputs.attackHeavy || _inputs.attackRanged)
 				    newState = CharacterState.Attacking;
 			    else if (_inputs.block)
