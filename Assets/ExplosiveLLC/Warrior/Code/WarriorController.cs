@@ -139,7 +139,8 @@ namespace WarriorAnims
 		{
 			if (allowedInput) {
 				// Use input from WarriorInputController / Input Manager.
-				if (warriorInputController != null) {
+				if (warriorInputController != null)
+				{
 					inputAttack = warriorInputController.inputAttack;
 					inputAttackMove = warriorInputController.inputAttackMove;
 					inputAttackRanged = warriorInputController.inputAttackRanged;
@@ -147,12 +148,7 @@ namespace WarriorAnims
 					inputBlock = warriorInputController.inputBlock;
 					inputDeath = warriorInputController.inputDeath;
 					inputLightHit = warriorInputController.inputLightHit;
-					moveInput = warriorInputController.inputMove;
-					Debug.Log("GOT IT CHIEF");
-				}
-				else
-				{
-					Debug.Log("no inputs");
+					// moveInput = warriorInputController.inputMove;
 				}
 			}
 		}
@@ -214,7 +210,6 @@ namespace WarriorAnims
 		{
 			if (canAction) {
 				if (inputAttack) {
-					Debug.Log("DO SMTH");
 					// Running attack.
 					if (isMoving && canRunAttack) { RunningAttack(1); }
 					else { AttackChain(); }

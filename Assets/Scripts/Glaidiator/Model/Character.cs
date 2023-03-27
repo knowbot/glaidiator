@@ -90,11 +90,18 @@ namespace Glaidiator.Model
 		    Cooldowns(deltaTime);
 
 		    // init new state 
-		    var newState = CharacterState.Idling;
-		    
-		    // if active action is done, set it to null
-		    if (_activeAction is not null && !_activeAction.Tick(deltaTime)) _activeAction = null;
-		    
+		    Enum newState = CurrentState;
+
+		    if (_activeAction is null)
+		    {
+			    newState = CharacterState.Idling;
+		    }
+		    else  if (!_activeAction.Tick(deltaTime)) 
+		    {
+			    _activeAction = null;
+		    }
+
+
 		    if (CanMove && _inputs.move != Vector3.zero) newState = CharacterState.Moving;
 
 		    if(CanAction)
@@ -106,7 +113,7 @@ namespace Glaidiator.Model
 			    else if (_inputs.dodge)
 				    newState = CharacterState.Dodging;
 		    }
-		    
+		    // need to only switch state once to avoid calling enter/exit methods uselessly
 		    CurrentState = newState;
 		    state.Tick(deltaTime);
 	    }
@@ -127,21 +134,21 @@ namespace Glaidiator.Model
 	    
         #region States
 
-        #region Move
+        #region Moving
 
-        private void Move_Enter()
+        private void Moving_Enter()
         {
 	        IsMoving = true;
         }
         
-        private void Move_Tick(float deltaTime)
+        private void Moving_Tick(float deltaTime)
         {
 	        Movement.Move(_inputs.move, deltaTime);
 	        Movement.Rotate(_inputs.move, deltaTime);
 	        OnMove();
         }
         
-        private void Move_Exit()
+        private void Moving_Exit()
         {
 	        IsMoving = false;
 	        Movement.Stop();
@@ -150,21 +157,21 @@ namespace Glaidiator.Model
 
         #endregion
 
-        #region Attack
+        #region Attacking
 		
-        private void Attack_Enter()
+        private void Attacking_Enter()
         {
 	        if (_inputs.attackLight)
 	        {
-		        _activeAction = _attacks["attackLight"];
+		        _activeAction = _attacks["atkLight"];
 	        }
 	        else if (_inputs.attackHeavy)
 	        {
-		        _activeAction = _attacks["attackHeavy"];
+		        _activeAction = _attacks["atkHeavy"];
 	        }
 	        else if (_inputs.attackRanged)
 	        {
-		        _activeAction = _attacks["attackRanged"];
+		        _activeAction = _attacks["atkRanged"];
 	        }
 	        else
 	        {
@@ -172,19 +179,18 @@ namespace Glaidiator.Model
 		        return;
 	        }
 	        SetCanFlags(_activeAction.CanMove, _activeAction.CanAction);
-	        OnAttack();
         }
         
-        private void Attack_Tick(float deltaTime)
+        private void Attacking_Tick(float deltaTime)
         {
 	       // do activeattack stuff
         }
         
-        private void Attack_Exit()
+        private void Attacking_Exit()
         {
 	        SetCanFlags(true, true);
 	        // safe downcast to Attack type to put it on cooldown
-	        if (_activeAction is Attack { Cooldown: { } } a) _cooldowns.Add(a.SetOnCooldown());
+	        if (_activeAction is Attack a) _cooldowns.Add(a.SetOnCooldown());
 	        _activeAction = null;
         }
 

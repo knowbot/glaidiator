@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 
 namespace Glaidiator
 {
@@ -11,6 +12,7 @@ namespace Glaidiator
 		private Camera _camera;
 		private PlayerActions _playerActions;
 		private Input _inputs;
+		public TextMeshProUGUI DisplayState;
 		
 		// View
 		[HideInInspector] private Transform _transform;
@@ -26,6 +28,7 @@ namespace Glaidiator
 			_playerActions = new PlayerActions();
 			_character = new Model.Character(_transform);
 			animator = GetComponentInChildren<Animator>();
+			DisplayState = GetComponentInChildren<TextMeshProUGUI>();
 		}
 		
 		private void OnEnable()
@@ -53,6 +56,7 @@ namespace Glaidiator
 			_character.SetInputs(_inputs);
 			// Advance the model
 			_character.Tick(Time.deltaTime);
+			DisplayState.text = _character.CurrentState.ToString();
 		}
 		
 		
