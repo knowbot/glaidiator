@@ -362,12 +362,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 378600c3407c3af4ba84911abd5a4c6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &143681760 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5573970417861081902, guid: ff8e2ceecd2e5334ea3416004b3b5bef, type: 3}
+  m_PrefabInstance: {fileID: 882686210}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &143681761 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: -6828681789028139135, guid: ff8e2ceecd2e5334ea3416004b3b5bef, type: 3}
   m_PrefabInstance: {fileID: 882686210}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 143681760}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 378600c3407c3af4ba84911abd5a4c6d, type: 3}
@@ -1083,7 +1088,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -303, y: 184}
+  m_AnchoredPosition: {x: -425, y: 288}
   m_SizeDelta: {x: 200, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1662370967
@@ -1530,7 +1535,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -311.3, y: -231.30005}
+  m_AnchoredPosition: {x: -420, y: -308}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1952355977
@@ -1715,7 +1720,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerO: {fileID: 2017568435}
-  bossO: {fileID: 124995511}
+  bossO: {fileID: 143681760}
 --- !u!4 &2048171328
 Transform:
   m_ObjectHideFlags: 0
