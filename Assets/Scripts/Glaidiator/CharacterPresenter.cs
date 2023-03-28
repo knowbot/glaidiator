@@ -26,7 +26,15 @@ namespace Glaidiator
 		private static readonly int Trigger = Animator.StringToHash("Trigger");
 		private static readonly int TriggerNumber = Animator.StringToHash("TriggerNumber");
 		private static readonly int Blocking = Animator.StringToHash("Blocking");
+		private bool _isDisplayStateNotNull;
+		private bool _isDisplayCooldownsNotNull;
 
+
+		private void Start()
+		{
+			_isDisplayCooldownsNotNull = displayCooldowns != null;
+			_isDisplayStateNotNull = displayState != null;
+		}
 
 		private void Awake()
 		{
@@ -44,6 +52,8 @@ namespace Glaidiator
 			_character.onAttackStart += OnAttackStart;
 			_character.onBlockStart += OnBlockStart;
 			_character.onBlockEnd += OnBlockEnd;
+			_character.onDodgeStart += OnDodgeStart;
+			_character.onDodgeEnd += OnDodgeEnd;
 		}
 
 		private void OnDisable()
@@ -54,6 +64,8 @@ namespace Glaidiator
 			_character.onAttackStart -= OnAttackStart;
 			_character.onBlockStart -= OnBlockStart;
 			_character.onBlockEnd -= OnBlockEnd;
+			_character.onDodgeStart -= OnDodgeStart;
+			_character.onDodgeEnd -= OnDodgeEnd;
 		}
 
 		
@@ -64,8 +76,8 @@ namespace Glaidiator
 			_character.SetInputs(_inputs);
 			// Advance the model
 			_character.Tick(Time.deltaTime);
-			if (displayState != null) displayState.text = _character.CurrentState.ToString();
-			if (displayCooldowns != null) displayCooldowns.text = "";
+			if (_isDisplayStateNotNull) displayState.text = _character.CurrentState.ToString();
+			if (_isDisplayCooldownsNotNull) displayCooldowns.text = "";
 			foreach (IHasCooldown cd in _character.Cooldowns.OrderBy(cd => cd.Name))
 			{
 				displayCooldowns.text += cd.Name + ": " + cd.Cooldown.Duration.ToString("0.00") + "\n";
@@ -110,12 +122,29 @@ namespace Glaidiator
 		{
 			animator.SetBool(Blocking, false);
 		}
-
-
+		
+		private void OnDodgeStart()
+		{
+			animator.SetInteger(Action, 1);
+			SetTriggers();
+		}
+		
+		private void OnDodgeEnd()
+		{
+			animator.SetInteger(Action, 0);
+			ResetTriggers();
+		}
+		
 		private void SetTriggers()
 		{
 			animator.SetTrigger(Trigger);
 			animator.SetInteger(TriggerNumber, _character.ActiveAction!.ID);
+		}
+		
+		private void ResetTriggers()
+		{
+			animator.ResetTrigger(Trigger);
+			animator.SetInteger(TriggerNumber, 0);
 		}
 	}
 }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Glaidiator.Model.Actions;
 using Glaidiator.Model.Actions.Lookups;
+using RPGCharacterAnims.Actions;
 using UnityEngine;
 using Attack = Glaidiator.Model.Actions.Attack;
 
@@ -70,8 +71,8 @@ namespace Glaidiator.Model
 		    _actions.Add("atkLight", new Attack((int)ActionLookup.AttackLight, "Light Attack", 10f,  10, false, false, 0.9f));
 		    _actions.Add("atkHeavy", new Attack((int)ActionLookup.AttackHeavy, "Heavy Attack",25f, 20, false, false, 1.8f, 3.3f));
 		    _actions.Add("atkRanged", new Attack((int)ActionLookup.AttackRanged, "Ranged Attack",10f, 15, false, false, 1.5f, 5.5f));
-		    _actions.Add("block", new Block((int)ActionLookup.Block, "Block",10, false, false,0.5f, 3.0f));
-		    _actions.Add("dodge", new Dodge((int)ActionLookup.Dodge, "Dodge",25,false, false,0.2f, 1.0f));
+		    _actions.Add("block", new Block((int)ActionLookup.Block, "Block",10, false, false,1.0f, 3.0f));
+		    _actions.Add("dodge", new Dodge((int)ActionLookup.Dodge, "Dodge",25,false, false,0.5f, 1.0f));
 	    }
 	    
 	    #endregion
@@ -233,17 +234,24 @@ namespace Glaidiator.Model
         #region Dodging
         private void Dodging_Enter()
         {
+	        // SET ACTION
 	        if (Cooldowns.Contains((_actions["dodge"] as Dodge)!)) return;
 	        ActiveAction = _actions["dodge"];
 	        SetCanFlags(ActiveAction.CanMove, ActiveAction.CanAction);
+	        // DO LOGIC
+	        (ActiveAction as Dodge)!.Direction = (_inputs.move == Vector3.zero) ? _inputs.move : Movement.LastDir;
+	        // SET OFF TIMERS
 	        ActiveAction.Start();
 	        Cooldowns.Add(((ActiveAction as Dodge)!).SetOnCooldown());
+	        // CALL OBSERVER METHOD
 	        OnDodgeStart();
         }
         
         private void Dodging_Tick(float deltaTime)
         {
-	        // do activeattack stuff
+	        Debug.Log("DODGING");
+	        Movement.Dodge(Movement.LastDir, deltaTime);
+	        OnMove();
         }
         
         private void Dodging_Exit()
@@ -251,6 +259,7 @@ namespace Glaidiator.Model
 	        SetCanFlags(true, true);
 	        ActiveAction = null;
 	        OnDodgeEnd();
+	        OnStop();
         }
         #endregion
 

@@ -8,6 +8,7 @@ namespace Glaidiator.Model
 	    private const float SPEED = 6f;
 	    private const float DODGE_SPEED = 10f;
 	    private const float ROT_SPEED = 100f;
+	    public Vector3 LastDir;
 
 	    public Vector3 CurrVelocity { get; private set; }
 
@@ -27,7 +28,8 @@ namespace Glaidiator.Model
 		    Rotate(dir, deltaTime);
 			CurrVelocity = dir * SPEED;
 			Position += CurrVelocity * deltaTime;
-		}
+			if (dir!= Vector3.zero) LastDir = dir;
+	    }
 
 	    public void Rotate(Vector3 dir, float deltaTime)
 		{
@@ -36,7 +38,9 @@ namespace Glaidiator.Model
 
 	    public void Dodge(Vector3 dir, float deltaTime)
 	    {
-		    
+		    Rotate(dir, deltaTime);
+		    CurrVelocity = dir * DODGE_SPEED;
+		    Position += CurrVelocity * deltaTime;
 	    }
 	    
 	    public void Stop()
