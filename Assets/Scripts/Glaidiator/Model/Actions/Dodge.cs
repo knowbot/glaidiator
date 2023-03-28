@@ -1,14 +1,16 @@
 ﻿using System;
+using UnityEngine;
 
 namespace Glaidiator.Model.Actions
 {
     public class Dodge : AAction, IHasCooldown
     {
-        public string Name { get; }
+        public string Name { get; } 
         public Timer Cooldown { get; }
+        public Vector3 Direction { get; set; }
         
-        public Dodge(int id, string name, float duration, bool canMove, bool canAction, float cooldownDuration = 0f) 
-            : base(id, duration, canMove, canAction)
+        public Dodge(int id, string name, int cost, bool canMove, bool canAction, float duration, float cooldownDuration = 0f) 
+            : base(id, cost, canMove, canAction, duration)
         {
             Name = name;
             Cooldown = new Timer(cooldownDuration);

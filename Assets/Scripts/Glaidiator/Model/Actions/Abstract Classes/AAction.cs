@@ -4,19 +4,19 @@ namespace Glaidiator.Model.Actions
 {
     public abstract class AAction
     {
-        public readonly int ID;
-        private readonly float _duration;
-        protected Timer Duration { get; set; }
+        public int ID { get; }
+        public int Cost { get; }
         public bool CanMove { get; }
         public bool CanAction { get; }
+        protected Timer Duration { get; set; }
 
-        protected AAction(int id, float duration, bool canMove, bool canAction)
+        protected AAction(int id, int cost, bool canMove, bool canAction, float duration)
         {
             ID = id;
-            _duration = duration;
+            Cost = cost;
             CanMove = canMove;
             CanAction = canAction;
-            Duration = new Timer(_duration);
+            Duration = new Timer(duration);
         }
         
         public abstract AAction Start();

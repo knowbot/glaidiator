@@ -9,8 +9,8 @@
         // returns false if timer is missing/done/not started yet
         // returns true if timer is ticking
         // TODO: add hitbox info
-        public Attack(int id, string name, float damage, float actionDuration, bool canMove, bool canAction, float cooldownDuration = 0f) 
-            : base(id, actionDuration, canMove, canAction)
+        public Attack(int id, string name, float damage, int cost, bool canMove, bool canAction, float actionDuration, float cooldownDuration = 0f) 
+            : base(id, cost, canMove, canAction, actionDuration)
         {
             Damage = damage;
             Name = name;

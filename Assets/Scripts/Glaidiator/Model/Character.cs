@@ -67,13 +67,13 @@ namespace Glaidiator.Model
 		    CurrentState = CharacterState.Idling;
 	        
 		    // init attacks
-		    _actions.Add("atkLight", new Attack((int)ActionLookup.AttackLight, "Light Attack", 10f, 0.9f, false, false));
-		    _actions.Add("atkHeavy", new Attack((int)ActionLookup.AttackHeavy, "Heavy Attack",25f, 1.8f, false, false, 3.3f));
-		    _actions.Add("atkRanged", new Attack((int)ActionLookup.AttackRanged, "Ranged Attack",10f, 1.5f, false, false, 5.5f));
-		    _actions.Add("block", new Block((int)ActionLookup.Block, "Block",0.5f,false, false, 1.0f));
+		    _actions.Add("atkLight", new Attack((int)ActionLookup.AttackLight, "Light Attack", 10f,  10, false, false, 0.9f));
+		    _actions.Add("atkHeavy", new Attack((int)ActionLookup.AttackHeavy, "Heavy Attack",25f, 20, false, false, 1.8f, 3.3f));
+		    _actions.Add("atkRanged", new Attack((int)ActionLookup.AttackRanged, "Ranged Attack",10f, 15, false, false, 1.5f, 5.5f));
+		    _actions.Add("block", new Block((int)ActionLookup.Block, "Block",10, false, false,0.5f, 3.0f));
+		    _actions.Add("dodge", new Dodge((int)ActionLookup.Dodge, "Dodge",25,false, false,0.2f, 1.0f));
 	    }
-
-
+	    
 	    #endregion
 
 	    #region Setters
@@ -152,7 +152,6 @@ namespace Glaidiator.Model
         private void Moving_Tick(float deltaTime)
         {
 	        Movement.Move(_inputs.move, deltaTime);
-	        Movement.Rotate(_inputs.move, deltaTime);
 	        OnMove();
         }
         
@@ -203,7 +202,6 @@ namespace Glaidiator.Model
         private void Attacking_Exit()
         {
 	        SetCanFlags(true, true);
-	        // safe downcast to Attack type to put it on cooldown
 	        ActiveAction = null;
         }
 
@@ -222,13 +220,11 @@ namespace Glaidiator.Model
         
         private void Blocking_Tick(float deltaTime)
         {
-	        // do activeattack stuff
         }
         
         private void Blocking_Exit()
         {
 	        SetCanFlags(true, true);
-	        // safe downcast to Attack type to put it on cooldown
 	        ActiveAction = null;
 	        OnBlockEnd();
         }
@@ -237,7 +233,7 @@ namespace Glaidiator.Model
         #region Dodging
         private void Dodging_Enter()
         {
-	        if (Cooldowns.Contains((_actions["dodge"] as Block)!)) return;
+	        if (Cooldowns.Contains((_actions["dodge"] as Dodge)!)) return;
 	        ActiveAction = _actions["dodge"];
 	        SetCanFlags(ActiveAction.CanMove, ActiveAction.CanAction);
 	        ActiveAction.Start();
@@ -253,7 +249,6 @@ namespace Glaidiator.Model
         private void Dodging_Exit()
         {
 	        SetCanFlags(true, true);
-	        // safe downcast to Attack type to put it on cooldown
 	        ActiveAction = null;
 	        OnDodgeEnd();
         }

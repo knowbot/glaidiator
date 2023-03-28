@@ -1,10 +1,7 @@
 ﻿using System.Linq;
-using Glaidiator.Model;
 using Glaidiator.Model.Actions;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Glaidiator
 {
@@ -17,7 +14,7 @@ namespace Glaidiator
 		private Input _inputs;
 		public TextMeshProUGUI displayState;
 		public TextMeshProUGUI displayCooldowns;
-		public AInputProvider Provider;
+		public AInputProvider provider;
 
 		// View
 		[HideInInspector] private Transform _transform;
@@ -63,7 +60,7 @@ namespace Glaidiator
 		private void Update()
 		{
 			// Process inputs and pass them onto the model
-			_inputs = Provider.GetInputs();
+			_inputs = provider.GetInputs();
 			_character.SetInputs(_inputs);
 			// Advance the model
 			_character.Tick(Time.deltaTime);
