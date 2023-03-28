@@ -51,8 +51,8 @@ namespace Glaidiator
         void Start()
         {
             player = playerO.GetComponent<CharacterPresenter>().GetCharacter();
-            //boss = bossO.GetComponent<CharacterPresenter>().GetCharacter();
-            boss = GetTestBoss(bossO);
+            boss = bossO.GetComponent<CharacterPresenter>().GetCharacter();
+            //boss = GetTestBoss(bossO);
             //var temp = bossO.gameObject.GetComponent<AIContainer>().transform;
             //boss.Movement = new Movement(temp);
             

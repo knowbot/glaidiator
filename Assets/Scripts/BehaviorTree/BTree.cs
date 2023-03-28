@@ -22,7 +22,7 @@ namespace BehaviorTree
         public bool AttackHeavy;
         public bool AttackRanged;
         public bool Block;
-
+        public bool Dodge;
 
         public BTree(Transform transform)
         {
@@ -37,6 +37,7 @@ namespace BehaviorTree
             AttackHeavy = false;
             AttackRanged = false; 
             Block = false;
+            Dodge = false;
         }
 
         public void Start()

@@ -28,7 +28,13 @@ namespace BehaviorTree
         {
             btree.Update();
             Vector3 dir = new Vector3(btree.Direction.x, 0f, btree.Direction.y);
+            //Vector2 dir = btree.Direction;
             Inputs.move = btree.Move ? dir : Vector3.zero;
+            Inputs.attackLight = btree.AttackLight;
+            Inputs.attackHeavy = btree.AttackHeavy;
+            Inputs.attackRanged = btree.AttackRanged;
+            Inputs.block = btree.Block;
+            Inputs.dodge = btree.Dodge;
             //Inputs.attackLight = _playerActions.Gameplay.AttackLight.WasPressedThisFrame();
             //Inputs.attackHeavy  = _playerActions.Gameplay.AttackHeavy.WasPressedThisFrame();
             //Inputs.attackRanged  = _playerActions.Gameplay.AttackRanged.WasPressedThisFrame();
