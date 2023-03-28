@@ -67,8 +67,8 @@ namespace Glaidiator
 			_character.SetInputs(_inputs);
 			// Advance the model
 			_character.Tick(Time.deltaTime);
-			displayState.text = _character.CurrentState.ToString();
-			displayCooldowns.text = "";
+			if (displayState != null) displayState.text = _character.CurrentState.ToString();
+			if (displayCooldowns != null) displayCooldowns.text = "";
 			foreach (IHasCooldown cd in _character.Cooldowns.OrderBy(cd => cd.Name))
 			{
 				displayCooldowns.text += cd.Name + ": " + cd.Cooldown.Duration.ToString("0.00") + "\n";

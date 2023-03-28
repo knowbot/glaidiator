@@ -16,6 +16,14 @@ namespace BehaviorTree
         
         private Dictionary<string, object> _dataContext = new Dictionary<string, object>();
 
+        public Vector2 Direction;
+        public bool Move;
+        public bool AttackLight;
+        public bool AttackHeavy;
+        public bool AttackRanged;
+        public bool Block;
+
+
         public BTree(Transform transform)
         {
             _transform = transform;
@@ -23,7 +31,12 @@ namespace BehaviorTree
 
         public void Awake()
         {
-            
+            Direction = Vector2.down;
+            Move = false;
+            AttackLight = false;
+            AttackHeavy = false;
+            AttackRanged = false; 
+            Block = false;
         }
 
         public void Start()
@@ -42,6 +55,16 @@ namespace BehaviorTree
         public Node GetRoot()
         {
             return _root;
+        }
+
+        public void SetTransform(Transform newTransform)
+        {
+            _transform = newTransform;
+        }
+
+        public Transform GetTransform()
+        {
+            return _transform;
         }
         
         public void SetData(string key, object value)

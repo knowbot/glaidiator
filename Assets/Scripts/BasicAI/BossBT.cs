@@ -9,7 +9,7 @@ namespace BasicAI
     public class BossBT : BTree
     {
 
-        public List<Vector3> waypoints = new List<Vector3>();
+        public List<Vector2> waypoints = new List<Vector2>();
 
         protected override Node SetupTree()
         {

@@ -10,7 +10,7 @@ namespace BasicAI
         //private Transform _transform;
 
         //public Transform[] waypoints;
-        public List<Vector3> waypoints;
+        public List<Vector2> waypoints;
 
         public static float speed = 2f;
         public static float fovRange = 4f;
