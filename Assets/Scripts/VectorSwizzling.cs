@@ -11,6 +11,8 @@
         Vector3 flattened_position = position.x0z();
         Debug.log(flattened_position); //outputs (20.0, 0.0, 5.0);
     note: swizzles that start with a 0 or 1 have an underscore in front of them
+    https://www.reddit.com/r/Unity3D/comments/2l5331/wrote_a_little_thing_that_adds_swizzling_to/
+    https://pastebin.com/X8WkNri7
 */
 
 using UnityEngine;
