@@ -25,14 +25,11 @@ namespace BasicAI
         {
             tree = btree;
             _transform = transform;
-            _currPos = new Vector2(_transform.position.x, _transform.position.z);
+            
+            //_currPos = new Vector2(_transform.position.x, _transform.position.z);
+            _currPos = _transform.position.xz();
+            
             _waypoints = waypoints;
-            //_animator = transform.GetComponent<Animator>();
-
-            //_waypoints.Add(_currPos + new Vector3(0f, 0f, 0f));
-            //_waypoints.Add(_currPos + new Vector3(2f, 0f, 0f));
-            //_waypoints.Add(_currPos + new Vector3(2f, 0f, 2f));
-            //_waypoints.Add(_currPos + new Vector3(0f, 0f, 2f));
             _waypoints.Add(_currPos + new Vector2(0f, 0f));
             _waypoints.Add(_currPos + new Vector2(2f, 0f));
             _waypoints.Add(_currPos + new Vector2(2f, 2f));
