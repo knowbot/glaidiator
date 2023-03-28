@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Glaidiator.Model
+namespace Glaidiator
 {
     public abstract class AInputProvider : MonoBehaviour
     {
