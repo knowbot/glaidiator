@@ -5,12 +5,12 @@ namespace Glaidiator.Model.Actions
     public abstract class AAction
     {
         public int ID { get; }
-        public int Cost { get; }
+        public float Cost { get; }
         public bool CanMove { get; }
         public bool CanAction { get; }
         protected Timer Duration { get; set; }
 
-        protected AAction(int id, int cost, bool canMove, bool canAction, float duration)
+        protected AAction(int id, float cost, bool canMove, bool canAction, float duration)
         {
             ID = id;
             Cost = cost;

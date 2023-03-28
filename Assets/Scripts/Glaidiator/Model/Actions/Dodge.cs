@@ -9,7 +9,7 @@ namespace Glaidiator.Model.Actions
         public Timer Cooldown { get; }
         public Vector3 Direction { get; set; }
         
-        public Dodge(int id, string name, int cost, bool canMove, bool canAction, float duration, float cooldownDuration = 0f) 
+        public Dodge(int id, string name, float cost, bool canMove, bool canAction, float duration, float cooldownDuration = 0f) 
             : base(id, cost, canMove, canAction, duration)
         {
             Name = name;

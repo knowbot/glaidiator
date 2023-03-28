@@ -5,7 +5,7 @@
         public string Name { get; }
         public Timer Cooldown { get; }
         
-        public Block(int id, string name, int cost, bool canMove, bool canAction, float duration, float cooldownDuration = 0f) 
+        public Block(int id, string name, float cost, bool canMove, bool canAction, float duration, float cooldownDuration = 0f) 
             : base(id, cost, canMove, canAction, duration)
         {
             Name = name;

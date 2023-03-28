@@ -68,11 +68,11 @@ namespace Glaidiator.Model
 		    CurrentState = CharacterState.Idling;
 	        
 		    // init attacks
-		    _actions.Add("atkLight", new Attack((int)ActionLookup.AttackLight, "Light Attack", 10f,  10, false, false, 0.9f));
-		    _actions.Add("atkHeavy", new Attack((int)ActionLookup.AttackHeavy, "Heavy Attack",25f, 20, false, false, 1.8f, 3.3f));
-		    _actions.Add("atkRanged", new Attack((int)ActionLookup.AttackRanged, "Ranged Attack",10f, 15, false, false, 1.5f, 5.5f));
-		    _actions.Add("block", new Block((int)ActionLookup.Block, "Block",10, false, false,1.0f, 3.0f));
-		    _actions.Add("dodge", new Dodge((int)ActionLookup.Dodge, "Dodge",25,false, false,0.5f, 1.0f));
+		    _actions.Add("atkLight", new Attack((int)ActionLookup.AttackLight, "Light Attack", 10f,  10f, false, false, 0.9f));
+		    _actions.Add("atkHeavy", new Attack((int)ActionLookup.AttackHeavy, "Heavy Attack",25f, 20f, false, false, 1.8f, 3.3f));
+		    _actions.Add("atkRanged", new Attack((int)ActionLookup.AttackRanged, "Ranged Attack",10f, 15f, false, false, 1.5f, 5.5f));
+		    _actions.Add("block", new Block((int)ActionLookup.Block, "Block",10f, false, false,1.0f, 3.0f));
+		    _actions.Add("dodge", new Dodge((int)ActionLookup.Dodge, "Dodge",25f,false, false,0.5f, 1.0f));
 	    }
 	    
 	    #endregion
