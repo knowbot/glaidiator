@@ -75,7 +75,7 @@ namespace Glaidiator.Model
 		    _newState = state.current;
 		    Movement = new Movement(transform);
 		    Health = new Health(100.0f);
-		    Stamina = new Stamina(100.0f, 0.08f);
+		    Stamina = new Stamina(100.0f, 0.05f);
 		    CurrentState = CharacterState.Idling;
 
 		    // init attacks

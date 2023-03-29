@@ -1,14 +1,14 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Linq;
-using Glaidiator.Model;
 using Glaidiator.Model.Actions;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Glaidiator
+namespace Glaidiator.Presenter
 {
-	public class PlayerCharacterPresenter: CharacterPresenter
+	public class PlayerCharacterPresenter : CharacterPresenter
 	{
 		// UI
 		public TextMeshProUGUI displayState;
@@ -17,6 +17,11 @@ namespace Glaidiator
 		public Slider healthBar;
 		public Slider staminaBar;
 
+		protected override void Start()
+		{
+			if (provider is not PlayerInputProvider)
+				throw new Exception("Player Character Presenter should have a Player Input Provider");
+		}
 		protected override void OnEnable()
 		{
 			base.OnEnable();

@@ -1,11 +1,7 @@
-﻿using System.Linq;
-using Glaidiator.Model;
-using Glaidiator.Model.Actions;
-using TMPro;
+﻿using Glaidiator.Model;
 using UnityEngine;
-using UnityEngine.UI;
 
-namespace Glaidiator
+namespace Glaidiator.Presenter
 {
 	public class CharacterPresenter: MonoBehaviour
 	{
