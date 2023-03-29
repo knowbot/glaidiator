@@ -35,12 +35,7 @@ namespace BehaviorTree
             Inputs.attackRanged = btree.AttackRanged;
             Inputs.block = btree.Block;
             Inputs.dodge = btree.Dodge;
-            //Inputs.attackLight = _playerActions.Gameplay.AttackLight.WasPressedThisFrame();
-            //Inputs.attackHeavy  = _playerActions.Gameplay.AttackHeavy.WasPressedThisFrame();
-            //Inputs.attackRanged  = _playerActions.Gameplay.AttackRanged.WasPressedThisFrame();
-            //Inputs.block  = _playerActions.Gameplay.Block.WasPressedThisFrame();
-            //Inputs.dodge  = _playerActions.Gameplay.Dodge.WasPressedThisFrame();
-            //Inputs.move = GetCameraRelativeMovement(_playerActions.Gameplay.Move.ReadValue<Vector2>());
+            
         }
 
         public override Input GetInputs()
