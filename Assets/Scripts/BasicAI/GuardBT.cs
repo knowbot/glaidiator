@@ -7,10 +7,10 @@ namespace BasicAI
 {
     public class GuardBT : BTree
     {
-        private Transform _transform;
+        //private Transform _transform;
 
         //public Transform[] waypoints;
-        public List<Vector3> waypoints;
+        public List<Vector2> waypoints;
 
         public static float speed = 2f;
         public static float fovRange = 4f;
@@ -22,7 +22,7 @@ namespace BasicAI
         protected override Node SetupTree()
         {
             Debug.Log("Setup GuardBT");
-            _transform = transform;
+            //_transform = transform;
             //Node root = new TaskPatrol(transform, waypoints);
 
             /*
@@ -50,6 +50,8 @@ namespace BasicAI
         }
 
 
-
+        public GuardBT(Transform transform) : base(transform)
+        {
+        }
     }
 }
