@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Glaidiator.Model;
 using UnityEngine;
 
 namespace BehaviorTree
@@ -8,8 +9,9 @@ namespace BehaviorTree
     public abstract class BTree
     {
         protected Transform _transform;
-        
-        private Node _root = null;
+        protected Node _root = null;
+        protected Character _playerChar;
+        protected Character _bossChar;
 
         public Node currentNode;
         public Node _current;
@@ -27,6 +29,11 @@ namespace BehaviorTree
         public BTree(Transform transform)
         {
             _transform = transform;
+        }
+
+        public BTree(Character character)
+        {
+            _bossChar = character;
         }
 
         public void Awake()
@@ -53,6 +60,21 @@ namespace BehaviorTree
 
         protected abstract Node SetupTree();
 
+        public void SetPlayerChar(Character player)
+        {
+            _playerChar = player;
+        }
+
+        public Character GetPlayerChar()
+        {
+            return _playerChar;
+        }
+
+        public Character GetBossChar()
+        {
+            return _bossChar;
+        }
+        
         public Node GetRoot()
         {
             return _root;

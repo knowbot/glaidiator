@@ -1,20 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using BehaviorTree;
+using Glaidiator.Model;
 using UnityEngine;
 
 namespace BasicAI
 {
     public class CheckEnemyInRange : Node
     {
-        private Transform _transform;
+        private Movement _transform;
 
-        //private static int _enemyLayerMask = 1 << 6;
-
-        public CheckEnemyInRange(BTree btree, Transform transform)
+        public CheckEnemyInRange(BTree btree, Character transform)
         {
             tree = btree;
-            _transform = transform;
+            _transform = transform.Movement;
         }
 
         public override NodeState Evaluate()
@@ -22,22 +21,29 @@ namespace BasicAI
             object t = GetData("target");
             if (t == null)
             {
-                // FIXME: limit layer check
-                Collider[] colliders = Physics.OverlapSphere(_transform.position, GuardBT.fovRange);
+                Movement targetTransform = tree.GetPlayerChar().Movement;
+                float dist = Vector3.Distance(_transform.Position, targetTransform.Position);
 
-                if (colliders.Length > 1) // +1 since we find our own collider
+                if (dist <= BossBT.aggroRange)
                 {
-                    //Debug.Log("targets = " + colliders.Length);
-                    //parent.parent.SetData("target", colliders[0].transform);
-                    SetData("target", colliders[0].transform);
-                    //Debug.Log("target at: " + colliders[0].transform.position);
-
+                    SetData("target", targetTransform);
                     state = NodeState.SUCCESS;
                     return state;
                 }
-
+                
                 state = NodeState.FAILURE;
                 return state;
+            } 
+            else if (t.GetType() == typeof(Movement))
+            {
+                Movement tMovement = (Movement)t;
+                float dist = Vector3.Distance(_transform.Position, tMovement.Position);
+                if (dist > BossBT.aggroRange)
+                {
+                    ClearData("target");
+                    state = NodeState.FAILURE;
+                    return state;
+                }
             }
             
             state = NodeState.SUCCESS;

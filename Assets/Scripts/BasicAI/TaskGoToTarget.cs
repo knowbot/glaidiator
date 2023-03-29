@@ -2,40 +2,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using BehaviorTree;
+using Glaidiator.Model;
 
 namespace BasicAI
 {
     public class TaskGoToTarget : Node
     {
 
-        private Transform _transform;
+        private Movement _transform;
 
-        public TaskGoToTarget(BTree btree, Transform transform)
+        public TaskGoToTarget(BTree btree, Character transform)
         {
             tree = btree;
-            _transform = transform;
+            _transform = transform.Movement;
         }
 
         public override NodeState Evaluate()
         {
-            Transform target = (Transform)GetData("target");
+            Movement target = (Movement)GetData("target");
             if (target == null)
             {
                 state = NodeState.FAILURE;
                 return state;
             }
-            
 
-            var currPos = _transform.position;
-            var targetPos = target.position;
+            var currPos = _transform.Position;
+            var targetPos = target.Position;
             Debug.DrawLine(currPos, targetPos, Color.red);
 
             if (Vector3.Distance(currPos, targetPos) > 0.01f)
             {
-                _transform.position =
-                    Vector3.MoveTowards(currPos, targetPos, GuardBT.speed * Time.deltaTime);
-
-                _transform.LookAt(targetPos);
+                //_transform.position =
+                //    Vector3.MoveTowards(currPos, targetPos, GuardBT.speed * Time.deltaTime);
+                //_transform.LookAt(targetPos);
+                tree.Direction = ((targetPos - currPos).normalized).xz();
+                tree.Move = true;
             }
 
             state = NodeState.RUNNING;

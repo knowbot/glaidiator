@@ -12,11 +12,14 @@ namespace BehaviorTree
     {
         private BTree btree;
 
+        public GameObject PlayerObject;
         
         private void Awake()
         {
-            btree = new BossBT(transform);
+            //btree = new BossBT(transform);
+            btree = new BossBT(GetComponent<CharacterPresenter>().GetCharacter());
             btree.Awake();
+            btree.SetPlayerChar(PlayerObject.GetComponent<CharacterPresenter>().GetCharacter());
         }
 
         void Start()
@@ -27,7 +30,7 @@ namespace BehaviorTree
         void Update()
         {
             btree.Update();
-            Vector3 dir = new Vector3(btree.Direction.x, 0f, btree.Direction.y);
+            Vector3 dir = btree.Direction.x0y();
             //Vector2 dir = btree.Direction;
             Inputs.move = btree.Move ? dir : Vector3.zero;
             Inputs.attackLight = btree.AttackLight;
