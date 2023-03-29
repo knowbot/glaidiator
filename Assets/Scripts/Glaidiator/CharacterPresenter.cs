@@ -1,23 +1,23 @@
 ﻿using System.Linq;
+using Glaidiator.Model;
 using Glaidiator.Model.Actions;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Glaidiator
 {
 	public class CharacterPresenter: MonoBehaviour
 	{
 		// Model
-		private Model.Character _character;
+		protected Character Character;
 		
 		// Inputs
 		private Input _inputs;
-		public TextMeshProUGUI displayState;
-		public TextMeshProUGUI displayCooldowns;
 		public AInputProvider provider;
 
 		// View
-		[HideInInspector] private Transform _transform;
+		private Transform _transform;
 		[HideInInspector] public Animator animator;
 		private static readonly int Moving = Animator.StringToHash("Moving");
 		private static readonly int VelocityX = Animator.StringToHash("Velocity X");
@@ -26,86 +26,78 @@ namespace Glaidiator
 		private static readonly int Trigger = Animator.StringToHash("Trigger");
 		private static readonly int TriggerNumber = Animator.StringToHash("TriggerNumber");
 		private static readonly int Blocking = Animator.StringToHash("Blocking");
-		private bool _isDisplayStateNotNull;
-		private bool _isDisplayCooldownsNotNull;
 
-
-		private void Start()
+		
+		public Character GetCharacter()
 		{
-			_isDisplayCooldownsNotNull = displayCooldowns != null;
-			_isDisplayStateNotNull = displayState != null;
+			return Character;
+		}
+		
+		protected virtual void Start()
+		{
 		}
 
-		private void Awake()
+		protected virtual void Awake()
 		{
 			_transform = transform;
-			_character = new Model.Character(_transform);
+			Character = new Character(_transform);
 			animator = GetComponentInChildren<Animator>();
 			animator.applyRootMotion = false;
 		}
 
-		private void OnEnable()
+		protected virtual void OnEnable()
 		{
 			// Register observer methods
-			_character.onMove += OnMove;
-			_character.onStop += OnStop;
-			_character.onAttackStart += OnAttackStart;
-			_character.onBlockStart += OnBlockStart;
-			_character.onBlockEnd += OnBlockEnd;
-			_character.onDodgeStart += OnDodgeStart;
-			_character.onDodgeEnd += OnDodgeEnd;
+			Character.onMoveTick += OnMoveTick;
+			Character.onMoveEnd += OnMoveEnd;
+			Character.onAttackStart += OnAttackStart;
+			Character.onBlockStart += OnBlockStart;
+			Character.onBlockEnd += OnBlockEnd;
+			Character.onDodgeStart += OnDodgeStart;
+			Character.onDodgeTick += OnDodgeTick;
+			Character.onDodgeEnd += OnDodgeEnd;
 		}
 
-		private void OnDisable()
+		protected virtual void OnDisable()
 		{
 			// Deregister observer methods
-			_character.onMove -= OnMove;
-			_character.onStop -= OnStop;
-			_character.onAttackStart -= OnAttackStart;
-			_character.onBlockStart -= OnBlockStart;
-			_character.onBlockEnd -= OnBlockEnd;
-			_character.onDodgeStart -= OnDodgeStart;
-			_character.onDodgeEnd -= OnDodgeEnd;
+			Character.onMoveTick -= OnMoveTick;
+			Character.onMoveEnd -= OnMoveEnd;
+			Character.onAttackStart -= OnAttackStart;
+			Character.onBlockStart -= OnBlockStart;
+			Character.onBlockEnd -= OnBlockEnd;
+			Character.onDodgeStart -= OnDodgeStart;
+			Character.onDodgeTick -= OnDodgeTick;
+			Character.onDodgeEnd -= OnDodgeEnd;
 		}
 
 		
-		private void Update()
+		protected virtual void Update()
 		{
 			// Process inputs and pass them onto the model
 			_inputs = provider.GetInputs();
-			_character.SetInputs(_inputs);
+			Character.SetInputs(_inputs);
 			// Advance the model
-			_character.Tick(Time.deltaTime);
-			if (_isDisplayStateNotNull) displayState.text = _character.CurrentState.ToString();
-			if (_isDisplayCooldownsNotNull) displayCooldowns.text = "";
-			foreach (IHasCooldown cd in _character.Cooldowns.OrderBy(cd => cd.Name))
-			{
-				displayCooldowns.text += cd.Name + ": " + cd.Cooldown.Duration.ToString("0.00") + "\n";
-			}
+			Character.Tick(Time.deltaTime);
 		}
 
 		// Observer methods
 
-		private void OnMove()
+		private void OnMoveTick()
 		{
-			_transform.position = _character.Movement.Position;
-			_transform.rotation = _character.Movement.Rotation;
+			_transform.position = Character.Movement.Position;
+			_transform.rotation = Character.Movement.Rotation;
 			animator.SetBool(Moving, true);
-			animator.SetFloat(VelocityX, _transform.InverseTransformDirection(_character.Movement.CurrVelocity).x);
-			animator.SetFloat(VelocityZ, _transform.InverseTransformDirection(_character.Movement.CurrVelocity).z);
+			animator.SetFloat(VelocityX, _transform.InverseTransformDirection(Character.Movement.CurrVelocity).x);
+			animator.SetFloat(VelocityZ, _transform.InverseTransformDirection(Character.Movement.CurrVelocity).z);
 		}
 
-		private void OnStop()
+		private void OnMoveEnd()
 		{
 			animator.SetBool(Moving, false);
 			animator.SetFloat(VelocityZ, 0);
 		}
 
-		public Model.Character GetCharacter()
-		{
-			return _character;
-		}
-		
 		private void OnAttackStart()
 		{
 			animator.SetInteger(Action, 1);
@@ -129,6 +121,12 @@ namespace Glaidiator
 			SetTriggers();
 		}
 		
+		private void OnDodgeTick()
+		{
+			_transform.position = Character.Movement.Position;
+			_transform.rotation = Character.Movement.Rotation;
+		}
+		
 		private void OnDodgeEnd()
 		{
 			animator.SetInteger(Action, 0);
@@ -138,7 +136,7 @@ namespace Glaidiator
 		private void SetTriggers()
 		{
 			animator.SetTrigger(Trigger);
-			animator.SetInteger(TriggerNumber, _character.ActiveAction!.ID);
+			animator.SetInteger(TriggerNumber, Character.ActiveAction!.ID);
 		}
 		
 		private void ResetTriggers()
