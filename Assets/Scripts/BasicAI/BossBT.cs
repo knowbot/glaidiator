@@ -11,28 +11,18 @@ namespace BasicAI
     {
 
         public static float aggroRange = 3f;
+        public static float lightAtkRange = 1.5f;
 
         protected override Node SetupTree()
         {
-            /*
-            Node root = new Repeater(new Selector(this, new List<Node>
-            {
-                new Sequence(this, new List<Node>
-                {
-                    new CheckEnemyInRange(this, _transform),
-                    new TaskGoToTarget(this, _transform),
-                }),
-                new TaskPatrol(this, _transform, waypoints),
-            }));
-            */
-            //Node root = new TaskPatrol(this, _transform);
-            //Node root = new TaskPatrol(this, GetBossChar());
+            
             Node root = new Selector(this, new List<Node>
             {
                 new Sequence(this, new List<Node>
                 {
                     new CheckEnemyInRange(this, GetBossChar()),
                     new TaskGoToTarget(this, GetBossChar()),
+                    new TaskAttack(this, GetBossChar())
                 }),
                 new TaskPatrol(this, GetBossChar()),
             });

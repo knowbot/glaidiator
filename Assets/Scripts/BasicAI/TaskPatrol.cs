@@ -46,11 +46,6 @@ namespace BasicAI
             }
             else
             {
-                //var currPos = _transform.position;
-                //Transform wp = _waypoints[_currentWP];
-                //var pos3d = tree.GetTransform().position;
-                //var pos3d = _transform.Position;
-                //_currPos = new Vector2(pos3d.x, pos3d.z);
                 _currPos = _transform.Position.xz();
                 Vector2 wp = _waypoints[_currentWP];
 
@@ -72,15 +67,7 @@ namespace BasicAI
                     tree.Direction = (wp - _currPos).normalized;
                     tree.Move = true;
                     
-                    /*
-                    _transform.position = Vector3.MoveTowards(_transform.position,
-                        wp,
-                        GuardBT.speed * Time.deltaTime);
-                    _transform.LookAt(wp);
-                    */
-                    //Vector3 temp3d = new Vector3(_currPos.x, 0f, _currPos.y);
                     Vector3 temp3d = _currPos.x0y();
-                    //Vector3 wp3d = new Vector3(wp.x, 0f, wp.y);
                     Vector3 wp3d = wp.x0y();
                     Debug.DrawLine(temp3d, wp3d, Color.blue);
                 }

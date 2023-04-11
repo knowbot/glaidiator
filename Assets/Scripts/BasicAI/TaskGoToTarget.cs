@@ -32,11 +32,15 @@ namespace BasicAI
 
             if (Vector3.Distance(currPos, targetPos) > 0.01f)
             {
-                //_transform.position =
-                //    Vector3.MoveTowards(currPos, targetPos, GuardBT.speed * Time.deltaTime);
-                //_transform.LookAt(targetPos);
+                
                 tree.Direction = ((targetPos - currPos).normalized).xz();
                 tree.Move = true;
+
+                if (Vector3.Distance(currPos, targetPos) < BossBT.lightAtkRange)
+                {
+                    state = NodeState.SUCCESS;
+                    return state;
+                }
             }
 
             state = NodeState.RUNNING;
