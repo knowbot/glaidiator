@@ -149,7 +149,7 @@ namespace Glaidiator
 
         public bool Update(float dTime)
         {
-            Debug.DrawLine(_owner.Movement.Position, _owner.Movement.Position + new Vector3(offset, 0f, offset), Color.magenta);
+            Debug.DrawLine(_owner.Movement.Position + new Vector3(offset, 0f, offset), _owner.Movement.Position + new Vector3(offset, 0f, offset), Color.magenta);
             Debug.DrawLine(_owner.Movement.Position, _owner.Movement.Position + new Vector3(-offset, 0f, -offset), Color.magenta);
             Debug.DrawLine(_owner.Movement.Position, _owner.Movement.Position + new Vector3(-offset, 0f, offset), Color.magenta);
             Debug.DrawLine(_owner.Movement.Position, _owner.Movement.Position + new Vector3(offset, 0f, -offset), Color.magenta);
