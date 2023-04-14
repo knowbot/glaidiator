@@ -51,6 +51,21 @@ namespace BehaviorTree
 
         public virtual NodeState Evaluate() => NodeState.FAILURE;
 
+        public void Flatten(List<Node> nodes)
+        {
+            nodes.Add(this);
+        }
+
+        public Node GetParent()
+        {
+            return parent;
+        }
+
+        public void SetParent(Node nParent)
+        {
+            this.parent = nParent;
+        }
+        
         public void SetData(string key, object value)
         {
             //_dataContext[key] = value;

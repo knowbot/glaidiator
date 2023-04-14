@@ -46,6 +46,11 @@ namespace BasicAI
             return null;
         }
 
+        public override BTree Clone()
+        {
+            return this;
+        }
+
 
         public GuardBT(Transform transform) : base(transform)
         {

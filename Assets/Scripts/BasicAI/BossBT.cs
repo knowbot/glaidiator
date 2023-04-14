@@ -29,6 +29,12 @@ namespace BasicAI
             return root;
         }
 
+        public override BTree Clone()
+        {
+            BTree newTree = new BossBT(_bossChar);
+            return newTree;
+        }
+
         public BossBT(Transform transform) : base(transform)
         {
         }

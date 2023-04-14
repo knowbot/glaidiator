@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Glaidiator.Model;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace BehaviorTree
 {
@@ -26,7 +27,7 @@ namespace BehaviorTree
         public bool Block;
         public bool Dodge;
 
-        public BTree(Transform transform)
+        public BTree(Transform transform) // remove this?
         {
             _transform = transform;
         }
@@ -59,6 +60,36 @@ namespace BehaviorTree
         }
 
         protected abstract Node SetupTree();
+
+
+        public void Crossover(BTree tree, float chance)
+        {
+            if (chance < Random.Range(0f, 1f)) return;
+            
+            
+        }
+
+        public void Mutate(float chance)
+        {
+            if (chance < Random.Range(0f, 1f)) return;
+
+            List<Node> nodes = new List<Node>();
+            _root.Flatten(nodes);
+
+            if (0.8f < Random.Range(0f, 1f)) // 80% chance of mutating a random child
+            {
+                // select random element in nodes and invoke mutate on it
+            }
+            else
+            {
+                // sample node from EvolutionManager
+                // replace random existing node with the sample
+            }
+            
+            // dirty flag?
+        }
+
+        public abstract BTree Clone();
 
         public void SetPlayerChar(Character player)
         {
