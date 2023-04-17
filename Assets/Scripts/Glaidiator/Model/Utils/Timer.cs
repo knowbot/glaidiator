@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Glaidiator.Model
+namespace Glaidiator.Model.Utils
 {
     public class Timer
     {

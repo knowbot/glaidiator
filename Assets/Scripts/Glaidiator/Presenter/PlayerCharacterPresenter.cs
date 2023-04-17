@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Linq;
 using Glaidiator.Model.Actions;
+using Glaidiator.Model.Actions.Interfaces;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -42,7 +43,7 @@ namespace Glaidiator.Presenter
 			base.Update();
 			displayState.text = Character.CurrentState.ToString();
 			displayCooldowns.text = "";
-			foreach (IHasCooldown cd in Character.Cooldowns.OrderBy(cd => cd.Name))
+			foreach (ICooldown cd in Character.Cooldowns.OrderBy(cd => cd.Name))
 			{
 				displayCooldowns.text += cd.Name + ": " + cd.Cooldown.Duration.ToString("0.00") + "\n";
 			}

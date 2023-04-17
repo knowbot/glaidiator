@@ -2,8 +2,10 @@
 using System;
 using System.Collections.Generic;
 using Glaidiator.Model.Actions;
+using Glaidiator.Model.Actions.Interfaces;
 using Glaidiator.Model.Actions.Lookups;
 using Glaidiator.Model.Resources;
+using Glaidiator.Model.Utils;
 using UnityEngine;
 using Attack = Glaidiator.Model.Actions.Attack;
 
@@ -34,16 +36,17 @@ namespace Glaidiator.Model
 	    public readonly Movement Movement;
 	    public readonly Health Health;
 	    public readonly Stamina Stamina;
+	    public readonly Collider2D Hitbox;
 	    
 	    private Input _inputs;
 
-	    private readonly Dictionary<string, AAction> _actions = new Dictionary<string, AAction>();
-	    public readonly List<IHasCooldown> Cooldowns  = new List<IHasCooldown>();
-	    public AAction? ActiveAction { get; private set; }
+	    private readonly Dictionary<string, IAction> _actions = new Dictionary<string, IAction>();
+	    public readonly List<ICooldown> Cooldowns  = new List<ICooldown>();
+	    public IAction? ActiveAction { get; private set; }
 	    #endregion
 
 	    #region Events
-
+	    
 	    public Action? onLowStamina;
 	    public Action? onMoveTick;
 	    public Action? onMoveEnd;
@@ -54,7 +57,7 @@ namespace Glaidiator.Model
 	    public Action? onDodgeStart;
 	    public Action? onDodgeTick;
 	    public Action? onDodgeEnd;
-
+	    
 	    private void OnLowStamina() => onLowStamina?.Invoke();
 	    private void OnMoveTick() => onMoveTick?.Invoke();
 	    private void OnMoveEnd() => onMoveEnd?.Invoke();
@@ -65,37 +68,39 @@ namespace Glaidiator.Model
 	    private void OnDodgeStart() => onDodgeStart?.Invoke();
 	    private void OnDodgeTick() => onDodgeTick?.Invoke();
 	    private void OnDodgeEnd() => onDodgeEnd?.Invoke();
-	    
+
 	    #endregion
 
 	    #region Initialization
 
 	    public Character(Transform transform)
 	    {
+		    // TODO: insert actual logic
+		    Hitbox = new Collider2D();
 		    _newState = state.current;
 		    Movement = new Movement(transform);
 		    Health = new Health(100.0f);
 		    Stamina = new Stamina(100.0f, 0.05f);
 		    CurrentState = CharacterState.Idling;
 
-		    // init attacks
-		    _actions.Add("atkLight", new Attack((int)ActionLookup.AttackLight, "Light Attack", 10f,  10f, false, false, 0.9f));
-		    _actions.Add("atkHeavy", new Attack((int)ActionLookup.AttackHeavy, "Heavy Attack",25f, 20f, false, false, 1.8f, 3.3f));
-		    _actions.Add("atkRanged", new Attack((int)ActionLookup.AttackRanged, "Ranged Attack",10f, 15f, false, false, 1.5f, 5.5f));
-		    _actions.Add("block", new Block((int)ActionLookup.Block, "Block",10f, false, false,1.0f, 3.0f));
-		    _actions.Add("dodge", new Dodge((int)ActionLookup.Dodge, "Dodge",25f,false, false,0.5f, 1.0f));
+		    // init actions
+		    _actions.Add("atkLight", new Attack(new ActionInfo((int)ActionLookup.AttackLight, "Light Attack", 10f, false, false,0.9f), 10f));
+		    _actions.Add("atkHeavy", new Attack(new ActionInfo((int)ActionLookup.AttackHeavy, "Heavy Attack",20f, false, false, 1.8f), 25f, 3.3f));
+		    _actions.Add("atkRanged", new Attack(new ActionInfo((int)ActionLookup.AttackRanged, "Ranged Attack",15f, false, false, 1.5f), 10f, 5.5f));
+		    _actions.Add("block", new Block(new ActionInfo((int)ActionLookup.Block, "Block",10f, false, false,1.0f), 3.0f));
+		    _actions.Add("dodge", new Dodge(new ActionInfo((int)ActionLookup.Dodge, "Dodge",25f,false, false,0.5f), 1.0f));
 	    }
 	    
 	    #endregion
 
 	    #region Checks
 
-	    private bool HasEnoughStamina(AAction action)
+	    private bool HasEnoughStamina(IAction action)
 	    {
-		    return action.Cost <= Stamina.Current;
+		    return action.Action.Cost <= Stamina.Current;
 	    }
 
-	    private bool IsOnCooldown<T>(object obj) where T : class, IHasCooldown
+	    private bool IsOnCooldown<T>(object obj) where T : class, ICooldown
 	    {
 		    return Cooldowns.Contains((obj as T)!);
 	    }
@@ -115,11 +120,11 @@ namespace Glaidiator.Model
 		    CanAction = action;
 	    }
 
-	    private void SetActiveAction(AAction action)
+	    private void SetActiveAction(IAction action)
 	    {
-		    Stamina.Subtract(action.Cost);
+		    Stamina.Subtract(action.Action.Cost);
 		    ActiveAction = action;
-		    SetCanFlags(ActiveAction.CanMove, ActiveAction.CanAction);
+		    SetCanFlags(ActiveAction.Action.CanMove, ActiveAction.Action.CanAction);
 		    ActiveAction.Start();
 	    }
 	    
@@ -169,7 +174,7 @@ namespace Glaidiator.Model
 	    {
 		    for (int index = 0; index < Cooldowns.Count; index++)
 		    {
-			    IHasCooldown cd = Cooldowns[index];
+			    ICooldown cd = Cooldowns[index];
 			    if (!cd.Cooldown.Tick(deltaTime))
 				    Cooldowns.RemoveAt(index);
 		    }
@@ -222,7 +227,7 @@ namespace Glaidiator.Model
         
         private void Attacking()
         {
-	        AAction? attack = null;
+	        IAction? attack = null;
 	        if (_inputs.attackLight)
 	        {
 		        attack = _actions["atkLight"];
@@ -268,7 +273,7 @@ namespace Glaidiator.Model
 
         private void Blocking()
         {
-	        AAction block = _actions["block"];
+	        IAction block = _actions["block"];
 	        if (IsOnCooldown<Block>(block)) return;
 	        if (!HasEnoughStamina(block))
 	        {
@@ -300,7 +305,7 @@ namespace Glaidiator.Model
 
         private void Dodging()
         {
-	        AAction dodge = _actions["dodge"];
+	        IAction dodge = _actions["dodge"];
 	        if (IsOnCooldown<Dodge>(dodge)) return;
 	        if (!HasEnoughStamina(dodge))
 	        {

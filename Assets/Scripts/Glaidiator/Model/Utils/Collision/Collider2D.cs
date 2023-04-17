@@ -11,18 +11,25 @@ namespace Glaidiator.Model.Utils.Collision
     }
     public abstract class Collider2D
     {
+        private World _world;
         protected Character Owner;
-        protected Vector2 Center;
-        protected ColliderType Type;
-        public bool IsAttached { get; private set; }
+        public Vector2 Center;
+        public ColliderType Type { get; }
+        public bool IsTrigger { get; }
 
-        protected Collider2D(Character owner, Vector2 center, ColliderType type, bool isAttached)
+        protected Collider2D(Character owner, Vector2 center, ColliderType type, bool isTrigger)
         {
             Owner = owner;
             Center = center;
             Type = type;
+            IsTrigger = isTrigger;
         }
 
         public abstract bool Update();
+
+        public void Destroy()
+        {
+            _world.RemoveCollider(this);
+        }
     }
 }

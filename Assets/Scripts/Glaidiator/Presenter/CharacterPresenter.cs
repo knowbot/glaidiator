@@ -132,7 +132,7 @@ namespace Glaidiator.Presenter
 		private void SetTriggers()
 		{
 			animator.SetTrigger(Trigger);
-			animator.SetInteger(TriggerNumber, Character.ActiveAction!.ID);
+			animator.SetInteger(TriggerNumber, Character.ActiveAction!.Action.ID);
 		}
 		
 		private void ResetTriggers()

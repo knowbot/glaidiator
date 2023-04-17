@@ -6,8 +6,8 @@ namespace Glaidiator.Model.Utils.Collision
     {
         protected Bounds bounds;
 
-        public AABB(Character owner, Vector2 center, ColliderType type, bool isAttached, Vector2 size) : 
-            base(owner, center, type, isAttached)
+        public AABB(Character owner, Vector2 center, ColliderType type, bool isTrigger, Vector2 size) : 
+            base(owner, center, type, isTrigger)
         {
             bounds = new Bounds(Center, size); 
         }
