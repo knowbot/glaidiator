@@ -252,8 +252,9 @@ namespace Glaidiator.Model
 		
         private void Attacking_Enter()
         {
-	        if (ActiveAction is null or not Attack) return;
-	        Cooldowns.Add((ActiveAction as Attack)!.SetOnCooldown());
+	        if (ActiveAction is not Attack attack) return;
+	        attack.EnableHitbox(this);
+	        Cooldowns.Add(attack.SetOnCooldown());
 	        OnAttackStart();
         }
         
@@ -264,6 +265,7 @@ namespace Glaidiator.Model
         
         private void Attacking_Exit()
         {
+	        (ActiveAction as Attack)?.DisableHitbox();
 	        ResetActiveAction();
         }
 

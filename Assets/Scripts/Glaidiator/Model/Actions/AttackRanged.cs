@@ -21,8 +21,7 @@ namespace Glaidiator.Model.Actions
             if (Hitbox is null) return;
             if (_distance > Range)
             {
-                Hitbox.Destroy();
-                Hitbox = null;
+                Hitbox.Deregister();
                 return;
             }
             

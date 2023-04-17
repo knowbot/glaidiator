@@ -1,7 +1,8 @@
 ﻿using System;
 using Glaidiator.Model.Actions.Interfaces;
-using Glaidiator.Model.Utils.Collision;
 using Unity.VisualScripting;
+using UnityEngine;
+using Collider2D = Glaidiator.Model.Utils.Collision.Collider2D;
 using Timer = Glaidiator.Model.Utils.Timer;
 
 namespace Glaidiator.Model.Actions
@@ -21,6 +22,17 @@ namespace Glaidiator.Model.Actions
             Damage = damage;
             Name = action.Name;
             Cooldown = new Timer(cooldownDuration);
+        }
+
+        public void EnableHitbox(Character owner)
+        {
+            Hitbox.Center = owner.Movement.Position.xz() + (owner.Movement.Rotation * Hitbox.Offset.x0y()).xz();
+            Hitbox.Register();
+        }
+
+        public void DisableHitbox()
+        {
+            Hitbox.Deregister();
         }
 
         public ICooldown SetOnCooldown()

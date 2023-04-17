@@ -14,20 +14,27 @@ namespace Glaidiator.Model.Utils.Collision
         private World _world;
         protected Character Owner;
         public Vector2 Center;
+        public Vector2 Offset;
         public ColliderType Type { get; }
         public bool IsTrigger { get; }
 
-        protected Collider2D(Character owner, Vector2 center, ColliderType type, bool isTrigger)
+        protected Collider2D(Character owner, Vector2 center, Vector2 offset, ColliderType type, bool isTrigger)
         {
             Owner = owner;
             Center = center;
+            Offset = offset;
             Type = type;
             IsTrigger = isTrigger;
         }
 
         public abstract bool Update();
 
-        public void Destroy()
+        public void Register()
+        {
+            _world.AddCollider(this);
+        }
+        
+        public void Deregister()
         {
             _world.RemoveCollider(this);
         }
