@@ -38,5 +38,18 @@ namespace BehaviorTree
             state = hasChildRunning ? NodeState.RUNNING : NodeState.SUCCESS;
             return state;
         }
+
+        public override Node Clone()
+        {
+            Node clone = new Sequence();
+            clone.SetParent(parent); // redundant?
+            clone.SetTree(tree);
+            foreach (Node child in children)
+            {
+                clone.Attach(child.Clone());
+            }
+
+            return clone;
+        }
     }
 }

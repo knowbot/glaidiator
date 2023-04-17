@@ -46,5 +46,11 @@ namespace BasicAI
             state = NodeState.RUNNING;
             return state;
         }
+
+        public override Node Clone()
+        {
+            Node clone = new TaskGoToTarget(tree, _ownerCharacter);
+            return clone;
+        }
     }
 }

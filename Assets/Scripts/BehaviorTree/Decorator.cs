@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace BehaviorTree
 {
-    public class Decorator : Node
+    public abstract class Decorator : Node
     {
         protected Node _child;
 

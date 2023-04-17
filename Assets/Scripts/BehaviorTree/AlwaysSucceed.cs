@@ -33,5 +33,14 @@ namespace BehaviorTree
             state = NodeState.SUCCESS;
             return state;
         }
+        
+        public override Node Clone()
+        {
+            Node clone = new AlwaysSucceed(_child.Clone());
+            return clone;
+        }
+        
     }
+    
+    
 }

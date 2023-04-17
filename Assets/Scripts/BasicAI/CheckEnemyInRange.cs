@@ -15,13 +15,19 @@ namespace BasicAI
             tree = btree;
             _transform = transform.Movement;
         }
+        
+        public CheckEnemyInRange(BTree btree, Movement transform)
+        {
+            tree = btree;
+            _transform = transform;
+        }
 
         public override NodeState Evaluate()
         {
             object t = GetData("target");
             if (t == null)
             {
-                Movement targetTransform = tree.GetPlayerChar().Movement;
+                Movement targetTransform = tree.GetEnemyChar().Movement;
                 float dist = Vector3.Distance(_transform.Position, targetTransform.Position);
 
                 if (dist <= BossBT.aggroRange)
@@ -48,6 +54,12 @@ namespace BasicAI
             
             state = NodeState.SUCCESS;
             return state;
+        }
+
+        public override Node Clone()
+        {
+            Node clone = new CheckEnemyInRange(tree, _ownerCharacter);
+            return clone;
         }
     }
 }

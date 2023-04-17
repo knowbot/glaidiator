@@ -38,5 +38,10 @@ namespace BasicAI
             state = NodeState.FAILURE;
             return state;
         }
+
+        public override Node Clone()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

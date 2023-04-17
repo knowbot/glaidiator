@@ -8,7 +8,6 @@ namespace BasicAI
 {
     public class TaskPatrol : Node
     {
-        //private Transform _transform; // curr pos of this agent
         private Movement _transform;
         private Vector2 _currPos;
         private List<Vector2> _waypoints;
@@ -22,6 +21,7 @@ namespace BasicAI
         public TaskPatrol(BTree btree, Character myCharacter)
         {
             tree = btree;
+            _ownerCharacter = myCharacter;
             _transform = myCharacter.Movement;
             _currPos = _transform.Position.xz();
             _waypoints = new List<Vector2>();
@@ -77,6 +77,11 @@ namespace BasicAI
             
             state = NodeState.RUNNING;
             return state;
+        }
+
+        public override Node Clone()
+        {
+            return new TaskPatrol(tree, _ownerCharacter);
         }
     }
 

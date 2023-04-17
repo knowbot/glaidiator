@@ -38,5 +38,11 @@ namespace BehaviorTree
 
             return state;
         }
+
+        public override Node Clone()
+        {
+            Node clone = new UntilFail(_child.Clone());
+            return clone;
+        }
     }
 }

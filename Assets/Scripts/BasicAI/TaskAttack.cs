@@ -16,6 +16,12 @@ public class TaskAttack : Node
         _transform = transform.Movement;
     }
 
+    public TaskAttack(BTree bTree, Movement transform)
+    {
+        tree = bTree;
+        _transform = transform;
+    }
+    
     public override NodeState Evaluate()
     {
         Movement target = (Movement)GetData("target");
@@ -46,6 +52,12 @@ public class TaskAttack : Node
 
         state = NodeState.RUNNING;
         return state;
+    }
+
+    public override Node Clone()
+    {
+        Node clone = new TaskAttack(tree, _ownerCharacter);
+        return clone;
     }
 }
 

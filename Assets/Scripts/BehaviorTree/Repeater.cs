@@ -21,10 +21,12 @@ namespace BehaviorTree
 
         public override NodeState Evaluate()
         {
+            int evalCount = _count;
+            
             state = NodeState.RUNNING;
             NodeState childState = state;
             
-            if (_count == -1)
+            if (evalCount == -1)
             {
                 while (true) // FIXME: less dirty solution?
                 {
@@ -32,27 +34,25 @@ namespace BehaviorTree
                 }
             }
             
-            if (_count > 0)
+            if (evalCount > 0)
             {
-                while (_count > 0)
+                while (evalCount > 0)
                 {
                     childState = _child.Evaluate();
-                    _count--;
+                    evalCount--;
                 }
 
                 state = childState;
             }
-
-            /*
-            switch (_child.Evaluate())
-            {
-                case NodeState.FAILURE:
-                    
-            }
-            */
             
 
             return state;
+        }
+
+        public override Node Clone()
+        {
+            Node clone = new Repeater(_child.Clone(), _count);
+            return clone;
         }
     }
 }

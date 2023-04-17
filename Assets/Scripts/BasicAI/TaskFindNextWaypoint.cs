@@ -16,4 +16,9 @@ public class TaskFindNextWaypoint : Node
     {
         return state;
     }
+
+    public override Node Clone()
+    {
+        throw new System.NotImplementedException();
+    }
 }

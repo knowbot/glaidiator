@@ -34,5 +34,18 @@ namespace BehaviorTree
             state = NodeState.FAILURE;
             return state;
         }
+
+        public override Node Clone()
+        {
+            Node clone = new Selector();
+            clone.SetParent(parent);
+            clone.SetTree(tree);
+            foreach (Node child in children)
+            {
+                clone.Attach(child.Clone());
+            }
+
+            return clone;
+        }
     }
 }

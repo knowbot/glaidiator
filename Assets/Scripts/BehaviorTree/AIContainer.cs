@@ -19,7 +19,7 @@ namespace BehaviorTree
             //btree = new BossBT(transform);
             btree = new BossBT(GetComponent<CharacterPresenter>().GetCharacter());
             btree.Awake();
-            btree.SetPlayerChar(PlayerObject.GetComponent<CharacterPresenter>().GetCharacter());
+            btree.SetEnemyChar(PlayerObject.GetComponent<CharacterPresenter>().GetCharacter());
         }
 
         void Start()

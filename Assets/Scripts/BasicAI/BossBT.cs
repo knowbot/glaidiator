@@ -20,18 +20,19 @@ namespace BasicAI
             {
                 new Sequence(this, new List<Node>
                 {
-                    new CheckEnemyInRange(this, GetBossChar()),
-                    new TaskGoToTarget(this, GetBossChar()),
-                    new TaskAttack(this, GetBossChar())
+                    new CheckEnemyInRange(this, GetOwnerChar()),
+                    new TaskGoToTarget(this, GetOwnerChar()),
+                    new TaskAttack(this, GetOwnerChar())
                 }),
-                new TaskPatrol(this, GetBossChar()),
+                new TaskPatrol(this, GetOwnerChar()),
             });
             return root;
         }
 
         public override BTree Clone()
         {
-            BTree newTree = new BossBT(_bossChar);
+            BTree newTree = new BossBT(_ownerChar);
+            newTree.SetRoot(_root.Clone());
             return newTree;
         }
 

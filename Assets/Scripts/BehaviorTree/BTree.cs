@@ -11,11 +11,9 @@ namespace BehaviorTree
     {
         protected Transform _transform;
         protected Node _root = null;
-        protected Character _playerChar;
-        protected Character _bossChar;
-
-        public Node currentNode;
-        public Node _current;
+        protected Character _enemyChar;
+        protected Character _ownerChar;
+        protected float _fitness;
         
         private Dictionary<string, object> _dataContext = new Dictionary<string, object>();
 
@@ -32,9 +30,9 @@ namespace BehaviorTree
             _transform = transform;
         }
 
-        public BTree(Character character)
+        public BTree(Character owner)
         {
-            _bossChar = character;
+            _ownerChar = owner;
         }
 
         public void Awake()
@@ -84,6 +82,9 @@ namespace BehaviorTree
             {
                 // sample node from EvolutionManager
                 // replace random existing node with the sample
+                int pSize = EvolutionManager.prototypes.Count;
+                Node newNode = EvolutionManager.prototypes[Random.Range(0, pSize)]; // randomized?
+                //Node oldNode = 
             }
             
             // dirty flag?
@@ -91,24 +92,34 @@ namespace BehaviorTree
 
         public abstract BTree Clone();
 
-        public void SetPlayerChar(Character player)
+        public void SetEnemyChar(Character enemy)
         {
-            _playerChar = player;
+            _enemyChar = enemy;
         }
 
-        public Character GetPlayerChar()
+        public Character GetEnemyChar()
         {
-            return _playerChar;
+            return _enemyChar;
         }
 
-        public Character GetBossChar()
+        public Character GetOwnerChar()
         {
-            return _bossChar;
+            return _ownerChar;
         }
         
         public Node GetRoot()
         {
             return _root;
+        }
+
+        public void SetRoot(Node newRoot)
+        {
+            _root = newRoot;
+        }
+
+        public float GetFitness()
+        {
+            return _fitness;
         }
 
         public void SetTransform(Transform newTransform)
