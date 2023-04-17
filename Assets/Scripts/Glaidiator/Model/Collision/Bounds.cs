@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Glaidiator.Model.Utils.Collision
+namespace Glaidiator.Model.Collision
 {
     public struct Bounds
     {

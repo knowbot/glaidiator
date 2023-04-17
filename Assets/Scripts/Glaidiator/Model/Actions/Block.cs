@@ -1,5 +1,5 @@
 ﻿using System;
-using Glaidiator.Model.Actions.Interfaces;
+using Glaidiator.Model.Actions;
 using Glaidiator.Model.Utils;
 
 namespace Glaidiator.Model.Actions

@@ -1,4 +1,4 @@
-﻿namespace Glaidiator.Model.Actions.Interfaces
+﻿namespace Glaidiator.Model.Actions
 {
     public interface IAction
     {

@@ -1,44 +1,44 @@
 ﻿using System;
-using Glaidiator.Model.Actions.Interfaces;
+using Glaidiator.Model.Actions;
 using Unity.VisualScripting;
 using UnityEngine;
-using Collider2D = Glaidiator.Model.Utils.Collision.Collider2D;
+using Glaidiator.Model.Collision;
 using Timer = Glaidiator.Model.Utils.Timer;
+using Collider2D = Glaidiator.Model.Collision.Collider2D;
 
 namespace Glaidiator.Model.Actions
 {
-    public class Attack : IAction, ICooldown, IHitbox
+    public class Attack : IAction, ICooldown
     {
         public ActionInfo Action { get; }
         public float Damage;
-        public string Name { get; }
         public Timer Cooldown { get; }
-        public Collider2D Hitbox { get; set; }
+        public string Name { get; }
+        public Hitbox<Attack> Hitbox { get; private set; }
+
+
 
         // TODO: add hitbox info
-        public Attack(ActionInfo action, float damage, float cooldownDuration = 0f)
+        public Attack(ActionInfo action, Hitbox<Attack> hitbox, float damage, float cooldownDuration = 0f)
         {
             Action = action;
             Damage = damage;
             Name = action.Name;
             Cooldown = new Timer(cooldownDuration);
-        }
-
-        public void EnableHitbox(Character owner)
-        {
-            Hitbox.Center = owner.Movement.Position.xz() + (owner.Movement.Rotation * Hitbox.Offset.x0y()).xz();
-            Hitbox.Register();
-        }
-
-        public void DisableHitbox()
-        {
-            Hitbox.Deregister();
+            Hitbox = hitbox;
+            Hitbox.Origin = this;
         }
 
         public ICooldown SetOnCooldown()
         {
             Cooldown.Reset();
             return this;
+        }
+
+        public void SpawnHitbox(Vector2 direction)
+        {
+            Hitbox.Direction = direction;
+            Hitbox.Create();
         }
     }
 }

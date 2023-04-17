@@ -2,12 +2,14 @@
 using System;
 using System.Collections.Generic;
 using Glaidiator.Model.Actions;
-using Glaidiator.Model.Actions.Interfaces;
 using Glaidiator.Model.Actions.Lookups;
+using Glaidiator.Model.Collision;
 using Glaidiator.Model.Resources;
 using Glaidiator.Model.Utils;
+using RPGCharacterAnims.Actions;
 using UnityEngine;
 using Attack = Glaidiator.Model.Actions.Attack;
+using Collider2D = Glaidiator.Model.Collision.Collider2D;
 
 namespace Glaidiator.Model
 {
@@ -76,17 +78,40 @@ namespace Glaidiator.Model
 	    public Character(Transform transform)
 	    {
 		    // TODO: insert actual logic
-		    Hitbox = new Collider2D();
 		    _newState = state.current;
 		    Movement = new Movement(transform);
+		    Hitbox = new Circle(Movement.Position.xz(), Vector2.zero, false, 0.75f);
 		    Health = new Health(100.0f);
 		    Stamina = new Stamina(100.0f, 0.05f);
 		    CurrentState = CharacterState.Idling;
 
 		    // init actions
-		    _actions.Add("atkLight", new Attack(new ActionInfo((int)ActionLookup.AttackLight, "Light Attack", 10f, false, false,0.9f), 10f));
-		    _actions.Add("atkHeavy", new Attack(new ActionInfo((int)ActionLookup.AttackHeavy, "Heavy Attack",20f, false, false, 1.8f), 25f, 3.3f));
-		    _actions.Add("atkRanged", new Attack(new ActionInfo((int)ActionLookup.AttackRanged, "Ranged Attack",15f, false, false, 1.5f), 10f, 5.5f));
+		    _actions.Add("atkLight", 
+			    new Attack(
+					new ActionInfo((int)ActionLookup.AttackLight, "Light Attack", 10f, false, false, 0.9f), 
+					new Hitbox<Attack>(
+						new AABB(Vector2.zero, new Vector2(0, 1), true, Vector2.one), 
+						this,
+						0.6f),
+					10f));
+		    _actions.Add("atkHeavy", 
+			    new Attack(
+				    new ActionInfo((int)ActionLookup.AttackHeavy, "Heavy Attack",20f, false, false, 1.8f), 
+				    new Hitbox<Attack>(
+					    new AABB(Vector2.zero, new Vector2(0, 1), true, Vector2.one),
+					    this,
+					    1.2f),
+				    25f, 3.3f));
+		    _actions.Add("atkRanged",
+			    new AttackRanged(
+				    new ActionInfo((int)ActionLookup.AttackRanged, "Ranged Attack",15f, false, false, 1.5f), 
+				    new ProjectileHitbox(
+					    new Circle(Vector2.zero, new Vector2(0, 0.5f), true, 0.5f),
+					    this,
+					    10f, 
+					    2f
+				    ), 
+				    10f, 5.5f));
 		    _actions.Add("block", new Block(new ActionInfo((int)ActionLookup.Block, "Block",10f, false, false,1.0f), 3.0f));
 		    _actions.Add("dodge", new Dodge(new ActionInfo((int)ActionLookup.Dodge, "Dodge",25f,false, false,0.5f), 1.0f));
 	    }
@@ -240,7 +265,7 @@ namespace Glaidiator.Model
 	        {
 		        attack = _actions["atkRanged"];
 	        }
-	        if (attack is null || IsOnCooldown<Attack>(attack)) return;
+	        if (attack is null || IsOnCooldown<ICooldown>(attack)) return;
 	        if (!HasEnoughStamina(attack))
 	        {
 		        OnLowStamina();
@@ -253,7 +278,7 @@ namespace Glaidiator.Model
         private void Attacking_Enter()
         {
 	        if (ActiveAction is not Attack attack) return;
-	        attack.EnableHitbox(this);
+	        attack.SpawnHitbox(Movement.LastDir.xz());
 	        Cooldowns.Add(attack.SetOnCooldown());
 	        OnAttackStart();
         }
@@ -265,7 +290,6 @@ namespace Glaidiator.Model
         
         private void Attacking_Exit()
         {
-	        (ActiveAction as Attack)?.DisableHitbox();
 	        ResetActiveAction();
         }
 

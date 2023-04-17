@@ -48,8 +48,8 @@ namespace Glaidiator
         {
         
         }
-    
-        void Start()
+
+        private void Start()
         {
             player = playerO.GetComponent<CharacterPresenter>().GetCharacter();
             boss = bossO.GetComponent<CharacterPresenter>().GetCharacter();
