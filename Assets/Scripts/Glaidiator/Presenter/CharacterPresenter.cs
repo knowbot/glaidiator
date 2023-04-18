@@ -30,7 +30,8 @@ namespace Glaidiator.Presenter
 		}
 		
 		protected virtual void Start()
-		{
+		{ 
+			Character.Hitbox.Register();
 		}
 
 		protected virtual void Awake()

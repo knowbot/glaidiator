@@ -38,7 +38,7 @@ namespace Glaidiator.Model
 	    public readonly Movement Movement;
 	    public readonly Health Health;
 	    public readonly Stamina Stamina;
-	    public readonly Collider2D Hitbox;
+	    public readonly CharacterHitbox Hitbox;
 	    
 	    private Input _inputs;
 
@@ -80,7 +80,7 @@ namespace Glaidiator.Model
 		    // TODO: insert actual logic
 		    _newState = state.current;
 		    Movement = new Movement(transform);
-		    Hitbox = new Circle(Movement.Position.xz(), Vector2.zero, false, 0.75f);
+		    Hitbox = new CharacterHitbox(new Circle(Movement.Position.xz(), Vector2.zero, false, 0.75f), this);
 		    Health = new Health(100.0f);
 		    Stamina = new Stamina(100.0f, 0.05f);
 		    CurrentState = CharacterState.Idling;
@@ -98,7 +98,7 @@ namespace Glaidiator.Model
 			    new Attack(
 				    new ActionInfo((int)ActionLookup.AttackHeavy, "Heavy Attack",20f, false, false, 1.8f), 
 				    new Hitbox<Attack>(
-					    new AABB(Vector2.zero, new Vector2(0, 1), true, Vector2.one),
+					    new AABB(Vector2.zero, new Vector2(0, 1), true, Vector2.one * 2f),
 					    this,
 					    1.2f),
 				    25f, 3.3f));
@@ -106,10 +106,10 @@ namespace Glaidiator.Model
 			    new AttackRanged(
 				    new ActionInfo((int)ActionLookup.AttackRanged, "Ranged Attack",15f, false, false, 1.5f), 
 				    new ProjectileHitbox(
-					    new Circle(Vector2.zero, new Vector2(0, 0.5f), true, 0.5f),
+					    new Circle(Vector2.zero, new Vector2(0, 0.5f), true, 1.0f),
 					    this,
-					    10f, 
-					    2f
+					    15f, 
+					    7.5f
 				    ), 
 				    10f, 5.5f));
 		    _actions.Add("block", new Block(new ActionInfo((int)ActionLookup.Block, "Block",10f, false, false,1.0f), 3.0f));

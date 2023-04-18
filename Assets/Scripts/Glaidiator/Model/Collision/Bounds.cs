@@ -13,8 +13,6 @@ namespace Glaidiator.Model.Collision
             Size = size;
         }
 
-        public Vector2 Extents => Size / 2;
-        public Vector2 Max => Center + Extents;
-        public Vector2 Min => Center - Extents;
+    
     }
 }

@@ -6,12 +6,14 @@ namespace Glaidiator.Model.Collision
 {
     public class AABB : Collider2D
     {
-        protected Bounds bounds;
-
+        public Vector2 Size;
+        public Vector2 Extents => Size / 2;
+        public Vector2 Max => Center + Extents;
+        public Vector2 Min => Center - Extents;
         public AABB(Vector2 center, Vector2 offset, bool isTrigger, Vector2 size) : 
             base(center, offset, isTrigger)
         {
-            bounds = new Bounds(Center, size); 
+            Size = size;
         }
 
         public bool Collision(AABB other)
@@ -23,13 +25,7 @@ namespace Glaidiator.Model.Collision
         {
             return false;
         }
-
-        public override object Clone()
-        {
-            var clone = (AABB)MemberwiseClone();
-            clone.bounds = new Bounds(bounds.Center, bounds.Size);
-            return clone;
-        }
+        
 
         public override void WriteType()
         {
@@ -38,7 +34,8 @@ namespace Glaidiator.Model.Collision
 
         public override void Draw()
         {
-            DebugUtils.DrawRect(bounds.Min.x0y(), bounds.Max.x0y(), Color.green);
+            Debug.Log("tryna draw a box");
+            DebugUtils.DrawRect(Min.x0y(), Max.x0y(), Color.red);
         }
     }
 }

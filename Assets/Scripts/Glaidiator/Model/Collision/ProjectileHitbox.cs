@@ -21,10 +21,13 @@ namespace Glaidiator.Model.Collision
         public override void Update(float deltaTime)
         {
             base.Update(deltaTime);
-            if(_distance >= Range) Destroy();
+            if (_distance >= Range)
+            {
+                ToDestroy = true;
+                return;
+            }
             float d = Speed * deltaTime;
             _distance += d;
-            Debug.Log(Direction);
             Collider.Center += Direction * d;
         }
     }

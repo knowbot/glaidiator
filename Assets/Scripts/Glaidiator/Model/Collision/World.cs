@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace Glaidiator.Model.Collision
@@ -17,20 +19,30 @@ namespace Glaidiator.Model.Collision
 
         private void Update()
         {
-            foreach (IHitbox hitbox in _hitboxes)
+            foreach (IHitbox hb in _hitboxes)
             {
-                hitbox.Update(Time.deltaTime);
-                hitbox.Collider.Draw();
+                hb.Collider.Draw();
+                hb.Update(Time.deltaTime);
             }
+            Cleanup();
+        }
+        public void Add(IHitbox collider)
+        {
+            _hitboxes.Add(collider);
+            Debug.Log(_hitboxes.Count);
+        }
+        public void Remove(IHitbox collider)
+        {
+            _hitboxes.Remove(collider);
         }
 
-        public void Add(IHitbox hitbox)
+        private void Cleanup()
         {
-            _hitboxes.Add(hitbox);
+            foreach (IHitbox hb in _hitboxes.Where(hb => hb.ToDestroy).ToList())
+            {
+                hb.Destroy();
+            }
         }
-        public void Remove(IHitbox hitbox)
-        {
-            _hitboxes.Remove(hitbox);
-        }
+        
     }
 }

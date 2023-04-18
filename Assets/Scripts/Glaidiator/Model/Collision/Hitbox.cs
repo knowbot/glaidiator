@@ -13,6 +13,7 @@ namespace Glaidiator.Model.Collision
         private World _world;
         private readonly Collider2D _collider;
         private readonly float _lifetime;
+        public bool ToDestroy { get; protected set; }
 
         public Collider2D Collider { get; private set; }
         public Character Owner { get; private set; }
@@ -26,26 +27,38 @@ namespace Glaidiator.Model.Collision
             _collider = collider;
             Collider = (Collider2D)_collider.Clone();
             Owner = owner;
+            ToDestroy = false;
             _lifetime = lifetime;
             if(_lifetime > 0f) Lifetime = new Timer(_lifetime);
         }
 
         public void Create()
         {
-            Collider.Center = Owner.Movement.Position.xz();
-            _world.Add((Hitbox<T>)Clone());
+            Debug.Log("We spawnin'");
+            _collider.Center = Owner.Movement.Position.xz();
+            ((Hitbox<T>)Clone()).Register();
         }
         
         public void Destroy()
         {
             Collider = null;
-            _world.Remove(this);
+            Deregister();
+        }
+
+        public void Register()
+        {
+            World.instance.Add(this);
+        }
+
+        public void Deregister()
+        {
+            World.instance.Remove(this);
         }
         
         public virtual void Update(float deltaTime)
         {
             // when lifetime is over, reset collider and deregister
-            if (Lifetime is not null && Lifetime.Tick(deltaTime)) Destroy();
+            if (Lifetime is not null && Lifetime.Tick(deltaTime)) ToDestroy = true;
         }
         public object Clone()
         {
