@@ -45,11 +45,11 @@ namespace BehaviorTree
 
         public virtual NodeState Evaluate() => NodeState.FAILURE;
 
-        //public abstract Node Clone();
+        public abstract Node Clone();
 
-        //public abstract void Mutate();
+        public abstract void Mutate();
         
-        //public abstract Node Randomized();
+        public abstract Node Randomized();
         
 
         public void Attach(Node node) // add child
@@ -79,6 +79,7 @@ namespace BehaviorTree
             children[i] = newChild;
         }
         
+        // return flat list representation of tree/subtree of this node
         public virtual void Flatten(List<Node> nodes)
         {
             nodes.Add(this);
@@ -87,8 +88,6 @@ namespace BehaviorTree
                 child.Flatten(nodes);
             }
         }
-
-        public abstract Node Clone();
 
         public Node GetParent()
         {
@@ -108,6 +107,16 @@ namespace BehaviorTree
         public void SetTree(BTree newTree)
         {
             tree = newTree;
+        }
+
+        public void SetOwner(Character owner)
+        {
+            _ownerCharacter = owner;
+        }
+
+        public Character GetOwner()
+        {
+            return _ownerCharacter;
         }
         
         public void SetData(string key, object value)

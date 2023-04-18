@@ -36,9 +36,9 @@ namespace BasicAI
             return newTree;
         }
 
-        public BossBT(Transform transform) : base(transform)
-        {
-        }
+        //public BossBT(Transform transform) : base(transform)
+        //{
+        //}
 
         public BossBT(Character character) : base(character)
         {

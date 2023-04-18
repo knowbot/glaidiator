@@ -38,7 +38,7 @@ namespace BehaviorTree
         public override Node Clone()
         {
             Node clone = new Selector();
-            clone.SetParent(parent);
+            clone.SetParent(parent);    // FIXME: Test for correct parent and tree refs
             clone.SetTree(tree);
             foreach (Node child in children)
             {
@@ -46,6 +46,17 @@ namespace BehaviorTree
             }
 
             return clone;
+        }
+
+        
+        public override void Mutate()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override Node Randomized()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using BehaviorTree;
+using Glaidiator.Model;
 
 namespace BasicAI
 {
@@ -51,8 +52,7 @@ namespace BasicAI
             return this;
         }
 
-
-        public GuardBT(Transform transform) : base(transform)
+        public GuardBT(Character owner) : base(owner)
         {
         }
     }

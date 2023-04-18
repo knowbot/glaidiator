@@ -37,5 +37,15 @@ namespace BasicAI
         {
             throw new System.NotImplementedException();
         }
+
+        public override void Mutate()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override Node Randomized()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

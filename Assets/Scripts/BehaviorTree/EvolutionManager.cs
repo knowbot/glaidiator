@@ -45,19 +45,19 @@ namespace BehaviorTree
         }
 
 
+        // Mutate all members of population
         public void Mutate()
         {
-            // Mutate all members of population
             foreach(BTree member in _population)
             {
                 member.Mutate(mutationChance);
             }
         }
 
+        // for each member of population, select another random member
+        // and crossover if the two are not the same tree
         public void Crossover()
         {
-            // for each member of population, select another random member
-            // and crossover if the two are not the same tree
             foreach (BTree member in _population)
             {
                 BTree mate = _population[Random.Range(0, _population.Count)];
@@ -68,6 +68,7 @@ namespace BehaviorTree
             }
         }
 
+        // init prototype samples for random mutations
         public void CreatePrototypes(BTree tree, Character character) // whatever params needed to init nodes
         {
             prototypesMap = new Dictionary<string, Node>();

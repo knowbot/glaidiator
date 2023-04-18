@@ -54,5 +54,15 @@ namespace BehaviorTree
             Node clone = new Repeater(_child.Clone(), _count);
             return clone;
         }
+
+        public override void Mutate()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override Node Randomized()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

@@ -52,5 +52,15 @@ namespace BasicAI
             Node clone = new TaskGoToTarget(tree, _ownerCharacter);
             return clone;
         }
+
+        public override void Mutate()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override Node Randomized()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
