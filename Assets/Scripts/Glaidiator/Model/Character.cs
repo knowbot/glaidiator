@@ -90,7 +90,7 @@ namespace Glaidiator.Model
 			    new Attack(
 					new ActionInfo((int)ActionLookup.AttackLight, "Light Attack", 10f, false, false, 0.9f), 
 					new Hitbox<Attack>(
-						new AABB(Vector2.zero, new Vector2(0, 1), true, Vector2.one), 
+						new Box(Vector2.zero, new Vector2(0, 1), true, Vector2.one), 
 						this,
 						0.6f),
 					10f));
@@ -98,7 +98,7 @@ namespace Glaidiator.Model
 			    new Attack(
 				    new ActionInfo((int)ActionLookup.AttackHeavy, "Heavy Attack",20f, false, false, 1.8f), 
 				    new Hitbox<Attack>(
-					    new AABB(Vector2.zero, new Vector2(0, 1), true, Vector2.one * 2f),
+					    new Box(Vector2.zero, new Vector2(0, 1), true, Vector2.one * 2f),
 					    this,
 					    1.2f),
 				    25f, 3.3f));

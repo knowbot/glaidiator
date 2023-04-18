@@ -19,6 +19,7 @@ namespace Glaidiator.Model.Collision
         public Character Owner { get; private set; }
         public T Origin { get; internal set; }
         public Timer Lifetime { get; private set; }
+
         public Vector2 Direction = Vector2.zero;
 
         public Hitbox(Collider2D collider, Character owner, float lifetime = 0f)
@@ -58,7 +59,7 @@ namespace Glaidiator.Model.Collision
         public virtual void Update(float deltaTime)
         {
             // when lifetime is over, reset collider and deregister
-            if (Lifetime is not null && Lifetime.Tick(deltaTime)) ToDestroy = true;
+            if (Lifetime is not null && !Lifetime.Tick(deltaTime)) ToDestroy = true;
         }
         public object Clone()
         {
