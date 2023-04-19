@@ -1,25 +1,22 @@
-﻿namespace Glaidiator.Model.Actions
+﻿using System;
+using Glaidiator.Model.Actions;
+using Glaidiator.Model.Utils;
+
+namespace Glaidiator.Model.Actions
 {
-    public class Block : AAction, IHasCooldown
+    public class Block : ICooldown, IAction
     {
+        public ActionInfo Action { get; }
         public string Name { get; }
         public Timer Cooldown { get; }
-        
-        public Block(int id, string name, float cost, bool canMove, bool canAction, float duration, float cooldownDuration = 0f) 
-            : base(id, cost, canMove, canAction, duration)
+
+        public Block(ActionInfo action,float cooldownDuration = 0f)
         {
-            Name = name;
             Cooldown = new Timer(cooldownDuration);
         }
-        public IHasCooldown SetOnCooldown()
+        public ICooldown SetOnCooldown()
         {
             Cooldown.Reset();
-            return this;
-        }
-
-        public override AAction Start()
-        {
-            Duration.Reset();
             return this;
         }
     }

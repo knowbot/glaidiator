@@ -10,6 +10,11 @@ namespace Micosmo.SensorToolkit.Example
 
         Rigidbody rb;
 
+        public Health(float f)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public float HP { get; private set; }
 
         public void Impact(float amount, Vector3 impactForce, Vector3 impactPoint)
