@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Glaidiator.Model;
 using UnityEngine;
 
 
@@ -16,16 +17,15 @@ namespace BehaviorTree
         RUNNING, SUCCESS, FAILURE
     }
     
-    public class Node
+    public abstract class Node
     {
-
+        // TODO: consider access levels
         protected NodeState state;
         protected BTree tree;
-
-        public Node parent;
+        protected Character _ownerCharacter;
+        protected Node parent;
         protected List<Node> children = new List<Node>();
 
-        //private Dictionary<string, object> _dataContext = new Dictionary<string, object>();
 
         public Node() 
         {
@@ -43,14 +43,82 @@ namespace BehaviorTree
             foreach (Node node in children) Attach(node);
         }
 
-        private void Attach(Node node)
+        public virtual NodeState Evaluate() => NodeState.FAILURE;
+
+        public abstract Node Clone();
+
+        public abstract void Mutate();
+        
+        public abstract Node Randomized();
+        
+
+        public void Attach(Node node) // add child
         {
             node.parent = this;
+            node.SetTree(tree);
             children.Add(node);
         }
 
-        public virtual NodeState Evaluate() => NodeState.FAILURE;
+        public void Detach(Node node) // remove child
+        {
+            if (children.Remove(node))
+            {
+                
+            }
+            else
+            {
+                // throw error?
+            }
+        }
 
+        public void replaceChild(Node oldChild, Node newChild)
+        {
+            int i = children.IndexOf(oldChild);
+            newChild.SetParent(this);
+            newChild.SetTree(this.tree);
+            children[i] = newChild;
+        }
+        
+        // return flat list representation of tree/subtree of this node
+        public virtual void Flatten(List<Node> nodes)
+        {
+            nodes.Add(this);
+            foreach (Node child in children)
+            {
+                child.Flatten(nodes);
+            }
+        }
+
+        public Node GetParent()
+        {
+            return parent;
+        }
+
+        public void SetParent(Node nParent)
+        {
+            this.parent = nParent;
+        }
+
+        public BTree GetTree()
+        {
+            return tree;
+        }
+
+        public void SetTree(BTree newTree)
+        {
+            tree = newTree;
+        }
+
+        public void SetOwner(Character owner)
+        {
+            _ownerCharacter = owner;
+        }
+
+        public Character GetOwner()
+        {
+            return _ownerCharacter;
+        }
+        
         public void SetData(string key, object value)
         {
             //_dataContext[key] = value;

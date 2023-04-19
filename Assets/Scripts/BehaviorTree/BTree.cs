@@ -1,18 +1,19 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Glaidiator.Model;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace BehaviorTree
 {
     public abstract class BTree
     {
         protected Transform _transform;
-        
-        private Node _root = null;
-
-        public Node currentNode;
-        public Node _current;
+        protected Node _root = null;
+        protected Character _enemyChar;
+        protected Character _ownerChar;
+        protected float _fitness; // remove in favor of evo manager candidate class?
         
         private Dictionary<string, object> _dataContext = new Dictionary<string, object>();
 
@@ -24,9 +25,14 @@ namespace BehaviorTree
         public bool Block;
         public bool Dodge;
 
-        public BTree(Transform transform)
+        //public BTree(Transform transform) // redundant?
+        //{
+        //    _transform = transform;
+        //}
+
+        public BTree(Character owner)
         {
-            _transform = transform;
+            _ownerChar = owner;
         }
 
         public void Awake()
@@ -53,9 +59,108 @@ namespace BehaviorTree
 
         protected abstract Node SetupTree();
 
+        public abstract BTree Clone();
+
+        public void Crossover(BTree mate, float chance)
+        {
+            if (chance < Random.Range(0f, 1f)) return;
+
+            List<Node> nodes1 = new List<Node>();
+            _root.Flatten(nodes1);
+            Node swapNode1 = nodes1[Random.Range(0, nodes1.Count)];
+
+            List<Node> nodes2 = new List<Node>();
+            mate._root.Flatten(nodes2);
+            Node swapNode2 = nodes2[Random.Range(0, nodes2.Count)];
+
+            Node parent1 = swapNode1.GetParent();
+            Node parent2 = swapNode2.GetParent();
+            
+            if (parent1 != null) // check if not root
+            {
+                parent1.replaceChild(swapNode1, swapNode2);
+            }
+            else
+            {
+                _root = parent2;
+                _root.SetOwner(swapNode1.GetOwner());
+                _root.SetParent(null); // a root node has no parent
+            }
+
+            if (parent2 != null) 
+            {
+                parent2.replaceChild(swapNode2, swapNode1);
+            }
+            else
+            {
+                mate._root = swapNode1;
+                mate._root.SetOwner(swapNode2.GetOwner());
+                mate._root.SetParent(null); 
+            }
+            
+            // dirty flag?
+        }
+
+        
+        public void Mutate(float chance)
+        {
+            if (chance < Random.Range(0f, 1f)) return;
+
+            List<Node> nodes = new List<Node>();
+            _root.Flatten(nodes);
+
+            if (0.8f < Random.Range(0f, 1f)) // 80% chance of mutating a random child
+            {
+                // select random element in nodes and invoke mutate on it
+                nodes[Random.Range(0, nodes.Count)].Mutate();
+            }
+            else
+            {
+                // sample node from EvolutionManager
+                // replace random existing node with the sample
+                int pSize = EvolutionManager.prototypes.Count;
+                Node newNode = EvolutionManager.prototypes[Random.Range(0, pSize)].Randomized();
+                Node oldNode = nodes[Random.Range(0, nodes.Count)];
+                Node parent = oldNode.GetParent();
+                if (parent != null) parent.replaceChild(oldNode, newNode);
+            }
+            
+            // add dirty flag?
+        }
+
+        public void SetEnemyChar(Character enemy)
+        {
+            _enemyChar = enemy;
+        }
+
+        public Character GetEnemyChar()
+        {
+            return _enemyChar;
+        }
+
+        public void SetOwnerChar(Character owner)
+        {
+            _ownerChar = owner;
+        }
+        
+        public Character GetOwnerChar()
+        {
+            return _ownerChar;
+        }
+        
         public Node GetRoot()
         {
             return _root;
+        }
+
+        public void SetRoot(Node newRoot)
+        {
+            _root = newRoot;
+        }
+
+        public float GetFitness()
+        {
+            return _fitness;
         }
 
         public void SetTransform(Transform newTransform)

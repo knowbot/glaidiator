@@ -2,16 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using BehaviorTree;
+using Glaidiator.Model;
 
 namespace BasicAI
 {
     public class GuardBT : BTree
     {
-        //private Transform _transform;
-
-        //public Transform[] waypoints;
-        public List<Vector2> waypoints;
-
+        
         public static float speed = 2f;
         public static float fovRange = 4f;
         public static float attackRange = 0.5f;
@@ -35,7 +32,7 @@ namespace BasicAI
                 }),
                 new TaskPatrol(_transform, waypoints),
             });
-            */
+            
             Node root = new Selector(this, new List<Node>
             {
                 new Sequence(this, new List<Node>
@@ -43,14 +40,19 @@ namespace BasicAI
                     new CheckEnemyInRange(this, _transform),
                     new TaskGoToTarget(this, _transform),
                 }),
-                new TaskPatrol(this, _transform, waypoints),
+                new TaskPatrol(this, _transform),
             });
-
-            return root;
+            */
+            // return root;
+            return null;
         }
 
+        public override BTree Clone()
+        {
+            return this;
+        }
 
-        public GuardBT(Transform transform) : base(transform)
+        public GuardBT(Character owner) : base(owner)
         {
         }
     }

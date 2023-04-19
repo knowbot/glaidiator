@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using BehaviorTree;
+using Glaidiator.Model;
 using UnityEngine;
 
 namespace BasicAI
@@ -9,27 +10,37 @@ namespace BasicAI
     public class BossBT : BTree
     {
 
-        public List<Vector2> waypoints = new List<Vector2>();
+        public static float aggroRange = 3f;
+        public static float lightAtkRange = 1.5f;
 
         protected override Node SetupTree()
         {
-            /*
-            Node root = new Repeater(new Selector(this, new List<Node>
+            
+            Node root = new Selector(this, new List<Node>
             {
                 new Sequence(this, new List<Node>
                 {
-                    new CheckEnemyInRange(this, _transform),
-                    new TaskGoToTarget(this, _transform),
+                    new CheckEnemyInRange(this, GetOwnerChar()),
+                    new TaskGoToTarget(this, GetOwnerChar()),
+                    new TaskAttack(this, GetOwnerChar())
                 }),
-                new TaskPatrol(this, _transform, waypoints),
-            }));
-            */
-            Node root = new TaskPatrol(this, _transform, waypoints);
-
+                new TaskPatrol(this, GetOwnerChar()),
+            });
             return root;
         }
 
-        public BossBT(Transform transform) : base(transform)
+        public override BTree Clone()
+        {
+            BTree newTree = new BossBT(_ownerChar);
+            newTree.SetRoot(_root.Clone());
+            return newTree;
+        }
+
+        //public BossBT(Transform transform) : base(transform)
+        //{
+        //}
+
+        public BossBT(Character character) : base(character)
         {
         }
     }

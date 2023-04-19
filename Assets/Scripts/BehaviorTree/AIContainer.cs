@@ -12,11 +12,14 @@ namespace BehaviorTree
     {
         private BTree btree;
 
+        public GameObject PlayerObject;
         
         private void Awake()
         {
-            btree = new BossBT(transform);
+            //btree = new BossBT(transform);
+            btree = new BossBT(GetComponent<CharacterPresenter>().GetCharacter());
             btree.Awake();
+            btree.SetEnemyChar(PlayerObject.GetComponent<CharacterPresenter>().GetCharacter());
         }
 
         void Start()
@@ -27,7 +30,7 @@ namespace BehaviorTree
         void Update()
         {
             btree.Update();
-            Vector3 dir = new Vector3(btree.Direction.x, 0f, btree.Direction.y);
+            Vector3 dir = btree.Direction.x0y();
             //Vector2 dir = btree.Direction;
             Inputs.move = btree.Move ? dir : Vector3.zero;
             Inputs.attackLight = btree.AttackLight;
@@ -35,12 +38,7 @@ namespace BehaviorTree
             Inputs.attackRanged = btree.AttackRanged;
             Inputs.block = btree.Block;
             Inputs.dodge = btree.Dodge;
-            //Inputs.attackLight = _playerActions.Gameplay.AttackLight.WasPressedThisFrame();
-            //Inputs.attackHeavy  = _playerActions.Gameplay.AttackHeavy.WasPressedThisFrame();
-            //Inputs.attackRanged  = _playerActions.Gameplay.AttackRanged.WasPressedThisFrame();
-            //Inputs.block  = _playerActions.Gameplay.Block.WasPressedThisFrame();
-            //Inputs.dodge  = _playerActions.Gameplay.Dodge.WasPressedThisFrame();
-            //Inputs.move = GetCameraRelativeMovement(_playerActions.Gameplay.Move.ReadValue<Vector2>());
+            
         }
 
         public override Input GetInputs()

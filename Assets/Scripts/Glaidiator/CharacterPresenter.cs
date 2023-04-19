@@ -77,10 +77,13 @@ namespace Glaidiator
 			// Advance the model
 			_character.Tick(Time.deltaTime);
 			if (_isDisplayStateNotNull) displayState.text = _character.CurrentState.ToString();
-			if (_isDisplayCooldownsNotNull) displayCooldowns.text = "";
-			foreach (IHasCooldown cd in _character.Cooldowns.OrderBy(cd => cd.Name))
+			if (_isDisplayCooldownsNotNull)
 			{
-				displayCooldowns.text += cd.Name + ": " + cd.Cooldown.Duration.ToString("0.00") + "\n";
+				displayCooldowns.text = "";
+				foreach (IHasCooldown cd in _character.Cooldowns.OrderBy(cd => cd.Name))
+				{
+					displayCooldowns.text += cd.Name + ": " + cd.Cooldown.Duration.ToString("0.00") + "\n";
+				}
 			}
 		}
 
