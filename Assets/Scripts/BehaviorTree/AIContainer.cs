@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using BasicAI;
 using Glaidiator;
+using Glaidiator.Presenter;
 using UnityEngine;
 using Input = Glaidiator.Input;
 
@@ -19,11 +20,11 @@ namespace BehaviorTree
             //btree = new BossBT(transform);
             btree = new BossBT(GetComponent<CharacterPresenter>().GetCharacter());
             btree.Awake();
-            btree.SetEnemyChar(PlayerObject.GetComponent<CharacterPresenter>().GetCharacter());
         }
 
         void Start()
         {
+            btree.SetEnemyChar(PlayerObject.GetComponent<PlayerCharacterPresenter>().GetCharacter());
             btree.Start();
         }
 
