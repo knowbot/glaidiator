@@ -9,7 +9,7 @@ namespace WarriorAnims
 
 		[Header("Movement")]
 		public float runSpeed = 6f;
-		private readonly float rotationSpeed = 100f;
+		//private readonly float rotationSpeed = 100f;
 		[HideInInspector] public Vector3 currentVelocity;
 		[HideInInspector] public bool crouch;
 

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 
-namespace Glaidiator.Model
+namespace Glaidiator.Model.Utils
 {
     public abstract class StateMachine
     {

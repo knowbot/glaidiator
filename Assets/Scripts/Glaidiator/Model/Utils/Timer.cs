@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
-namespace Glaidiator.Model
+namespace Glaidiator.Model.Utils
 {
-    public class Timer
+    public class Timer : ICloneable
     {
         private readonly float _duration = 0f;
         public float Duration { get; private set; }
@@ -24,6 +25,11 @@ namespace Glaidiator.Model
         public void Reset()
         {
             Duration = _duration;
+        }
+
+        public object Clone()
+        {
+            return MemberwiseClone();
         }
     }
 }

@@ -1,29 +1,27 @@
 ﻿using System;
+using Glaidiator.Model.Actions;
+using Glaidiator.Model.Utils;
 using UnityEngine;
 
 namespace Glaidiator.Model.Actions
 {
-    public class Dodge : AAction, IHasCooldown
+    public class Dodge : ICooldown, IAction
     {
-        public string Name { get; } 
+        public ActionInfo Action { get; }
+        public string Name { get; }
         public Timer Cooldown { get; }
         public Vector3 Direction { get; set; }
         
-        public Dodge(int id, string name, float cost, bool canMove, bool canAction, float duration, float cooldownDuration = 0f) 
-            : base(id, cost, canMove, canAction, duration)
+        public Dodge(ActionInfo action, float cooldownDuration = 0f)
         {
-            Name = name;
+            Action = action;
+            Name = action.Name;
             Cooldown = new Timer(cooldownDuration);
         }
-        public IHasCooldown SetOnCooldown()
+
+        public ICooldown SetOnCooldown()
         {
             Cooldown.Reset();
-            return this;
-        }
-
-        public override AAction Start()
-        {
-            Duration.Reset();
             return this;
         }
     }

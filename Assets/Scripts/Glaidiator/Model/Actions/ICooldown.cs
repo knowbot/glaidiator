@@ -1,10 +1,11 @@
-﻿#nullable enable
+﻿using Glaidiator.Model.Utils;
+
 namespace Glaidiator.Model.Actions
 {
-    public interface IHasCooldown
+    public interface ICooldown
     {
         public string Name { get; }
         public Timer Cooldown { get; }
-        public IHasCooldown SetOnCooldown();
+        public ICooldown SetOnCooldown();
     }
 }
