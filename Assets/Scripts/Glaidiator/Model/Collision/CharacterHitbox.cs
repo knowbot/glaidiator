@@ -13,7 +13,7 @@ namespace Glaidiator.Model.Collision
 
         public override void Update(float deltaTime)
         {
-            Collider.Center = Owner.Movement.Position.xz();
+            Collider.Position = Owner.Movement.Position.xz();
         }
     }
 }

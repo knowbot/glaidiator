@@ -9,6 +9,7 @@ using Glaidiator.Model.Utils;
 using RPGCharacterAnims.Actions;
 using UnityEngine;
 using Attack = Glaidiator.Model.Actions.Attack;
+using BoxCollider = Glaidiator.Model.Collision.BoxCollider;
 using Collider2D = Glaidiator.Model.Collision.Collider2D;
 
 namespace Glaidiator.Model
@@ -80,7 +81,7 @@ namespace Glaidiator.Model
 		    // TODO: insert actual logic
 		    _newState = state.current;
 		    Movement = new Movement(transform);
-		    Hitbox = new CharacterHitbox(new Circle(Movement.Position.xz(), Vector2.zero, false, 0.75f), this);
+		    Hitbox = new CharacterHitbox(new CircleCollider(Movement.Position.xz(), 0.75f,Vector2.zero,  false), this);
 		    Health = new Health(100.0f);
 		    Stamina = new Stamina(100.0f, 0.05f);
 		    CurrentState = CharacterState.Idling;
@@ -90,7 +91,7 @@ namespace Glaidiator.Model
 			    new Attack(
 					new ActionInfo((int)ActionLookup.AttackLight, "Light Attack", 10f, false, false, 0.9f), 
 					new Hitbox<Attack>(
-						new Box(Vector2.zero, new Vector2(0, 1), true, Vector2.one), 
+						new BoxCollider(Vector2.zero, Vector2.one, new Vector2(0, 1), true), 
 						this,
 						0.6f),
 					10f));
@@ -98,7 +99,7 @@ namespace Glaidiator.Model
 			    new Attack(
 				    new ActionInfo((int)ActionLookup.AttackHeavy, "Heavy Attack",20f, false, false, 1.8f), 
 				    new Hitbox<Attack>(
-					    new Box(Vector2.zero, new Vector2(0, 1), true, Vector2.one * 2f),
+					    new BoxCollider(Vector2.zero, Vector2.one * 2f,new Vector2(0, 1), true),
 					    this,
 					    1.2f),
 				    25f, 3.3f));
@@ -106,7 +107,7 @@ namespace Glaidiator.Model
 			    new AttackRanged(
 				    new ActionInfo((int)ActionLookup.AttackRanged, "Ranged Attack",15f, false, false, 1.5f), 
 				    new ProjectileHitbox(
-					    new Circle(Vector2.zero, new Vector2(0, 0.5f), true, 1.0f),
+					    new CircleCollider(Vector2.zero, 1.0f,new Vector2(0, 0.5f), true),
 					    this,
 					    15f, 
 					    7.5f

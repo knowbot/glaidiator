@@ -36,7 +36,7 @@ namespace Glaidiator.Model.Collision
         public void Create()
         {
             Debug.Log("We spawnin'");
-            _collider.Center = Owner.Movement.Position.xz();
+            _collider.Position = Owner.Movement.Position.xz();
             ((Hitbox<T>)Clone()).Register();
         }
         
