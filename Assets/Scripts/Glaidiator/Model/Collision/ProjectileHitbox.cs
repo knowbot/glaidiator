@@ -29,6 +29,6 @@ namespace Glaidiator.Model.Collision
             float d = Speed * deltaTime;
             _distance += d;
             Collider.Position += Direction * d;
-        }
+      }
     }
 }

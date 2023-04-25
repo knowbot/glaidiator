@@ -12,7 +12,7 @@ namespace WarriorAnims
 		void Start() {}
 
 		// Update is called once per frame
-		void LateUpdate()
+		private void LateUpdate()
 		{
 			Vector3 targetCamPos = target.position + _offset;
 			transform.position = Vector3.Lerp(transform.position, targetCamPos, smoothing * Time.deltaTime);

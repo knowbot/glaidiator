@@ -4,6 +4,8 @@ namespace Glaidiator.Model.Collision
 {
     public interface IHitbox
     {
+        public bool Active { get; }
+        public Character Owner { get; }
         Collider2D Collider { get; }
         bool ToDestroy { get; }
         public void Create();

@@ -22,13 +22,13 @@ namespace Glaidiator.Model.Collision
         
         public override void WriteType()
         {
-            Debug.Log("This is a Circle object");
+            
         }
 
     
         public override void Draw()
         {
-            DebugUtils.DrawCircle(Position.x0y(), Radius, 20, Color.yellow);
+            DebugUtils.DrawCircle(Position.x0y(), Radius, 20, Color.cyan);
         }
     }
 }

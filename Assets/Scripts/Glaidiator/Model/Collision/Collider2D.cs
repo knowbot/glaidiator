@@ -11,12 +11,19 @@ namespace Glaidiator.Model.Collision
     {
         protected Shape shape;
         public abstract Shape Shape { get ; set; }
+        
         public Vector2 Offset;
 
         public Vector2 Position
         {
             get => new Vector2(Shape.x, Shape.y);
-            set => Shape.position = new Vector(value.x + Offset.x, value.y + Offset.y);
+            set => Shape.position = new Vector(value.x, value.y);
+        }
+        
+        public float Rotation
+        {
+            get => shape.rotation;
+            set => shape.rotation = value;
         }
         
         public bool IsTrigger { get; private set; }

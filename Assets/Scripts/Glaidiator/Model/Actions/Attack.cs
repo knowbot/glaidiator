@@ -35,7 +35,7 @@ namespace Glaidiator.Model.Actions
             return this;
         }
 
-        public void SpawnHitbox(Vector2 direction)
+        public void SpawnHitbox(Vector2 direction, Quaternion rotation)
         {
             Hitbox.Direction = direction;
             Hitbox.Create();

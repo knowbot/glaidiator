@@ -91,7 +91,7 @@ namespace Glaidiator.Model
 			    new Attack(
 					new ActionInfo((int)ActionLookup.AttackLight, "Light Attack", 10f, false, false, 0.9f), 
 					new Hitbox<Attack>(
-						new BoxCollider(Vector2.zero, Vector2.one, new Vector2(0, 1), true), 
+						new BoxCollider(Vector2.zero, new Vector2(2, 2), new Vector2(0, 1), true), 
 						this,
 						0.6f),
 					10f));
@@ -99,7 +99,7 @@ namespace Glaidiator.Model
 			    new Attack(
 				    new ActionInfo((int)ActionLookup.AttackHeavy, "Heavy Attack",20f, false, false, 1.8f), 
 				    new Hitbox<Attack>(
-					    new BoxCollider(Vector2.zero, Vector2.one * 2f,new Vector2(0, 1), true),
+					    new BoxCollider(Vector2.zero, new Vector2(3,3),new Vector2(0, 1.5f), true),
 					    this,
 					    1.2f),
 				    25f, 3.3f));
@@ -107,7 +107,7 @@ namespace Glaidiator.Model
 			    new AttackRanged(
 				    new ActionInfo((int)ActionLookup.AttackRanged, "Ranged Attack",15f, false, false, 1.5f), 
 				    new ProjectileHitbox(
-					    new CircleCollider(Vector2.zero, 1.0f,new Vector2(0, 0.5f), true),
+					    new CircleCollider(Vector2.zero, 1.0f,Vector2.zero, true),
 					    this,
 					    15f, 
 					    7.5f
@@ -279,7 +279,8 @@ namespace Glaidiator.Model
         private void Attacking_Enter()
         {
 	        if (ActiveAction is not Attack attack) return;
-	        attack.SpawnHitbox(Movement.LastDir.xz());
+	        attack.SpawnHitbox(Movement.LastDir.xz(), Movement.Rotation);
+	        Debug.Log(Utils.Math.GetSignedAngle(Movement.Rotation, Quaternion.Euler(0, 0, 0), Vector3.up));
 	        Cooldowns.Add(attack.SetOnCooldown());
 	        OnAttackStart();
         }

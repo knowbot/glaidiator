@@ -7,6 +7,8 @@ namespace Glaidiator.Model.Collision
 {
     public class BoxCollider : Collider2D
     {
+        public Vector2 Size;
+        
         public override Shape Shape
         {
             get => (Polygon)shape;
@@ -15,17 +17,18 @@ namespace Glaidiator.Model.Collision
         public BoxCollider(Vector2 position, Vector2 size, Vector2 offset, bool isTrigger) : 
             base(offset, isTrigger)
         {
+            Size = size;
             shape = Polygon.rectangle(position.x, position.y, size.x, size.y);
         }
 
         public override void WriteType()
         {
-            Debug.Log("This is an box object");
+       
         }
 
         public override void Draw()
         {
-            Debug.Log("tryna draw a box");
+            DebugUtils.DrawRect(Position.x0y(), Quaternion.Euler(0, Rotation, 0), Size, Color.cyan);
         }
     }
 }
