@@ -7,7 +7,11 @@ namespace BehaviorTree
 
     public class AlwaysSucceed : Decorator
     {
+
+        public AlwaysSucceed() : base() { }
         
+        public AlwaysSucceed(List<Node> children) : base(children) {}
+
         public AlwaysSucceed(Node child)
         {
             _child = child;
@@ -36,18 +40,30 @@ namespace BehaviorTree
         
         public override Node Clone()
         {
-            Node clone = new AlwaysSucceed(_child.Clone());
+            Node clone;
+            if (_child != null)
+            {
+                clone = new AlwaysSucceed(_child.Clone());
+            }
+            else
+            {
+                clone = new AlwaysSucceed();
+            }
+            
             return clone;
         }
 
         public override void Mutate()
         {
-            throw new System.NotImplementedException();
+            if (_child == null)
+            {
+                _child = EvolutionManager.GetNewRandomNode().Clone();
+            }
         }
 
         public override Node Randomized()
         {
-            throw new System.NotImplementedException();
+            return new AlwaysSucceed(EvolutionManager.GetNewRandomNode().Randomized());
         }
     }
     
