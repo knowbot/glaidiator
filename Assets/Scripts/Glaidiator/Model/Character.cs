@@ -302,6 +302,7 @@ namespace Glaidiator.Model
         private void Blocking()
         {
 	        IAction block = _actions["block"];
+	        Debug.Log(block.Action.Name);
 	        if (IsOnCooldown<Block>(block)) return;
 	        if (!HasEnoughStamina(block))
 	        {

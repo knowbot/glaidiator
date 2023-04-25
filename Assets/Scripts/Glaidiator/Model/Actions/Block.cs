@@ -12,6 +12,8 @@ namespace Glaidiator.Model.Actions
 
         public Block(ActionInfo action,float cooldownDuration = 0f)
         {
+            Action = action;
+            Name = action.Name;
             Cooldown = new Timer(cooldownDuration);
         }
         public ICooldown SetOnCooldown()
