@@ -8,6 +8,7 @@ namespace Glaidiator.Model
 	    private const float SPEED = 6f;
 	    private const float DODGE_SPEED = 10f;
 	    private const float ROT_SPEED = 100f;
+	    public Vector3 LastPos;
 	    public Vector3 LastDir;
 
 	    public Vector3 CurrVelocity { get; private set; }
@@ -16,6 +17,7 @@ namespace Glaidiator.Model
 	    public Movement(Transform transform)
 	    {
 		    Position = transform.position;
+		    LastPos = Position;
 		    Rotation = transform.rotation;
 	    }
 	    public Vector3 Position { get; private set; }
@@ -25,6 +27,7 @@ namespace Glaidiator.Model
 
 	    public void Move(Vector3 dir, float deltaTime)
 	    {
+		    LastPos = Position;
 		    Rotate(dir, deltaTime);
 			CurrVelocity = dir * SPEED;
 			Position += CurrVelocity * deltaTime;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Differ.Data;
 using Glaidiator.Model.Actions;
 using Micosmo.SensorToolkit;
 using UnityEngine;
@@ -29,27 +30,48 @@ namespace Glaidiator.Model.Collision
                 foreach (IHitbox other in from other in notChecked.ToList() 
                          where other.Active
                          where other != hb 
-                         where other.Owner != hb.Owner 
-                         where Differ.Collision.shapeWithShape(hb.Collider.Shape, other.Collider.Shape) != null 
+                         where other.Owner != hb.Owner
                          select other)
                 {
-                    HandleCollision(hb, other);
+                    ShapeCollision collisionInfo = Differ.Collision.shapeWithShape(hb.Collider.Shape, other.Collider.Shape);
+                    if(collisionInfo != null)
+                        HandleCollision(hb, other, collisionInfo);
                 }
                 notChecked.Remove(hb);
             }
             Cleanup();
         }
 
-        private static void HandleCollision(IHitbox a, IHitbox b)
+        private static void HandleCollision(IHitbox a, IHitbox b, ShapeCollision info)
         {
             if (!a.Active || !b.Active) return;
-            if (a is Hitbox<Attack> aAtk && b is Hitbox<Character> bChr)
+            switch (a)
             {
-                bChr.Owner.Health.Subtract(aAtk.Origin.Damage);
-                aAtk.Active = false;
-            } else if (b is Hitbox<Attack> bAtk && a is Hitbox<Character> aChr){
-                aChr.Owner.Health.Subtract(bAtk.Origin.Damage);
-                bAtk.Active = false;
+                case Hitbox<Character> chr:
+                    switch (b)
+                    {
+                        case Hitbox<Attack> atk:
+                            chr.Owner.GetHit(atk.Origin);
+                            atk.Active = false;
+                            break;
+                        case Hitbox<Wall> wall:
+                            chr.Owner.WallCollide(wall, info);
+                            break;
+                    }
+
+                    break;
+                case Hitbox<Attack> atk:
+                    switch (b)
+                    {
+                        case Hitbox<Character> chr:
+                            chr.Owner.GetHit(atk.Origin);
+                            atk.Active = false;
+                            break;
+                        case Hitbox<Wall> wall:
+                            break;
+                    }
+
+                    break;
             }
         }
         

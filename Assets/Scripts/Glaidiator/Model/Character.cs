@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using Differ.Data;
 using Glaidiator.Model.Actions;
 using Glaidiator.Model.Actions.Lookups;
 using Glaidiator.Model.Collision;
@@ -94,7 +95,7 @@ namespace Glaidiator.Model
 						new BoxCollider(Vector2.zero, new Vector2(2, 2), new Vector2(0, 1), true), 
 						this,
 						0.6f),
-					10f));
+					10f, 1.0f));
 		    _actions.Add("atkHeavy", 
 			    new Attack(
 				    new ActionInfo((int)ActionLookup.AttackHeavy, "Heavy Attack",20f, false, false, 1.8f), 
@@ -114,7 +115,7 @@ namespace Glaidiator.Model
 				    ), 
 				    10f, 5.5f));
 		    _actions.Add("block", new Block(new ActionInfo((int)ActionLookup.Block, "Block",10f, false, false,1.0f), 3.0f));
-		    _actions.Add("dodge", new Dodge(new ActionInfo((int)ActionLookup.Dodge, "Dodge",25f,false, false,0.5f), 1.0f));
+		    _actions.Add("dodge", new Dodge(new ActionInfo((int)ActionLookup.Dodge, "Dodge",25f,false, false,0.5f), 0.8f));
 	    }
 	    
 	    #endregion
@@ -364,6 +365,35 @@ namespace Glaidiator.Model
 	        OnDodgeEnd();
         }
         #endregion
+
+        #endregion
+
+        #region Logic
+
+        public void GetHit(Attack attack)
+        {
+	        switch ((CharacterState)CurrentState)
+	        {
+		        case CharacterState.Blocking:
+			        Debug.Log("BLOCKING AHAHAHAHAHAHAHAH");
+			        Stamina.Add(10f);
+			        return;
+		        case CharacterState.Dodging:
+			        Debug.Log("DODGING AHAHAHAHAHAHAH");
+			        return;
+		        case CharacterState.Idling:
+		        case CharacterState.Moving:
+		        case CharacterState.Attacking:
+		        default:
+			        Health.Subtract(attack.Damage);
+			        return;
+	        }
+        }
+
+        public void WallCollide(Hitbox<Wall> wall, ShapeCollision info)
+        {
+	        
+        }
 
         #endregion
     }
