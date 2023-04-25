@@ -1,6 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Linq;
+using DTT.Utils.Extensions;
+using Random = UnityEngine.Random;
 
 
 namespace BehaviorTree
@@ -51,12 +54,37 @@ namespace BehaviorTree
         
         public override void Mutate()
         {
-            throw new System.NotImplementedException();
+            int choice = Random.Range(0, 3);
+            switch (choice)
+            {
+                // remove random child
+                case 0:
+                    children.RemoveAt(Random.Range(0, children.Count)); // use detach?
+                    //Detach(children[Random.Range(0, children.Count)]);
+                    break;
+                // add new random child
+                case 1:
+                    Attach(EvolutionManager.GetNewRandomNode().Clone());
+                    break;
+                // shuffle order of children
+                case 2:
+                    children.Shuffle();
+                    break;
+            }
         }
 
+        // returns a new selector-node with 1-5 new random children
         public override Node Randomized()
         {
-            throw new System.NotImplementedException();
+            int newCount = Random.Range(1, 5);
+            List<Node> newChildren = new List<Node>();
+            
+            for (int i = 0; i < newCount; i++)
+            {
+                newChildren.Add(EvolutionManager.GetNewRandomNode().Randomized());
+            }
+
+            return new Selector(newChildren);
         }
     }
 }

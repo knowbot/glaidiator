@@ -78,7 +78,7 @@ namespace BehaviorTree
             
             if (parent1 != null) // check if not root
             {
-                parent1.replaceChild(swapNode1, swapNode2);
+                parent1.ReplaceChild(swapNode1, swapNode2);
             }
             else
             {
@@ -89,7 +89,7 @@ namespace BehaviorTree
 
             if (parent2 != null) 
             {
-                parent2.replaceChild(swapNode2, swapNode1);
+                parent2.ReplaceChild(swapNode2, swapNode1);
             }
             else
             {
@@ -122,7 +122,7 @@ namespace BehaviorTree
                 Node newNode = EvolutionManager.prototypes[Random.Range(0, pSize)].Randomized();
                 Node oldNode = nodes[Random.Range(0, nodes.Count)];
                 Node parent = oldNode.GetParent();
-                if (parent != null) parent.replaceChild(oldNode, newNode);
+                if (parent != null) parent.ReplaceChild(oldNode, newNode);
             }
             
             // add dirty flag?

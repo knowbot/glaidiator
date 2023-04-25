@@ -71,7 +71,7 @@ namespace BehaviorTree
             }
         }
 
-        public void replaceChild(Node oldChild, Node newChild)
+        public void ReplaceChild(Node oldChild, Node newChild)
         {
             int i = children.IndexOf(oldChild);
             newChild.SetParent(this);

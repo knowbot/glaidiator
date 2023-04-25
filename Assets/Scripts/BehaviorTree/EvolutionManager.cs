@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using BehaviorTree;
 using Glaidiator.Model;
 using UnityEngine;
@@ -45,7 +46,7 @@ namespace BehaviorTree
         }
 
 
-        // Mutate all members of population
+        // Invoke Mutate on all members of population
         public void Mutate()
         {
             foreach(BTree member in _population)
@@ -72,7 +73,16 @@ namespace BehaviorTree
         public void CreatePrototypes(BTree tree, Character character) // whatever params needed to init nodes
         {
             prototypesMap = new Dictionary<string, Node>();
-            prototypesMap.Add("TaskAttack", new TaskAttack(tree, character));
+            prototypesMap.Add("TaskAttack", new TaskAttack(character));
+            
+            // TODO: add all node types
+
+            prototypes = prototypesMap.Values.ToList();
+        }
+
+        public static Node GetNewRandomNode()
+        {
+            return prototypes[Random.Range(0, prototypes.Count)];
         }
     }
 }
