@@ -57,12 +57,24 @@ namespace BehaviorTree
 
         public override void Mutate()
         {
-            throw new System.NotImplementedException();
+            if (_count == -1) return; // doesn't make sense to change a forever repeater?
+            int countDiff = Random.Range(-5, 5);
+            int newCount = _count + countDiff;
+            if (newCount > 0)
+            {
+                _count = newCount;
+            }
         }
 
         public override Node Randomized()
         {
-            throw new System.NotImplementedException();
+            Node newChild = EvolutionManager.GetNewRandomNode();
+            if (_count == -1)
+            {
+                return new Repeater(newChild);
+            }
+            return new Repeater(newChild, Random.Range(1, 6));
+            
         }
     }
 }

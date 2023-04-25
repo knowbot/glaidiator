@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using BasicAI;
@@ -21,9 +22,16 @@ public class TaskAttack : Node
         tree = bTree;
         _transform = transform;
     }
+
+    public TaskAttack(Character transform)
+    {
+        _transform = transform.Movement;
+    }
     
     public override NodeState Evaluate()
     {
+        if (tree == null) throw new NullReferenceException();
+        
         Movement target = (Movement)GetData("target");
         if (target == null)
         {
