@@ -3,12 +3,20 @@ namespace Glaidiator.Model.Utils
 {
     public static class DebugUtils
     {
-        public static void DrawRect(Vector3 min, Vector3 max, Color color)
+        public static void DrawRect(Vector3 position, Quaternion orientation, Vector2 extent, Color color)
         {
-            Debug.DrawLine(min, new Vector3(min.x, max.z), color);
-            Debug.DrawLine(new Vector3(min.x, max.z), max, color);
-            Debug.DrawLine(max, new Vector3(max.x, min.z), color);
-            Debug.DrawLine(min, new Vector3(max.x, min.z), color);
+            Vector3 rightOffset = Vector3.right * extent.x * 0.5f;
+            Vector3 upOffset = Vector3.forward * extent.y * 0.5f;
+ 
+            Vector3 offsetA = orientation * (rightOffset + upOffset);
+            Vector3 offsetB = orientation * (-rightOffset + upOffset);
+            Vector3 offsetC = orientation * (-rightOffset - upOffset);
+            Vector3 offsetD = orientation * (rightOffset - upOffset);
+ 
+            Debug.DrawLine(position + offsetA, position + offsetB, Color.blue);
+            Debug.DrawLine(position + offsetB, position + offsetC, Color.red);
+            Debug.DrawLine(position + offsetC, position + offsetD, Color.green);
+            Debug.DrawLine(position + offsetD, position + offsetA, Color.yellow);
         }
         
         public static void DrawCircle(Vector3 position, float radius, int segments, Color color)

@@ -3,6 +3,8 @@ using System.Numerics;
 using Glaidiator.Model.Actions;
 using Glaidiator.Model.Utils;
 using UnityEngine;
+using Math = Glaidiator.Model.Utils.Math;
+using Quaternion = UnityEngine.Quaternion;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 
@@ -10,12 +12,13 @@ namespace Glaidiator.Model.Collision
 {
     public class Hitbox<T> : IHitbox, ICloneable
     {
-        private World _world;
+        public World World { get; private set; }
         private readonly Collider2D _collider;
         private readonly float _lifetime;
         public bool ToDestroy { get; protected set; }
 
         public Collider2D Collider { get; private set; }
+        public bool Active { get; set; } = true;
         public Character Owner { get; private set; }
         public T Origin { get; internal set; }
         public Timer Lifetime { get; private set; }
@@ -24,7 +27,7 @@ namespace Glaidiator.Model.Collision
 
         public Hitbox(Collider2D collider, Character owner, float lifetime = 0f)
         {
-            _world = World.instance;
+            World = World.instance;
             _collider = collider;
             Collider = (Collider2D)_collider.Clone();
             Owner = owner;
@@ -33,15 +36,18 @@ namespace Glaidiator.Model.Collision
             if(_lifetime > 0f) Lifetime = new Timer(_lifetime);
         }
 
-        public void Create()
+        public IHitbox Create()
         {
-            Debug.Log("We spawnin'");
-            _collider.Center = Owner.Movement.Position.xz();
-            ((Hitbox<T>)Clone()).Register();
+            Hitbox<T> newHb = (Hitbox<T>)Clone();
+            newHb.Active = true;
+            newHb.Collider.Rotation = Math.GetSignedAngle(Owner.Movement.Rotation, Quaternion.Euler(0, 0, 0), Vector3.up);
+            newHb.Collider.Position = Owner.Movement.Position.xz() + Collider.Offset.Rotate(newHb.Collider.Rotation);
+            return newHb;
         }
         
         public void Destroy()
         {
+            Active = false;
             Collider = null;
             Deregister();
         }

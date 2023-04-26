@@ -4,10 +4,15 @@ namespace Glaidiator.Model.Collision
 {
     public interface IHitbox
     {
+        public World World { get; }
+        public bool Active { get; }
+        public Character Owner { get; }
         Collider2D Collider { get; }
         bool ToDestroy { get; }
-        public void Create();
+        public IHitbox Create();
         public void Destroy();
+        public void Register();
+        public void Deregister();
         public void Update(float deltaTime);
     }
 }

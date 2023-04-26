@@ -59,7 +59,7 @@ namespace BasicAI
                     _isWaiting = true;
 
                     _currentWP = (_currentWP + 1) % _waypoints.Count;
-                    Debug.Log("current WP is " + _currentWP);
+                    //Debug.Log("current WP is " + _currentWP);
                     
                 }
                 else

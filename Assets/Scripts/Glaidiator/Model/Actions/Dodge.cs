@@ -8,6 +8,10 @@ namespace Glaidiator.Model.Actions
     public class Dodge : ICooldown, IAction
     {
         public ActionInfo Action { get; }
+        public void End()
+        {
+        }
+
         public string Name { get; }
         public Timer Cooldown { get; }
         public Vector3 Direction { get; set; }

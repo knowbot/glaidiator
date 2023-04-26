@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Differ.Data;
+using Glaidiator.Model.Actions;
+using Micosmo.SensorToolkit;
 using UnityEngine;
 
 namespace Glaidiator.Model.Collision
@@ -19,21 +22,61 @@ namespace Glaidiator.Model.Collision
 
         private void Update()
         {
+            var notChecked = new List<IHitbox>(_hitboxes);
             foreach (IHitbox hb in _hitboxes)
             {
                 hb.Collider.Draw();
                 hb.Update(Time.deltaTime);
+                foreach (IHitbox other in from other in notChecked.ToList() 
+                         where other.Active
+                         where other != hb 
+                         where other.Owner != hb.Owner
+                         select other)
+                {
+                    ShapeCollision collisionInfo = Differ.Collision.shapeWithShape(hb.Collider.Shape, other.Collider.Shape);
+                    if(collisionInfo != null)
+                        HandleCollision(hb, other, collisionInfo);
+                }
+                notChecked.Remove(hb);
             }
             Cleanup();
         }
-        public void Add(IHitbox collider)
+
+        private static void HandleCollision(IHitbox a, IHitbox b, ShapeCollision info)
         {
-            _hitboxes.Add(collider);
-            Debug.Log(_hitboxes.Count);
+            if (!a.Active || !b.Active) return;
+            switch (a)
+            {
+                case Hitbox<Character> chr:
+                    switch (b)
+                    {
+                        case Hitbox<Attack> atk:
+                            chr.Owner.GetHit(atk.Origin);
+                            atk.Active = false;
+                            break;
+                    }
+
+                    break;
+                case Hitbox<Attack> atk:
+                    switch (b)
+                    {
+                        case Hitbox<Character> chr:
+                            chr.Owner.GetHit(atk.Origin);
+                            atk.Active = false;
+                            break;
+                    }
+
+                    break;
+            }
         }
-        public void Remove(IHitbox collider)
+        
+        public void Add(IHitbox hitbox)
         {
-            _hitboxes.Remove(collider);
+            _hitboxes.Add(hitbox);
+        }
+        public void Remove(IHitbox hitbox)
+        {
+            _hitboxes.Remove(hitbox);
         }
 
         private void Cleanup()

@@ -9,8 +9,8 @@ namespace Glaidiator.Model.Actions
         private float _distance = 0f;
         public Vector3 Direction { get; set; }
 
-        public AttackRanged(ActionInfo action, ProjectileHitbox hitbox, float damage, float cooldownDuration = 0) 
-            : base(action, hitbox, damage, cooldownDuration)
+        public AttackRanged(ActionInfo action, ProjectileHitbox hitbox, float damage, float cooldown = 0, float delay = 0) 
+            : base(action, hitbox, damage, cooldown, delay)
         {
         }
     }

@@ -11,20 +11,23 @@ namespace Glaidiator.Model.Actions
     public class Attack : IAction, ICooldown
     {
         public ActionInfo Action { get; }
+        public string Name { get; }
         public float Damage;
         public Timer Cooldown { get; }
-        public string Name { get; }
-        public Hitbox<Attack> Hitbox { get; private set; }
+        public Timer Delay { get; }
+        private Hitbox<Attack> Hitbox { get; set; }
+        public IHitbox ActiveHitbox { get; private set; }
 
 
 
         // TODO: add hitbox info
-        public Attack(ActionInfo action, Hitbox<Attack> hitbox, float damage, float cooldownDuration = 0f)
+        public Attack(ActionInfo action, Hitbox<Attack> hitbox, float damage, float cooldown = 0f, float delay = 0f)
         {
             Action = action;
-            Damage = damage;
             Name = action.Name;
-            Cooldown = new Timer(cooldownDuration);
+            Damage = damage;
+            Cooldown = new Timer(cooldown);
+            Delay = new Timer(delay);
             Hitbox = hitbox;
             Hitbox.Origin = this;
         }
@@ -38,7 +41,14 @@ namespace Glaidiator.Model.Actions
         public void SpawnHitbox(Vector2 direction)
         {
             Hitbox.Direction = direction;
-            Hitbox.Create();
+            ActiveHitbox = Hitbox.Create();
+            ActiveHitbox.Register();
+        }
+
+        public void End()
+        {
+            ActiveHitbox = null;
+            Delay.Reset();
         }
     }
 }

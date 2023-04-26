@@ -13,5 +13,7 @@
         {
             return Action.Duration.Tick(deltaTime);
         }
+
+        public void End();
     }
 }

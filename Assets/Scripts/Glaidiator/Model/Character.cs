@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using Differ.Data;
 using Glaidiator.Model.Actions;
 using Glaidiator.Model.Actions.Lookups;
 using Glaidiator.Model.Collision;
@@ -9,6 +10,7 @@ using Glaidiator.Model.Utils;
 using RPGCharacterAnims.Actions;
 using UnityEngine;
 using Attack = Glaidiator.Model.Actions.Attack;
+using BoxCollider = Glaidiator.Model.Collision.BoxCollider;
 using Collider2D = Glaidiator.Model.Collision.Collider2D;
 
 namespace Glaidiator.Model
@@ -80,7 +82,7 @@ namespace Glaidiator.Model
 		    // TODO: insert actual logic
 		    _newState = state.current;
 		    Movement = new Movement(transform);
-		    Hitbox = new CharacterHitbox(new Circle(Movement.Position.xz(), Vector2.zero, false, 0.75f), this);
+		    Hitbox = new CharacterHitbox(new CircleCollider(Movement.Position.xz(), 0.75f,Vector2.zero,  false), this);
 		    Health = new Health(100.0f);
 		    Stamina = new Stamina(100.0f, 0.05f);
 		    CurrentState = CharacterState.Idling;
@@ -90,30 +92,30 @@ namespace Glaidiator.Model
 			    new Attack(
 					new ActionInfo((int)ActionLookup.AttackLight, "Light Attack", 10f, false, false, 0.9f), 
 					new Hitbox<Attack>(
-						new Box(Vector2.zero, new Vector2(0, 1), true, Vector2.one), 
+						new BoxCollider(Vector2.zero, new Vector2(2, 2), new Vector2(0, 1), true), 
 						this,
 						0.6f),
-					10f));
+					10f, 1.0f, 0.2f));
 		    _actions.Add("atkHeavy", 
 			    new Attack(
 				    new ActionInfo((int)ActionLookup.AttackHeavy, "Heavy Attack",20f, false, false, 1.8f), 
 				    new Hitbox<Attack>(
-					    new Box(Vector2.zero, new Vector2(0, 1), true, Vector2.one * 2f),
+					    new BoxCollider(Vector2.zero, new Vector2(3,3),new Vector2(0, 1.5f), true),
 					    this,
 					    1.2f),
-				    25f, 3.3f));
+				    25f, 3.3f, 0.4f));
 		    _actions.Add("atkRanged",
 			    new AttackRanged(
 				    new ActionInfo((int)ActionLookup.AttackRanged, "Ranged Attack",15f, false, false, 1.5f), 
 				    new ProjectileHitbox(
-					    new Circle(Vector2.zero, new Vector2(0, 0.5f), true, 1.0f),
+					    new CircleCollider(Vector2.zero, 1.0f,Vector2.zero, true),
 					    this,
 					    15f, 
 					    7.5f
 				    ), 
 				    10f, 5.5f));
 		    _actions.Add("block", new Block(new ActionInfo((int)ActionLookup.Block, "Block",10f, false, false,1.0f), 3.0f));
-		    _actions.Add("dodge", new Dodge(new ActionInfo((int)ActionLookup.Dodge, "Dodge",25f,false, false,0.5f), 1.0f));
+		    _actions.Add("dodge", new Dodge(new ActionInfo((int)ActionLookup.Dodge, "Dodge",25f,false, false,0.5f), 0.8f));
 	    }
 	    
 	    #endregion
@@ -155,6 +157,7 @@ namespace Glaidiator.Model
 	    
 	    private void ResetActiveAction()
 	    {
+		    ActiveAction?.End();
 		    ActiveAction = null;
 		    SetCanFlags(true, true);
 	    }
@@ -207,7 +210,7 @@ namespace Glaidiator.Model
 
 		private void UpdateActiveAction(float deltaTime)
 		{
-			if (ActiveAction is not null && !ActiveAction.Tick(deltaTime)) ActiveAction = null;
+			if (ActiveAction is not null && !ActiveAction.Tick(deltaTime)) ResetActiveAction();
 		}
 
 	    #endregion
@@ -277,15 +280,16 @@ namespace Glaidiator.Model
 		
         private void Attacking_Enter()
         {
-	        if (ActiveAction is not Attack attack) return;
-	        attack.SpawnHitbox(Movement.LastDir.xz());
-	        Cooldowns.Add(attack.SetOnCooldown());
+	        if (ActiveAction is not Attack atk) return;
+	        Cooldowns.Add(atk.SetOnCooldown());
 	        OnAttackStart();
         }
         
         private void Attacking_Tick(float deltaTime)
         {
-	       // do activeattack stuff
+	        if (ActiveAction is not Attack atk) return;
+	        if (atk.Delay.Tick(deltaTime)) return;
+	        if (atk.ActiveHitbox == null) atk.SpawnHitbox(Movement.LastDir.xz());
         }
         
         private void Attacking_Exit()
@@ -300,6 +304,7 @@ namespace Glaidiator.Model
         private void Blocking()
         {
 	        IAction block = _actions["block"];
+	        Debug.Log(block.Action.Name);
 	        if (IsOnCooldown<Block>(block)) return;
 	        if (!HasEnoughStamina(block))
 	        {
@@ -361,6 +366,30 @@ namespace Glaidiator.Model
 	        OnDodgeEnd();
         }
         #endregion
+
+        #endregion
+
+        #region Logic
+
+        public void GetHit(Attack attack)
+        {
+	        switch ((CharacterState)CurrentState)
+	        {
+		        case CharacterState.Blocking:
+			        Debug.Log("BLOCKING AHAHAHAHAHAHAHAH");
+			        Stamina.Add(10f);
+			        return;
+		        case CharacterState.Dodging:
+			        Debug.Log("DODGING AHAHAHAHAHAHAH");
+			        return;
+		        case CharacterState.Idling:
+		        case CharacterState.Moving:
+		        case CharacterState.Attacking:
+		        default:
+			        Health.Subtract(attack.Damage);
+			        return;
+	        }
+        }
 
         #endregion
     }
