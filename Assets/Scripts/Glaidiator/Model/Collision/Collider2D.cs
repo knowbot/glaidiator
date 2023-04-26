@@ -36,7 +36,9 @@ namespace Glaidiator.Model.Collision
 
         public virtual object Clone()
         {
-            return MemberwiseClone();
+            var newColl = (Collider2D)MemberwiseClone();
+            newColl.Shape = (Shape)shape.Clone();
+            return newColl;
         }
         
         public virtual void WriteType()

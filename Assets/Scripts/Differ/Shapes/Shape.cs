@@ -5,7 +5,7 @@ using Differ.Data;
 
 namespace Differ.Shapes
 {
-	public class Shape
+	public class Shape : ICloneable
 	{
 		/** The state of this shape, if inactive can be ignored in results */
 		public bool active = true;
@@ -140,5 +140,10 @@ namespace Differ.Shapes
 	        _transformMatrix = null;
 
 	    }
+
+		public object Clone()
+		{
+			return MemberwiseClone();
+		}
 	}
 }
