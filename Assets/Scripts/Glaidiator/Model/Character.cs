@@ -390,11 +390,6 @@ namespace Glaidiator.Model
 	        }
         }
 
-        public void WallCollide(Hitbox<Wall> wall, ShapeCollision info)
-        {
-	        
-        }
-
         #endregion
     }
 }

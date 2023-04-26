@@ -54,9 +54,6 @@ namespace Glaidiator.Model.Collision
                             chr.Owner.GetHit(atk.Origin);
                             atk.Active = false;
                             break;
-                        case Hitbox<Wall> wall:
-                            chr.Owner.WallCollide(wall, info);
-                            break;
                     }
 
                     break;
@@ -66,8 +63,6 @@ namespace Glaidiator.Model.Collision
                         case Hitbox<Character> chr:
                             chr.Owner.GetHit(atk.Origin);
                             atk.Active = false;
-                            break;
-                        case Hitbox<Wall> wall:
                             break;
                     }
 
