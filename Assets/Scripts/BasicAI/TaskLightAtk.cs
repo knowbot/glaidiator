@@ -1,25 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using BehaviorTree;
+﻿using BehaviorTree;
 
 namespace BasicAI
 {
-    public class TaskMoveForward : Node
+    public class TaskLightAtk : Node
     {
-
-        
-        public TaskMoveForward()
+        public TaskLightAtk()
         {
             
         }
 
         public override NodeState Evaluate()
         {
+            tree.AttackLight = true;
 
-            tree.Move = true;
-            
-            state = NodeState.RUNNING;
+            state = NodeState.SUCCESS;
             return state;
         }
 
