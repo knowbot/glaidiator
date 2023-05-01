@@ -38,7 +38,7 @@ namespace Glaidiator.Presenter
 		protected virtual void Awake()
 		{
 			_transform = transform;
-			Character = new Character(_transform);
+			Character = new Character(WorldObject.instance.World, _transform.position, _transform.rotation);
 			animator = GetComponentInChildren<Animator>();
 			animator.applyRootMotion = false;
 		}

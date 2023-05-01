@@ -15,7 +15,7 @@ namespace Glaidiator.Model.Resources
 
         public void Add(float value)
         {
-            Current = Mathf.Max(Total, Current + value);
+            Current = Mathf.Min(Total, Current + value);
         }
 
         public void Subtract(float value)

@@ -22,18 +22,18 @@ namespace Glaidiator.Model.Collision
         public T Origin { get; internal set; }
         public Timer Lifetime { get; private set; }
 
-        public Vector2 Direction = Vector2.zero;
-
         public Hitbox(Collider2D collider, Character owner, float lifetime = 0f)
         {
-            World = World.instance;
+            Owner = owner;
+            World = Owner.World;
             _collider = collider;
             Collider = (Collider2D)_collider.Clone();
-            Owner = owner;
             ToDestroy = false;
             _lifetime = lifetime;
             if(_lifetime > 0f) Lifetime = new Timer(_lifetime);
         }
+
+        public Vector2 Direction = Vector2.zero;
 
         public IHitbox Create()
         {
@@ -53,12 +53,12 @@ namespace Glaidiator.Model.Collision
 
         public void Register()
         {
-            World.instance.Add(this);
+            World.Add(this);
         }
 
         public void Deregister()
         {
-            World.instance.Remove(this);
+            World.Remove(this);
         }
         
         public virtual void Update(float deltaTime)

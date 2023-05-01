@@ -14,10 +14,10 @@ namespace Glaidiator.Model
 	    public Vector3 CurrVelocity { get; private set; }
 
 
-	    public Movement(Transform transform)
+	    public Movement(Vector3 position, Quaternion rotation)
 	    {
-		    Position = transform.position;
-		    Rotation = transform.rotation;
+		    Position = position;
+		    Rotation = rotation;
 	    }
 
 	    public Vector3 Position
