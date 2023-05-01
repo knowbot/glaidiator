@@ -17,7 +17,8 @@ namespace BehaviorTree
         
         private Dictionary<string, object> _dataContext = new Dictionary<string, object>();
 
-        public Vector2 Direction;
+        public Vector3 Direction;
+
         public bool Move;
         public bool AttackLight;
         public bool AttackHeavy;

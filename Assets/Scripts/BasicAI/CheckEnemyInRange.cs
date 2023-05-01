@@ -16,12 +16,6 @@ namespace BasicAI
             _transform = transform.Movement;
         }
         
-        public CheckEnemyInRange(BTree btree, Movement transform)
-        {
-            tree = btree;
-            _transform = transform;
-        }
-
         public override NodeState Evaluate()
         {
             object t = GetData("target");

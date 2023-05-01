@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Glaidiator.Model.Utils
 {
-    public static class Math
+    public static class MathUtils
     {
         public static float GetSignedAngle(Quaternion a, Quaternion b, Vector3 axis) {
             (b*Quaternion.Inverse(a)).ToAngleAxis(out float angle, out Vector3 angleAxis);
@@ -12,40 +13,40 @@ namespace Glaidiator.Model.Utils
             return Mathf.DeltaAngle(0f, angle);
         }
         
-        public static Vector2 GetDirection(double x, double y) {
-            double absX = Math.Abs(x);
-            double absY = Math.Abs(y);
+        public static Vector3 Get8DDirection(float x, float y) {
+            float absX = Math.Abs(x);
+            float absY = Math.Abs(y);
             if (absX < 0.1 && absY < 0.1) {
                 // close to center
-                return Direction.None;
+                return Vector3.zero;
             }
             if (absX > absY) {
                 // vertical side
-                double half = absX * 0.4142;
-                if (x > 0) {
+                float half = absX * 0.4142f;
+                if (x < 0) {
                     // left side
-                    if (y > half) return Direction.LeftDown;
-                    if (y < -half) return Diretion.LeftUp;
-                    return Direction.Left;
+                    if (y > half) return new Vector3(-1, 0, -1).normalized;
+                    if (y < -half) return new Vector3(-1, 0, 1).normalized;
+                    return new Vector3(-1,0, 0).normalized;
                 } else {
                     // right side
-                    if (y > half) return Direction.RightDown;
-                    if (y < -half) return Direction.RightUp;
-                    return Direction.Right;
+                    if (y > half) return new Vector3(1, 0, -1).normalized;
+                    if (y < -half) return new Vector3(1, 0, 1).normalized;
+                    return new Vector3(1, 0,0).normalized;
                 }
             } else {
-                // horisontal side
-                double half = absY * 0.4142;
-                if (y > 0) {
+                // horizontal side
+                float half = absY * 0.4142f;
+                if (y < 0) {
                     // bottom
-                    if (x > half) return Direction.RightDown;
-                    if (x < -half) return Direction.LeftDown;
-                    return Direction.Down;
+                    if (x > half) return new Vector3(1, 0, -1).normalized;
+                    if (x < -half) return new Vector3(-1, 0, -1).normalized;
+                    return new Vector3(0, 0,-1).normalized;
                 } else {
                     // top
-                    if (x > half) return Direction.RightUp;
-                    if (x < -half) return Direction.LeftUp;
-                    return Direction.Up;
+                    if (x > half) return new Vector3(1, 0, 1).normalized;
+                    if (x < -half) return new Vector3(-1, 0, 1).normalized;
+                    return new Vector3(0, 0, 1).normalized;
                 }
             }
         }
