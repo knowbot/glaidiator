@@ -17,22 +17,28 @@ namespace BasicAI
 
         public override NodeState Evaluate()
         {
+            tree.currentNode = this;// for debug info
             if (tree == null) throw new NullReferenceException();
         
             Movement target = (Movement)GetData("target");
             if (target == null)
             {
+                Debug.Log("CheckEnemyDistance target = null");
                 state = NodeState.FAILURE;
                 return state;
             }
+            
 
             if (Vector3.Distance(_ownerCharacter.Movement.Position, target.Position) <= _threshold)
             {
                 state = NodeState.SUCCESS;
+                Debug.DrawLine(_ownerCharacter.Movement.Position, target.Position, Color.green, 0.2f);
+                //Debug.Log("CheckEnemyDistance state = "+state);
             }
             else
             {
                 state = NodeState.FAILURE;
+                Debug.DrawLine(_ownerCharacter.Movement.Position, target.Position, Color.red, 0.2f);
             }
             
             return state;

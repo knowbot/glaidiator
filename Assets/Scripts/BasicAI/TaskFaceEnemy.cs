@@ -15,6 +15,7 @@ namespace BasicAI
 
         public override NodeState Evaluate()
         {
+            tree.currentNode = this;// for debug info
             if (tree == null) throw new NullReferenceException();
         
             Movement target = (Movement)GetData("target");

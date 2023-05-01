@@ -33,9 +33,10 @@ namespace BasicAI
 
         public override NodeState Evaluate()
         {
+            tree.currentNode = this;
             if (_isWaiting)
             {
-                tree.Direction = _transform.LastDir.xz();
+                tree.Direction = _transform.LastDir;
                 tree.Move = false;
                 
                 _waitCounter += Time.deltaTime;
@@ -51,7 +52,7 @@ namespace BasicAI
 
                 if (Vector2.Distance(_currPos, wp) < 0.01f)
                 {
-                    tree.Direction = _transform.LastDir.xz();
+                    tree.Direction = _transform.LastDir;
                     tree.Move = false;
                     
                     _currPos = wp;
@@ -64,7 +65,7 @@ namespace BasicAI
                 }
                 else
                 {
-                    tree.Direction = (wp - _currPos).normalized;
+                    tree.Direction = (wp - _currPos).normalized.x0y();
                     tree.Move = true;
                     
                     Vector3 temp3d = _currPos.x0y();

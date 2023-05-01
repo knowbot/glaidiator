@@ -26,6 +26,8 @@ namespace BehaviorTree
         public bool Block;
         public bool Dodge;
 
+        public Node currentNode;
+
         public BTree(Character owner)
         {
             if (owner == null) throw new NullReferenceException("BTree init with null owner");
@@ -58,6 +60,12 @@ namespace BehaviorTree
 
         public void Update()
         {
+            Move = false;
+            AttackLight = false;
+            AttackHeavy = false;
+            AttackRanged = false; 
+            Block = false;
+            Dodge = false;
             if (_root != null) _root.Evaluate();
         }
 

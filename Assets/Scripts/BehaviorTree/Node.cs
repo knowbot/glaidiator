@@ -38,6 +38,11 @@ namespace BehaviorTree
         {
             foreach (Node node in children) Attach(node);
         }
+
+        public Node(BTree btree)
+        {
+            tree = btree;
+        }
         
         public Node(BTree btree, List<Node> children)
         {
@@ -106,14 +111,24 @@ namespace BehaviorTree
             return tree;
         }
 
+        // invoke on root to set tree for all nodes in tree
         public void SetTree(BTree newTree)
         {
             tree = newTree;
+            foreach (Node child in children)
+            {
+                child.SetTree(newTree);
+            }
         }
 
+        // invoke on root to set owner for all nodes in tree
         public void SetOwner(Character owner)
         {
             _ownerCharacter = owner;
+            foreach (Node child in children)
+            {
+                child.SetOwner(owner);
+            }
         }
 
         public Character GetOwner()

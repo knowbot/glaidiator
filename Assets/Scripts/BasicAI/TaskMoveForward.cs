@@ -16,10 +16,10 @@ namespace BasicAI
 
         public override NodeState Evaluate()
         {
-
+            tree.currentNode = this; // for debug info
             tree.Move = true;
             
-            state = NodeState.RUNNING;
+            state = NodeState.SUCCESS;
             return state;
         }
 
