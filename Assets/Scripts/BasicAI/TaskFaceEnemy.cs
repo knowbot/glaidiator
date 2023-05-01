@@ -18,13 +18,13 @@ namespace BasicAI
             tree.currentNode = this;// for debug info
             if (tree == null) throw new NullReferenceException();
         
-            Movement target = (Movement)GetData("target");
+            Movement target = (Movement)GetData("enemy");
             if (target == null)
             {
                 state = NodeState.FAILURE;
                 return state;
             }
-
+            
             Vector3 myPos = _ownerCharacter.Movement.Position;
             tree.Direction = (target.Position - myPos).normalized;
 

@@ -20,7 +20,7 @@ namespace BasicAI
             tree.currentNode = this;// for debug info
             if (tree == null) throw new NullReferenceException();
         
-            Movement target = (Movement)GetData("target");
+            Movement target = (Movement)GetData("enemy");
             if (target == null)
             {
                 Debug.Log("CheckEnemyDistance target = null");
@@ -32,13 +32,13 @@ namespace BasicAI
             if (Vector3.Distance(_ownerCharacter.Movement.Position, target.Position) <= _threshold)
             {
                 state = NodeState.SUCCESS;
-                Debug.DrawLine(_ownerCharacter.Movement.Position, target.Position, Color.green, 0.2f);
+                Debug.DrawLine(_ownerCharacter.Movement.Position, target.Position, Color.green, 0.1f);
                 //Debug.Log("CheckEnemyDistance state = "+state);
             }
             else
             {
                 state = NodeState.FAILURE;
-                Debug.DrawLine(_ownerCharacter.Movement.Position, target.Position, Color.red, 0.2f);
+                Debug.DrawLine(_ownerCharacter.Movement.Position, target.Position, Color.red, 0.1f);
             }
             
             return state;

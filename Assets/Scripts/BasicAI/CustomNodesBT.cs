@@ -17,6 +17,7 @@ namespace BasicAI
         {
             Node root = new Selector(new List<Node>
             {
+                // approach and attack behaviour
                 new Selector(new List<Node>
                 {
                     new Sequence(new List<Node>
@@ -33,11 +34,26 @@ namespace BasicAI
                     })
                 }),
                 new TaskPatrol(this, GetOwnerChar()),
+                
+                // default patrol behaviour
+                /*
+                new Selector(new List<Node>
+                {
+                    new Sequence(new List<Node>
+                    {
+                        ()
+                    }),
+                    new Sequence(new List<Node>
+                    {
+                        ()
+                    })
+                })
+                */
             });
             
             root.SetOwner(_ownerChar);
             root.SetTree(this);
-            SetData("target", _enemyChar.Movement);
+            SetData("enemy", _enemyChar.Movement);
             return root;
         }
 
