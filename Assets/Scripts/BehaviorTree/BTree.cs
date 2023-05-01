@@ -28,6 +28,7 @@ namespace BehaviorTree
 
         public BTree(Character owner)
         {
+            if (owner == null) throw new NullReferenceException("BTree init with null owner");
             _ownerChar = owner;
         }
 
@@ -148,6 +149,7 @@ namespace BehaviorTree
         
         public Character GetOwnerChar()
         {
+            if (_ownerChar == null) throw new NullReferenceException("tree has no owner character");
             return _ownerChar;
         }
         

@@ -45,5 +45,10 @@ namespace BasicAI
         }
         
         public BossBT(Node root) : base(root) {}
+
+        public BossBT() : base()
+        {
+            
+        }
     }
 }

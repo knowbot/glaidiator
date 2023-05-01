@@ -18,13 +18,14 @@ namespace BehaviorTree
         
         private void Awake()
         {
-            //btree = new BossBT(transform);
-            btree = new BossBT(GetComponent<CharacterPresenter>().GetCharacter());
+            //btree = new BossBT(transform);s
+            btree = new BossBT();
             btree.Awake();
         }
 
         void Start()
         {
+            btree.SetOwnerChar(GetComponent<CharacterPresenter>().GetCharacter());
             btree.SetEnemyChar(PlayerObject.GetComponent<PlayerCharacterPresenter>().GetCharacter());
             btree.Start();
         }
