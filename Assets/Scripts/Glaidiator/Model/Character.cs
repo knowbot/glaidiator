@@ -111,7 +111,7 @@ namespace Glaidiator.Model
 					    new CircleCollider(Vector2.zero, 1.0f,Vector2.zero, true),
 					    this,
 					    15f, 
-					    7.5f
+					    20f
 				    ), 
 				    10f, 5.5f));
 		    _actions.Add("block", new Block(new ActionInfo((int)ActionLookup.Block, "Block",10f, false, false,1.0f), 3.0f));
@@ -376,11 +376,9 @@ namespace Glaidiator.Model
 	        switch ((CharacterState)CurrentState)
 	        {
 		        case CharacterState.Blocking:
-			        Debug.Log("BLOCKING AHAHAHAHAHAHAHAH");
-			        Stamina.Add(10f);
+			        Health.Add(10f);
 			        return;
 		        case CharacterState.Dodging:
-			        Debug.Log("DODGING AHAHAHAHAHAHAH");
 			        return;
 		        case CharacterState.Idling:
 		        case CharacterState.Moving:

@@ -1,4 +1,5 @@
 ﻿using Glaidiator.Model;
+using Glaidiator.Model.Utils;
 using UnityEngine;
 
 namespace Glaidiator.Presenter

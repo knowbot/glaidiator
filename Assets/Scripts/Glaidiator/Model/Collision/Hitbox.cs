@@ -3,7 +3,6 @@ using System.Numerics;
 using Glaidiator.Model.Actions;
 using Glaidiator.Model.Utils;
 using UnityEngine;
-using Math = Glaidiator.Model.Utils.Math;
 using Quaternion = UnityEngine.Quaternion;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
@@ -40,7 +39,7 @@ namespace Glaidiator.Model.Collision
         {
             Hitbox<T> newHb = (Hitbox<T>)Clone();
             newHb.Active = true;
-            newHb.Collider.Rotation = Math.GetSignedAngle(Owner.Movement.Rotation, Quaternion.Euler(0, 0, 0), Vector3.up);
+            newHb.Collider.Rotation = MathUtils.GetSignedAngle(Owner.Movement.Rotation, Quaternion.Euler(0, 0, 0), Vector3.up);
             newHb.Collider.Position = Owner.Movement.Position.xz() + Collider.Offset.Rotate(newHb.Collider.Rotation);
             return newHb;
         }
