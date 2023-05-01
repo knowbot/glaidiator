@@ -7,13 +7,20 @@ namespace BehaviorTree
     public class Repeater : Decorator
     {
         private int _count = -1;
-        
-        public Repeater(Node child) // forever
+
+        public Repeater() : base() { }
+
+        public Repeater(int count) : base()
+        {
+            _count = count;
+        }
+
+        public Repeater(Node child) : base(child) // forever
         {
             _child = child;
         }
 
-        public Repeater(Node child, int count)
+        public Repeater(Node child, int count) : base(child)
         {
             _child = child;
             _count = count;
@@ -51,7 +58,31 @@ namespace BehaviorTree
 
         public override Node Clone()
         {
-            Node clone = new Repeater(_child.Clone(), _count);
+            Node clone;
+            if (_count < 1)
+            {
+                if (_child != null)
+                {
+                    clone = new Repeater(_child.Clone());
+                }
+                else
+                {
+                    clone = new Repeater();
+                }
+            }
+            else
+            {
+                if (_child != null)
+                {
+                    clone = new Repeater(_child.Clone(), _count);
+                }
+                else
+                {
+                    clone = new Repeater();
+                }
+            }
+            
+
             return clone;
         }
 

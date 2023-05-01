@@ -39,18 +39,30 @@ namespace BehaviorTree
 
         public override Node Clone()
         {
-            Node clone = new Inverter(_child.Clone());
+            Node clone;
+            if (_child != null)
+            {
+                clone = new Inverter(_child.Clone());
+            }
+            else
+            {
+                clone = new Inverter();
+            }
+            
             return clone;
         }
 
         public override void Mutate()
         {
-            throw new System.NotImplementedException();
+            if (_child == null)
+            {
+                _child = EvolutionManager.GetNewRandomNode().Clone();
+            }
         }
 
         public override Node Randomized()
         {
-            throw new System.NotImplementedException();
+            return new Inverter(EvolutionManager.GetNewRandomNode().Randomized());
         }
     }
 }

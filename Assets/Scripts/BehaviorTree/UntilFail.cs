@@ -8,9 +8,11 @@ namespace BehaviorTree
     public class UntilFail : Decorator
     {
 
+        public UntilFail() : base() { }
+        public UntilFail(List<Node> children) : base(children) {}
         public UntilFail(Node child) : base(child)
         {
-            //_child = child;
+            _child = child;
         }
 
         /**
@@ -41,18 +43,29 @@ namespace BehaviorTree
 
         public override Node Clone()
         {
-            Node clone = new UntilFail(_child.Clone());
+            Node clone;
+            if (_child != null)
+            {
+                clone = new UntilFail(_child.Clone());
+            }
+            else
+            {
+                clone = new UntilFail();
+            }
             return clone;
         }
 
         public override void Mutate()
         {
-            throw new System.NotImplementedException();
+            if (_child == null)
+            {
+                _child = EvolutionManager.GetNewRandomNode().Clone();
+            }
         }
 
         public override Node Randomized()
         {
-            throw new System.NotImplementedException();
+            return new UntilFail(EvolutionManager.GetNewRandomNode().Randomized());
         }
     }
 }

@@ -43,5 +43,7 @@ namespace BasicAI
         public BossBT(Character character) : base(character)
         {
         }
+        
+        public BossBT(Node root) : base(root) {}
     }
 }

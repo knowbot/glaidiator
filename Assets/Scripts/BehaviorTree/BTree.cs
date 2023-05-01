@@ -25,15 +25,17 @@ namespace BehaviorTree
         public bool Block;
         public bool Dodge;
 
-        //public BTree(Transform transform) // redundant?
-        //{
-        //    _transform = transform;
-        //}
-
         public BTree(Character owner)
         {
             _ownerChar = owner;
         }
+
+        public BTree(Node root)
+        {
+            SetRoot(root);
+        }
+
+        public BTree() { }
 
         public void Awake()
         {
@@ -160,6 +162,7 @@ namespace BehaviorTree
 
         public float GetFitness()
         {
+            // TODO: Implement fitness calculation
             return _fitness;
         }
 
