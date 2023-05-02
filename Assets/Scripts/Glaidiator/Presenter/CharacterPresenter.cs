@@ -11,7 +11,7 @@ namespace Glaidiator.Presenter
 		
 		// Inputs
 		private Input _inputs;
-		public AInputProvider provider;
+		public IInputProvider provider;
 
 		// View
 		private Transform _transform;

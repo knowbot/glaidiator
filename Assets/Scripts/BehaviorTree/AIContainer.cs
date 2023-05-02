@@ -10,11 +10,17 @@ using Input = Glaidiator.Input;
 
 namespace BehaviorTree
 {
-    public class AIContainer : AInputProvider
+    public class AIContainer : MonoBehaviour, IInputProvider
     {
         private BTree btree;
         public String currentNode; // for debug info
         public GameObject PlayerObject;
+        private Input _inputs;
+        public Input Inputs
+        {
+            get => _inputs;
+            private set => _inputs = value;
+        }
         
         private void Awake()
         {
@@ -37,18 +43,18 @@ namespace BehaviorTree
             //Vector3 dir = btree.Direction;
             //Inputs.move = btree.Move ? MathUtils.Get8DDirection(dir.x, dir.z) : Vector3.zero;
             Vector3 dir = MathUtils.Get8DDirection(btree.Direction.x, btree.Direction.z);
-            Inputs.move = btree.Move ? dir : Vector3.zero;
+            _inputs.move = btree.Move ? dir : Vector3.zero;
             
-            Inputs.attackLight = btree.AttackLight;
-            Inputs.attackHeavy = btree.AttackHeavy;
-            Inputs.attackRanged = btree.AttackRanged;
-            Inputs.block = btree.Block;
-            Inputs.dodge = btree.Dodge;
+            _inputs.attackLight = btree.AttackLight;
+            _inputs.attackHeavy = btree.AttackHeavy;
+            _inputs.attackRanged = btree.AttackRanged;
+            _inputs.block = btree.Block;
+            _inputs.dodge = btree.Dodge;
 
             currentNode = btree.currentNode.ToString(); // for debug info
         }
 
-        public override Input GetInputs()
+        public Input GetInputs()
         {
             return Inputs;
         }

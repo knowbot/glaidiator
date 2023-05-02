@@ -30,13 +30,18 @@ namespace Glaidiator.Presenter
 
         private void Update()
         {
+            World.Update(Time.deltaTime);
             if(_manager.CheckDone()) _manager.Init();
         }
 
         private void LateUpdate()
         {
-            _manager.Free();    
-            //World.Update(Time.deltaTime);
+            _manager.Free();
+        }
+
+        private void OnDestroy()
+        {
+            _manager.Destroy();
         }
     }
 }

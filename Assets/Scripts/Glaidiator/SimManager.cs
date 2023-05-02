@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Glaidiator.Model;
 using Glaidiator.Model.Collision;
+using Glaidiator.Presenter;
 using Unity.Burst;
 using Unity.Jobs;
 using Unity.Collections;
@@ -14,10 +15,11 @@ namespace Glaidiator
     {
         #region Fields
 
-        public static float Step => 0.0167f;
+        public static float Step => 0.033f;
         public static float MaxDuration => 30f;
-        public static readonly int SimCount = 20;
-        
+        public static readonly int SimCount = 30;
+
+        private int _completed = 0;
         private readonly List<Sim> _sims;
         private readonly List<GCHandle> _simHandles;
         private readonly List<JobHandle> _simJobHandles;
@@ -53,14 +55,19 @@ namespace Glaidiator
             public World world;
             public Character player;
             public Character enemy;
+            public RandomInputProvider inputs;
             public void Execute()
             {
                 _duration = 0f;
                 while (_duration < MaxDuration)
                 {
-                    world.Update(Step);
+                    player.SetInputs(inputs.RandomInputs());
+                    enemy.SetInputs(inputs.RandomInputs());
                     fitness[simID] += 1.0f;
                     _duration += Step;
+                    player.Tick(Step);
+                    enemy.Tick(Step);
+                    world.Update(Step);
                 }
             }
         }
@@ -79,6 +86,11 @@ namespace Glaidiator
 
         public void Init()
         {
+            // Debug.Log("Running new batch! Just to check, there are " +
+            //           _sims.Count + " sims and " +
+            //           _simHandles.Count  +" GCHandles and " +
+            //           _simJobHandles.Count + " job handles.");
+            _completed = 0;
             _fitnessArray = new NativeArray<float>(SimCount, Allocator.Persistent);
             for(int i = 0; i < SimCount; i++)
             {
@@ -89,7 +101,8 @@ namespace Glaidiator
                     fitness = _fitnessArray,
                     world = world,
                     player = new Character(world, Arena.PlayerStartPos, Arena.PlayerStartRot),
-                    enemy = new Character(world, Arena.EnemyStartPos, Arena.EnemyStartRot)
+                    enemy = new Character(world, Arena.EnemyStartPos, Arena.EnemyStartRot),
+                    inputs = new RandomInputProvider()
                 };
                 GCHandle simHandle = GCHandle.Alloc(sim);
                 var simJob = new SimJob
@@ -107,20 +120,35 @@ namespace Glaidiator
         {
             for (int i = _simJobHandles.Count - 1; i >= 0; --i)
             {
-                if (!_simJobHandles[i].IsCompleted) continue;
-                Debug.Log("Completed simulation " + _sims[i].simID + " with end fitness " + _fitnessArray[i]);
-                _simJobHandles[i].Complete();
-                _simJobHandles.RemoveAt(i);
-                _simHandles[i].Free();
-                _simHandles.RemoveAt(i);
+                if (_simJobHandles[i].IsCompleted)
+                {
+                    Debug.Log("Completed simulation " + _sims[i].simID + " with end fitness " + _fitnessArray[i]);
+                    _completed++;
+                    _simJobHandles[i].Complete();
+                    _simJobHandles.RemoveAt(i);
+                    _simHandles[i].Free();
+                    _simHandles.RemoveAt(i);
+                    _sims.RemoveAt(i);
+                }
             }
-            if (_simJobHandles.Count == 0 && _fitnessArray.IsCreated) _fitnessArray.Dispose();
+
+            if (CheckDone() && _fitnessArray.IsCreated)
+            {
+                _fitnessArray.Dispose();
+            }
         }
 
         public bool CheckDone()
         {
-            return _simJobHandles.Count == 0;
+            return _completed == SimCount;
         }
 
+        public void Destroy()
+        {
+            if(_fitnessArray.IsCreated)
+            {
+                _fitnessArray.Dispose();
+            }
+        }
     }
 }
