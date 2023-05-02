@@ -6,7 +6,6 @@ namespace Glaidiator.Model.Actions
 {
     public class AttackRanged : Attack
     {
-        private float _distance = 0f;
         public Vector3 Direction { get; set; }
 
         public AttackRanged(ActionInfo action, ProjectileHitbox hitbox, float damage, float cooldown = 0, float delay = 0) 
