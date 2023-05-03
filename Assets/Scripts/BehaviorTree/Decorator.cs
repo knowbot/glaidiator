@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Glaidiator.Model;
 using UnityEngine;
 
 namespace BehaviorTree
@@ -28,7 +29,17 @@ namespace BehaviorTree
             _child = child;
         }
         
+        public override void SetTree(BTree newTree)
+        {
+            tree = newTree;
+            _child.SetTree(newTree);
+        }
         
+        public override void SetOwner(Character owner)
+        {
+            _ownerCharacter = owner;
+            _child.SetOwner(owner);
+        }
         
     }
     

@@ -112,7 +112,7 @@ namespace BehaviorTree
         }
 
         // invoke on root to set tree for all nodes in tree
-        public void SetTree(BTree newTree)
+        public virtual void SetTree(BTree newTree)
         {
             tree = newTree;
             foreach (Node child in children)
@@ -122,7 +122,7 @@ namespace BehaviorTree
         }
 
         // invoke on root to set owner for all nodes in tree
-        public void SetOwner(Character owner)
+        public virtual void SetOwner(Character owner)
         {
             _ownerCharacter = owner;
             foreach (Node child in children)

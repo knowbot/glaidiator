@@ -22,20 +22,25 @@ namespace BasicAI
             tree.currentNode = this;// for debug info
             //Vector3 currDir = _ownerCharacter.Movement.LastDir;
             //Vector3 currDir = _ownerCharacter.Movement.Rotation * Vector3.forward;
-            Vector3 currDir = tree.Direction;
+            
             //Debug.Log("turn right, currDir: "+currDir);
             
             //Vector3 right90 = new Vector3(currDir.z, 0f, currDir.x * -1);
             //Vector3 left90 = new Vector3(currDir.z * -1, 0f,currDir.x); 
             
             //if (_turnSteps == 2) tree.Direction = right90;
-            tree.Direction = new Vector3(currDir.z, 0f, currDir.x * -1);
+            
             //Debug.Log("turn right, new dir = "+tree.Direction);
             
             // wip
-            
             // TODO: implement 45 angle turn
 
+            Vector3 currDir = tree.Direction;
+            tree.Direction = new Vector3(currDir.z, 0f, currDir.x * -1);
+            Debug.Log("new direction: "+tree.Direction);
+            Vector3 wp = _ownerCharacter.Movement.Position + (tree.Direction * 2f);
+            Debug.Log("test waypoint: "+wp + "m");
+            
             state = NodeState.SUCCESS;
             return state;
         }

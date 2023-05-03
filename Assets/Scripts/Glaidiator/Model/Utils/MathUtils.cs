@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Numerics;
 using UnityEngine;
+using Quaternion = UnityEngine.Quaternion;
+using Vector2 = UnityEngine.Vector2;
+using Vector3 = UnityEngine.Vector3;
 
 namespace Glaidiator.Model.Utils
 {
@@ -49,6 +53,13 @@ namespace Glaidiator.Model.Utils
                     return new Vector3(0, 0, 1).normalized;
                 }
             }
+        }
+
+        public static float GetSignedDistance(Vector3 origin, Vector3 target)
+        {
+            //Vector3 N = (target - origin).normalized;
+            float dist = (target.x - origin.x) + (target.z - origin.z);
+            return dist;
         }
     }
     

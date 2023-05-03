@@ -39,24 +39,22 @@ namespace BasicAI
                 // default patrol behaviour
                 new Selector(new List<Node>
                 {
+                    new Sequence(new List<Node>
+                    {
+                        new Inverter(new CheckHasWP()),
+                        new TaskSetWP(2f),
+                    }),
                     new Sequence(new List<Node> {
-                        new CheckDistanceToWP(0.1f),
+                        new CheckHasWP(),
+                        new CheckDistanceToWP(0.01f),
                         new TaskTurnRight(),
-                        
+                        new TaskSetWP(2f),
                     }),
                     new Sequence(new List<Node>
                     {
-                        
+                        new TaskMoveForward()    
                     }),
-                    new Sequence(new List<Node>
-                    {
-                        new TaskSetWP(3f),
-                        new TaskMoveForward(),
-                        
-                    })
                 })
-                
-                
             });
             
             root.SetOwner(_ownerChar);

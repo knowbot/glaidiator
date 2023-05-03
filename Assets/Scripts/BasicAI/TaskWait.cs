@@ -21,6 +21,8 @@ namespace BasicAI
 
         public override NodeState Evaluate() // TODO: Test this
         {
+            tree.currentNode = this;
+            
             _countTicks--;
             if (_countTicks > 0)
             {

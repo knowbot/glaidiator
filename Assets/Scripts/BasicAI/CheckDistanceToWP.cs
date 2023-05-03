@@ -1,4 +1,5 @@
 ﻿using BehaviorTree;
+using Glaidiator.Model.Utils;
 using UnityEngine;
 
 namespace BasicAI
@@ -34,16 +35,16 @@ namespace BasicAI
                 return state;
             }
             
-            Debug.Log("test casting vector3: " + (Vector3)target);
-
-            if (Vector3.Distance(_ownerCharacter.Movement.Position, (Vector3)target) <= _threshold)
+            float signedDistance = MathUtils.GetSignedDistance(_ownerCharacter.Movement.Position, (Vector3)target);
+            
+            if (signedDistance <= _threshold)
             {
                 Debug.Log("successfully reached waypoint = " + target);
                 state = NodeState.SUCCESS;
             }
             else
             {
-                Debug.Log("wp dist = "+Vector3.Distance(_ownerCharacter.Movement.Position, (Vector3)target));
+                //Debug.Log("wp dist = "+signedDistance);
                 state = NodeState.FAILURE;
             }
             
