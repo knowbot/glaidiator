@@ -37,17 +37,25 @@ namespace BasicAI
                 //new TaskPatrol(this, GetOwnerChar()),
                 
                 // default patrol behaviour
-                
-                new Sequence(new List<Node> {
-                        new TaskMoveForward(2f),
-                        new TaskTurnRight(), // 90 degree turn
-                        new TaskMoveForward(2f),
+                new Selector(new List<Node>
+                {
+                    new Sequence(new List<Node> {
+                        new CheckDistanceToWP(0.1f),
                         new TaskTurnRight(),
-                        new TaskMoveForward(2f),
-                        new TaskTurnRight(),
-                        new TaskMoveForward(2f),
-                        new TaskTurnRight()
+                        
+                    }),
+                    new Sequence(new List<Node>
+                    {
+                        
+                    }),
+                    new Sequence(new List<Node>
+                    {
+                        new TaskSetWP(3f),
+                        new TaskMoveForward(),
+                        
                     })
+                })
+                
                 
             });
             

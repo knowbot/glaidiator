@@ -42,8 +42,8 @@ namespace BasicAI
                     Debug.Log("dir: "+tree.Direction);
                 }
                 
-                tree.Move = true;
-                state = NodeState.RUNNING;
+                //tree.Move = true;
+                //state = NodeState.RUNNING;
                 
                 if (Vector3.Distance(_ownerCharacter.Movement.Position, (Vector3)target) <= 0.01f)
                 {
@@ -53,6 +53,8 @@ namespace BasicAI
                 }
                 else
                 {
+                    Debug.Log("moving towards target =" + target);
+                    tree.Move = true;
                     state = NodeState.RUNNING;
                 }
             }
