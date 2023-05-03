@@ -2,14 +2,13 @@
 using UnityEngine;
 using BehaviorTree;
 using Glaidiator.Model;
+using Glaidiator.Model.Utils;
 
 namespace BasicAI
 {
     public class CheckEnemyDistance : Node
     {
-
         private float _threshold;
-        
         public CheckEnemyDistance(float threshold)
         {
             _threshold = threshold;
@@ -20,7 +19,7 @@ namespace BasicAI
             tree.currentNode = this;// for debug info
             if (tree == null) throw new NullReferenceException();
         
-            Movement target = (Movement)GetData("enemy");
+            Movement target = ((Character)GetData("enemy"))?.Movement;
             if (target == null)
             {
                 Debug.Log("CheckEnemyDistance target = null");
@@ -47,17 +46,18 @@ namespace BasicAI
         
         public override Node Clone()
         {
-            throw new System.NotImplementedException();
+            return new CheckEnemyDistance(_threshold);
         }
 
         public override void Mutate()
         {
-            throw new System.NotImplementedException();
+            _threshold += MathStuff.Random.NextFloat(2f) - 1f;
+           _threshold = Mathf.Clamp(_threshold, 0f, Arena.MaxSize);
         }
 
         public override Node Randomized()
         {
-            throw new System.NotImplementedException();
+            return new CheckEnemyDistance(MathStuff.Random.NextFloat(Arena.MaxSize));
         }
     }
 }

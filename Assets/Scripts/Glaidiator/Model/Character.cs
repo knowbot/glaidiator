@@ -79,7 +79,6 @@ namespace Glaidiator.Model
 
 	    public Character(Transform transform)
 	    {
-		    // TODO: insert actual logic
 		    _newState = state.current;
 		    Movement = new Movement(transform);
 		    Hitbox = new CharacterHitbox(new CircleCollider(Movement.Position.xz(), 0.75f,Vector2.zero,  false), this);

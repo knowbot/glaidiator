@@ -35,7 +35,7 @@ namespace BasicAI
                 return state;
             }
             
-            float signedDistance = MathUtils.GetSignedDistance(_ownerCharacter.Movement.Position, (Vector3)target);
+            float signedDistance = MathStuff.GetSignedDistance(_ownerCharacter.Movement.Position, (Vector3)target);
             
             if (signedDistance <= _threshold)
             {

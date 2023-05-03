@@ -4,11 +4,13 @@ using UnityEngine;
 using Quaternion = UnityEngine.Quaternion;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
+using Random = Unity.Mathematics.Random;
 
 namespace Glaidiator.Model.Utils
 {
-    public static class MathUtils
+    public static class MathStuff
     {
+        public static Random Random => new Random((uint)Guid.NewGuid().GetHashCode());
         public static float GetSignedAngle(Quaternion a, Quaternion b, Vector3 axis) {
             (b*Quaternion.Inverse(a)).ToAngleAxis(out float angle, out Vector3 angleAxis);
             if(Vector3.Angle(axis, angleAxis) > 90f) {
@@ -62,19 +64,4 @@ namespace Glaidiator.Model.Utils
             return dist;
         }
     }
-    
-    public static class Vector2Extension {
-     
-        public static Vector2 Rotate(this Vector2 v, float degrees) {
-            float sin = Mathf.Sin(degrees * Mathf.Deg2Rad);
-            float cos = Mathf.Cos(degrees * Mathf.Deg2Rad);
-         
-            float tx = v.x;
-            float ty = v.y;
-            v.x = (cos * tx) - (sin * ty);
-            v.y = (sin * tx) + (cos * ty);
-            return v;
-        }
-    }
-    
 }
