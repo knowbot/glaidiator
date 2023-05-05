@@ -60,6 +60,7 @@ namespace BasicAI
             }
             else
             {
+                //Debug.Log("move forward DIR = " + tree.Direction);
                 tree.Move = true;
                 state = NodeState.SUCCESS;
             }

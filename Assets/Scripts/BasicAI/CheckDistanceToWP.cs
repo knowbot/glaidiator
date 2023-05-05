@@ -1,6 +1,9 @@
-﻿using BehaviorTree;
+﻿using System.Numerics;
+using BehaviorTree;
 using Glaidiator.Model.Utils;
 using UnityEngine;
+using Vector2 = UnityEngine.Vector2;
+using Vector3 = UnityEngine.Vector3;
 
 namespace BasicAI
 {
@@ -35,16 +38,20 @@ namespace BasicAI
                 return state;
             }
             
-            float signedDistance = MathStuff.GetSignedDistance(_ownerCharacter.Movement.Position, (Vector3)target);
+            //float signedDistance = MathStuff.GetSignedDistance(_ownerCharacter.Movement.Position, (Vector3)target, tree.Direction);
+            float distance = Vector3.Distance(_ownerCharacter.Movement.Position, (Vector3)target);
+            Vector3 nDir = ((Vector3)target - _ownerCharacter.Movement.Position).normalized;
+            Vector3 nnDir = MathStuff.Get8DDirection(nDir.x, nDir.z);
             
-            if (signedDistance <= _threshold)
+            if (distance <= _threshold || nnDir != tree.Direction)
             {
-                Debug.Log("successfully reached waypoint = " + target);
+                //Debug.Log("successfully reached waypoint = " + target);
+                Debug.Log(_ownerCharacter.Movement.Position);
                 state = NodeState.SUCCESS;
             }
             else
             {
-                //Debug.Log("wp dist = "+signedDistance);
+                //Debug.Log("wp dist = "+distance);
                 state = NodeState.FAILURE;
             }
             

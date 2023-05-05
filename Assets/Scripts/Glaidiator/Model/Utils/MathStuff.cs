@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using Unity.Mathematics;
 using UnityEngine;
 using Quaternion = UnityEngine.Quaternion;
 using Vector2 = UnityEngine.Vector2;
@@ -57,10 +58,28 @@ namespace Glaidiator.Model.Utils
             }
         }
 
-        public static float GetSignedDistance(Vector3 origin, Vector3 target)
+        public static float GetSignedDistance(Vector3 origin, Vector3 target, Vector3 dir)
         {
             //Vector3 N = (target - origin).normalized;
-            float dist = (target.x - origin.x) + (target.z - origin.z);
+            //float dist = (target.x - origin.x) + (target.z - origin.z);
+            //float dotAB = Vector3.Dot(origin, target);
+            //dist = math.sqrt(dist);
+
+            Vector2 o2d = new Vector2(origin.x, origin.z);
+            Vector2 t2d = new Vector2(target.x, target.z);
+            Vector2 dir2d = new Vector2(dir.x, dir.z);
+            
+            // dir
+            //Vector2 dir = (new Vector2(target.x - origin.x, target.z - origin.z)).normalized;
+            float absDist = Vector2.Distance(o2d, t2d);
+
+            //float dist = (dir.x * absDist) + (dir.z * absDist);
+
+            float dist = absDist; // wip
+
+            //float theta = math.atan2(t2d.y - o2d.y, t2d.x - o2d.x);
+            //float dist = ((t2d.x - o2d.x) * math.cos(theta)) + ((t2d.y - o2d.y) * math.sin(theta));
+            
             return dist;
         }
     }

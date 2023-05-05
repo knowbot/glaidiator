@@ -37,6 +37,7 @@ namespace BehaviorTree
             //Vector3 dir = btree.Direction;
             //Inputs.move = btree.Move ? MathUtils.Get8DDirection(dir.x, dir.z) : Vector3.zero;
             Vector3 dir = MathStuff.Get8DDirection(btree.Direction.x, btree.Direction.z);
+            btree.Direction = dir;
             Inputs.move = btree.Move ? dir : Vector3.zero;
             
             Inputs.attackLight = btree.AttackLight;

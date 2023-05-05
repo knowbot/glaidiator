@@ -40,17 +40,19 @@ namespace BasicAI
                 new Selector(new List<Node>
                 {
                     new Sequence(new List<Node> {
-                        new CheckDistanceToWP(0.1f),
+                        new Inverter(new CheckHasWP()),
+                        new TaskSetWP(4f)
+                    }),
+                    new Sequence(new List<Node>
+                    {
+                        new CheckHasWP(),
+                        new CheckDistanceToWP(0.01f),
+                        new TaskClearWP(),
                         new TaskTurnRight(),
-                        
+                        new TaskSetWP(4f)
                     }),
                     new Sequence(new List<Node>
                     {
-                        
-                    }),
-                    new Sequence(new List<Node>
-                    {
-                        new TaskSetWP(3f),
                         new TaskMoveForward()
                     })
                 })

@@ -18,7 +18,7 @@ namespace BasicAI
             tree.currentNode = this;// for debug info
             if (tree == null) throw new NullReferenceException();
         
-            Movement target = (Movement)GetData("enemy");
+            Movement target = ((Character)GetData("enemy"))?.Movement;
             if (target == null)
             {
                 state = NodeState.FAILURE;
