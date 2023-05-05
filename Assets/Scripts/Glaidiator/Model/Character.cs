@@ -19,17 +19,25 @@ namespace Glaidiator.Model
     {
 	    private enum CharacterState
 	    {
-		    Idling = 0,
-		    Moving = 1,
-		    Attacking = 2,
-		    Blocking = 3,
-		    Dodging = 4
+		    Dead = 0,
+		    Idling = 1,
+		    Moving = 2,
+		    Attacking = 3,
+		    Blocking = 4,
+		    Dodging = 5
 	    }
 
 	    #region Flags
 	    
 	    public bool CanMove = true;
 	    public bool CanAction = true;
+
+	    #endregion
+
+	    #region Stats
+
+	    public bool IsDead = false;
+	    public float DamageTaken = 0f;
 
 	    #endregion
 	    
@@ -63,6 +71,7 @@ namespace Glaidiator.Model
 	    public Action? onDodgeTick;
 	    public Action? onDodgeEnd;
 	    
+	    
 	    private void OnLowStamina() => onLowStamina?.Invoke();
 	    private void OnMoveTick() => onMoveTick?.Invoke();
 	    private void OnMoveEnd() => onMoveEnd?.Invoke();
@@ -87,6 +96,7 @@ namespace Glaidiator.Model
 		    Health = new Health(100.0f, 0.01f);
 		    Stamina = new Stamina(100.0f, 0.05f);
 		    CurrentState = CharacterState.Idling;
+		    IsDead = false; 
 
 		    // init actions
 		    _actions.Add("atkLight", 
@@ -171,27 +181,30 @@ namespace Glaidiator.Model
 	    {
 		    // general system ticks
 		    UpdateCooldowns(deltaTime);
-		    UpdateActiveAction(deltaTime);
-		    Stamina.Regen(deltaTime);
-
 		    // init new state 
 		    _newState = CurrentState;
 		    
-		    Idling();// if not doing anything and not moving
-
-		    // if can move
-		    if (CanMove) Moving();
-
-		    // if can action
-		    if(CanAction)
+		    if (IsDead) _newState = CharacterState.Dead;
+		    else
 		    {
-			    if (_inputs.attackLight || _inputs.attackHeavy || _inputs.attackRanged)
-					Attacking();
-			    else if (_inputs.block)
-				    Blocking();
-			    else if (_inputs.dodge)
-				    Dodging();
+			    UpdateActiveAction(deltaTime);
+			    Stamina.Regen(deltaTime);
+			    Idling();// if not doing anything and not moving
+			    // if can move
+			    if (CanMove) Moving();
+
+			    // if can action
+			    if(CanAction)
+			    {
+				    if (_inputs.attackLight || _inputs.attackHeavy || _inputs.attackRanged)
+					    Attacking();
+				    else if (_inputs.block)
+					    Blocking();
+				    else if (_inputs.dodge)
+					    Dodging();
+			    }
 		    }
+		    
 		    // switch state
 		    CurrentState = _newState;
 		    state.Tick(deltaTime);
@@ -217,6 +230,19 @@ namespace Glaidiator.Model
 	    #endregion
 	    
         #region States
+
+        #region Dead
+        private void Dead_Enter()
+        {
+	        if (ActiveAction is not null) { ActiveAction = null; }
+	        Hitbox.Deregister();
+	        Cooldowns.Clear();
+	        Stamina.Subtract(Stamina.Current);
+	        SetCanFlags(false, false);
+        }
+
+
+        #endregion
 
         #region Idling
         
@@ -384,7 +410,12 @@ namespace Glaidiator.Model
 		        case CharacterState.Moving:
 		        case CharacterState.Attacking:
 		        default:
+			        DamageTaken += attack.Damage;
 			        Health.Subtract(attack.Damage);
+			        if (Health.Current <= 0f)
+			        {
+				        IsDead = true;
+			        }
 			        return;
 	        }
         }

@@ -51,24 +51,37 @@ namespace Glaidiator
         {    
             public int simID;
             private float _duration;
+            private int _outcome;
             public NativeArray<float> fitness;
             public World world;
             public Character player;
             public Character enemy;
             public RandomInputProvider inputs;
+
+            private int Outcome()
+            {
+                if (player.IsDead) return 1;
+                if (enemy.IsDead) return -1;
+                return 0;
+            }
             public void Execute()
             {
+                _outcome = 0;
                 _duration = 0f;
-                while (_duration < MaxDuration)
+                while (_duration < MaxDuration && _outcome == 0)
                 {
                     player.SetInputs(inputs.RandomInputs());
                     enemy.SetInputs(inputs.RandomInputs());
-                    fitness[simID] += 1.0f;
                     _duration += Step;
                     player.Tick(Step);
                     enemy.Tick(Step);
                     world.Update(Step);
+                    _outcome = Outcome();
                 }
+
+                fitness[simID] = _outcome * 1000f / _duration // rewards fast wins, slow losses
+                    + player.DamageTaken*100f/enemy.DamageTaken - 100f // damage dealt vs damage taken ratio
+                    + enemy.Health.Current; // reward keeping more health at the end
             }
         }
 
@@ -82,8 +95,6 @@ namespace Glaidiator
         }
         #endregion
         
-       
-
         public void Init()
         {
             // Debug.Log("Running new batch! Just to check, there are " +
