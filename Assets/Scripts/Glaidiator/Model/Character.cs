@@ -84,7 +84,7 @@ namespace Glaidiator.Model
 		    _newState = state.current;
 		    Movement = new Movement(position, rotation);
 		    Hitbox = new CharacterHitbox(new CircleCollider(Movement.Position.xz(), 0.75f,Vector2.zero,  false), this);
-		    Health = new Health(100.0f);
+		    Health = new Health(100.0f, 0.01f);
 		    Stamina = new Stamina(100.0f, 0.05f);
 		    CurrentState = CharacterState.Idling;
 
