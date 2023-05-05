@@ -5,8 +5,8 @@ namespace BasicAI
 {
     public class CustomNodesBT : BTree
     {
-        private static float aggroDist = 4f;
-        private static float atkDist = 1f;
+        private static float aggroDist = 6f;
+        private static float atkDist = 2f;
         
         public CustomNodesBT() : base()
         {
@@ -17,6 +17,7 @@ namespace BasicAI
         {
             Node root = new Selector(new List<Node>
             {
+                // approach and attack behaviour
                 new Selector(new List<Node>
                 {
                     new Sequence(new List<Node>
@@ -29,15 +30,37 @@ namespace BasicAI
                     {
                         new CheckEnemyDistance(aggroDist),
                         new TaskFaceEnemy(),
+                        new TaskWait(),
                         new TaskMoveForward(),                                    
                     })
                 }),
-                new TaskPatrol(this, GetOwnerChar()),
+                //new TaskPatrol(this, GetOwnerChar()),
+                
+                // default patrol behaviour
+                new Selector(new List<Node>
+                {
+                    new Sequence(new List<Node> {
+                        new CheckDistanceToWP(0.1f),
+                        new TaskTurnRight(),
+                        
+                    }),
+                    new Sequence(new List<Node>
+                    {
+                        
+                    }),
+                    new Sequence(new List<Node>
+                    {
+                        new TaskSetWP(3f),
+                        new TaskMoveForward()
+                    })
+                })
+                
+                
             });
             
             root.SetOwner(_ownerChar);
             root.SetTree(this);
-            SetData("target", _enemyChar.Movement);
+            SetData("enemy", _enemyChar);
             return root;
         }
 

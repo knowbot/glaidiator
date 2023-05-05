@@ -1,37 +1,27 @@
-﻿using System;
-using BehaviorTree;
-using Glaidiator.Model;
+﻿using BehaviorTree;
 using UnityEngine;
 
 namespace BasicAI
 {
-    public class TaskFaceEnemy : Node
+    public class TaskSetWP : Node
     {
 
-        public TaskFaceEnemy()
+        private float _distance;
+        
+        public TaskSetWP(float distance)
         {
-            
+            _distance = distance;
         }
 
         public override NodeState Evaluate()
         {
             tree.currentNode = this;// for debug info
-            if (tree == null) throw new NullReferenceException();
-        
-            Movement target = (Movement)GetData("enemy");
-            if (target == null)
-            {
-                state = NodeState.FAILURE;
-                return state;
-            }
-            
-            Vector3 myPos = _ownerCharacter.Movement.Position;
-            tree.Direction = (target.Position - myPos).normalized;
-
+            Vector3 wp = _ownerCharacter.Movement.Position + (tree.Direction * _distance);
+            SetData("wp", wp);
+            Debug.Log("set waypoint: " + wp);
             state = NodeState.SUCCESS;
             return state;
         }
-
 
         public override Node Clone()
         {

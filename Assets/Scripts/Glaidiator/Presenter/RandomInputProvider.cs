@@ -1,6 +1,6 @@
-﻿using UnityEditor;
+﻿using Glaidiator.Model.Utils;
+using UnityEditor;
 using UnityEngine;
-using MathUtils = Glaidiator.Model.Utils.MathUtils;
 
 namespace Glaidiator.Presenter
 {
@@ -17,7 +17,7 @@ namespace Glaidiator.Presenter
                 attackRanged = rnd.NextBool(),
                 block = rnd.NextBool(),
                 dodge = rnd.NextBool(),
-                move = MathUtils.Get8DDirection(rnd.NextFloat(), rnd.NextFloat())
+                move = MathStuff.Get8DDirection(rnd.NextFloat(), rnd.NextFloat())
             };
         }
         

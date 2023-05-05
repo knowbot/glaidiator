@@ -39,7 +39,7 @@ namespace Glaidiator.Model.Collision
         {
             Hitbox<T> newHb = (Hitbox<T>)Clone();
             newHb.Active = true;
-            newHb.Collider.Rotation = MathUtils.GetSignedAngle(Owner.Movement.Rotation, Quaternion.Euler(0, 0, 0), Vector3.up);
+            newHb.Collider.Rotation = MathStuff.GetSignedAngle(Owner.Movement.Rotation, Quaternion.Euler(0, 0, 0), Vector3.up);
             newHb.Collider.Position = Owner.Movement.Position.xz() + Collider.Offset.Rotate(newHb.Collider.Rotation);
             return newHb;
         }

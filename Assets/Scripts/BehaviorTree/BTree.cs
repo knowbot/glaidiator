@@ -43,7 +43,7 @@ namespace BehaviorTree
 
         public void Awake()
         {
-            Direction = Vector2.down;
+            Direction = Vector3.forward;
             Move = false;
             AttackLight = false;
             AttackHeavy = false;
