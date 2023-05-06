@@ -6,12 +6,12 @@ using Glaidiator.Model.Actions;
 
 namespace BasicAI
 {
-    public class CheckEnemyAction : Node
+    public class CheckCanDoAction : Node
     {
 
         private string _actionName;
         
-        public CheckEnemyAction(string actionName)
+        public CheckCanDoAction(string actionName)
         {
             _actionName = actionName;
         }
