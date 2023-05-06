@@ -20,16 +20,18 @@ namespace BasicAI
         {
             tree.currentNode = this;
             if (tree == null) throw new NullReferenceException();
-        
-            //IAction action = ((Character)GetData("enemy"))?.ActiveAction;
-            IAction action = _ownerCharacter?.ActiveAction;
-            if (action == null)
+
+            IAction action = _ownerCharacter._actions[_actionName];
+            float cost = action.Action.Cost;
+            
+            if (_ownerCharacter.Cooldowns.Contains((ICooldown)action) || cost > _ownerCharacter.Stamina.Current)
             {
                 state = NodeState.FAILURE;
-                return state;
             }
-
-            state = _actionName == action.Action.Name ? NodeState.SUCCESS : NodeState.FAILURE;
+            else
+            {
+                state = NodeState.SUCCESS;
+            }
             
             return state;
         }

@@ -5,12 +5,12 @@ using BehaviorTree;
 
 namespace BasicAI
 {
-    public class CheckEnemyInAttackRange : Node
+    public class xCheckEnemyInAttackRange : Node // deprecated
     {
         private Transform _transform;
         //private Animator _animator;
 
-        public CheckEnemyInAttackRange(Transform transform)
+        public xCheckEnemyInAttackRange(Transform transform)
         {
             _transform = transform;
         }

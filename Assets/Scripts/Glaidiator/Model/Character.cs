@@ -44,7 +44,7 @@ namespace Glaidiator.Model
 	    
 	    private Input _inputs;
 
-	    private readonly Dictionary<string, IAction> _actions = new Dictionary<string, IAction>();
+	    public readonly Dictionary<string, IAction> _actions = new Dictionary<string, IAction>();
 	    public readonly List<ICooldown> Cooldowns  = new List<ICooldown>();
 	    public IAction? ActiveAction { get; private set; }
 	    #endregion
@@ -303,7 +303,7 @@ namespace Glaidiator.Model
         private void Blocking()
         {
 	        IAction block = _actions["block"];
-	        Debug.Log(block.Action.Name);
+	        //Debug.Log(block.Action.Name);
 	        if (IsOnCooldown<Block>(block)) return;
 	        if (!HasEnoughStamina(block))
 	        {

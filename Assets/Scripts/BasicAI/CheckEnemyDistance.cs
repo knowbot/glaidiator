@@ -26,9 +26,11 @@ namespace BasicAI
                 state = NodeState.FAILURE;
                 return state;
             }
-            
 
-            if (Vector3.Distance(_ownerCharacter.Movement.Position, target.Position) <= _threshold)
+            float dist = Vector3.Distance(_ownerCharacter.Movement.Position, target.Position);
+            tree.enemyDistance = dist;
+
+            if (dist <= _threshold)
             {
                 state = NodeState.SUCCESS;
                 Debug.DrawLine(_ownerCharacter.Movement.Position, target.Position, Color.green, 0.1f);
