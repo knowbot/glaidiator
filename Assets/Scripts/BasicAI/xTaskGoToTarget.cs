@@ -6,12 +6,12 @@ using Glaidiator.Model;
 
 namespace BasicAI
 {
-    public class TaskGoToTarget : Node
+    public class xTaskGoToTarget : Node // deprecated
     {
 
         private Movement _transform;
 
-        public TaskGoToTarget(BTree btree, Character transform)
+        public xTaskGoToTarget(BTree btree, Character transform)
         {
             tree = btree;
             _transform = transform.Movement;
@@ -36,7 +36,7 @@ namespace BasicAI
                 tree.Direction = ((targetPos - currPos).normalized).xz();
                 tree.Move = true;
 
-                if (Vector3.Distance(currPos, targetPos) < BossBT.lightAtkRange)
+                if (Vector3.Distance(currPos, targetPos) < xBossBT.lightAtkRange)
                 {
                     state = NodeState.SUCCESS;
                     return state;
@@ -49,7 +49,7 @@ namespace BasicAI
 
         public override Node Clone()
         {
-            Node clone = new TaskGoToTarget(tree, _ownerCharacter);
+            Node clone = new xTaskGoToTarget(tree, _ownerCharacter);
             return clone;
         }
 

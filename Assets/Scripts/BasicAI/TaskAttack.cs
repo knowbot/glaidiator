@@ -44,7 +44,7 @@ public class TaskAttack : Node
 
         tree.Direction = ((targetPos - currPos).normalized).xz();
         
-        if (Vector3.Distance(currPos, targetPos) <= BossBT.lightAtkRange)
+        if (Vector3.Distance(currPos, targetPos) <= xBossBT.lightAtkRange)
         {
             tree.AttackLight = true;
             // TODO: Add attack collision

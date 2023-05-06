@@ -34,8 +34,6 @@ namespace BasicAI
                         new TaskMoveForward(),                                    
                     })
                 }),
-                //new TaskPatrol(this, GetOwnerChar()),
-                
                 // default patrol behaviour
                 new Selector(new List<Node>
                 {

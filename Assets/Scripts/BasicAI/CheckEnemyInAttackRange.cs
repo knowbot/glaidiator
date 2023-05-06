@@ -26,7 +26,7 @@ namespace BasicAI
             }
 
             Transform target = (Transform)t;
-            if (Vector3.Distance(_transform.position, target.position) <= GuardBT.attackRange)
+            if (Vector3.Distance(_transform.position, target.position) <= xGuardBT.attackRange)
             {
                 // check = true
 

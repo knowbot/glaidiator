@@ -6,11 +6,11 @@ using UnityEngine;
 
 namespace BasicAI
 {
-    public class CheckEnemyInRange : Node
+    public class xCheckEnemyInRange : Node // deprecated
     {
         private Movement _transform;
 
-        public CheckEnemyInRange(BTree btree, Character transform)
+        public xCheckEnemyInRange(BTree btree, Character transform)
         {
             tree = btree;
             _transform = transform.Movement;
@@ -24,7 +24,7 @@ namespace BasicAI
                 Movement targetTransform = tree.GetEnemyChar().Movement;
                 float dist = Vector3.Distance(_transform.Position, targetTransform.Position);
 
-                if (dist <= BossBT.aggroRange)
+                if (dist <= xBossBT.aggroRange)
                 {
                     SetData("target", targetTransform);
                     state = NodeState.SUCCESS;
@@ -38,7 +38,7 @@ namespace BasicAI
             {
                 Movement tMovement = (Movement)t;
                 float dist = Vector3.Distance(_transform.Position, tMovement.Position);
-                if (dist > BossBT.aggroRange)
+                if (dist > xBossBT.aggroRange)
                 {
                     ClearData("target");
                     state = NodeState.FAILURE;
@@ -52,7 +52,7 @@ namespace BasicAI
 
         public override Node Clone()
         {
-            Node clone = new CheckEnemyInRange(tree, _ownerCharacter);
+            Node clone = new xCheckEnemyInRange(tree, _ownerCharacter);
             return clone;
         }
 
