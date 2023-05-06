@@ -22,7 +22,7 @@ namespace BasicAI
                 {
                     new xCheckEnemyInRange(this, GetOwnerChar()),
                     new xTaskGoToTarget(this, GetOwnerChar()),
-                    new TaskAttack(this, GetOwnerChar())
+                    new xTaskAttack(this, GetOwnerChar())
                 }),
                 new xTaskPatrol(this, GetOwnerChar()),
             });

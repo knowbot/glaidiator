@@ -2,17 +2,14 @@
 
 namespace BasicAI
 {
-    public class TaskBlock : Node
+    public class TaskRangedAtk : Node
     {
-        public TaskBlock()
-        {
-        }
+        public TaskRangedAtk(){}
 
         public override NodeState Evaluate()
         {
-            tree.currentNode = this;// for debug info
-            tree.Block = true;
-
+            tree.currentNode = this;
+            tree.AttackRanged = true;
             state = NodeState.SUCCESS;
             return state;
         }

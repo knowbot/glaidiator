@@ -21,7 +21,8 @@ namespace BasicAI
             tree.currentNode = this;
             if (tree == null) throw new NullReferenceException();
         
-            IAction action = ((Character)GetData("enemy"))?.ActiveAction;
+            //IAction action = ((Character)GetData("enemy"))?.ActiveAction;
+            IAction action = _ownerCharacter?.ActiveAction;
             if (action == null)
             {
                 state = NodeState.FAILURE;

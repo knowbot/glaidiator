@@ -2,18 +2,27 @@
 
 namespace BasicAI
 {
-    public class TaskBlock : Node
+    public class CheckOwnStamina : Node
     {
-        public TaskBlock()
+
+        private float _threshold;
+        
+        public CheckOwnStamina(float threshold)
         {
+            _threshold = threshold;
         }
 
         public override NodeState Evaluate()
         {
-            tree.currentNode = this;// for debug info
-            tree.Block = true;
+            tree.currentNode = this;
 
-            state = NodeState.SUCCESS;
+            if (_ownerCharacter.Stamina.Current >= _threshold)
+            {
+                state = NodeState.SUCCESS;
+                return state;
+            }
+
+            state = NodeState.FAILURE;
             return state;
         }
 

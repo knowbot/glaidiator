@@ -104,7 +104,7 @@ namespace BehaviorTree
         public void CreatePrototypes(BTree tree, Character character) // whatever params needed to init nodes
         {
             prototypesMap = new Dictionary<string, Node>();
-            prototypesMap.Add("TaskAttack", new TaskAttack(character));
+            prototypesMap.Add("TaskLightAtk", new TaskLightAtk());
             
             // TODO: add all node types
 
