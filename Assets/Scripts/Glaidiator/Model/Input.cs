@@ -11,5 +11,6 @@ namespace Glaidiator
         public bool block;
         public bool dodge;
         public Vector3 move;
+        public Vector3 facing;
     }
 }

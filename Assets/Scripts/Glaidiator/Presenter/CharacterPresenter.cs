@@ -10,11 +10,11 @@ namespace Glaidiator.Presenter
 		protected Character Character;
 		
 		// Inputs
-		private Input _inputs;
-		public IInputProvider provider;
+		protected Input inputs;
+		protected IInputProvider provider;
 
 		// View
-		private Transform _transform;
+		protected Transform _transform;
 		[HideInInspector] public Animator animator;
 		private static readonly int Moving = Animator.StringToHash("Moving");
 		private static readonly int VelocityX = Animator.StringToHash("Velocity X");
@@ -31,41 +31,41 @@ namespace Glaidiator.Presenter
 		}
 		
 		protected virtual void Start()
-		{ 
-			Character.Hitbox.Register();
+		{
+			animator = GetComponentInChildren<Animator>();
+			animator.applyRootMotion = false;
 		}
 
 		protected virtual void Awake()
 		{
 			_transform = transform;
 			Character = new Character(WorldObject.instance.World, _transform.position, _transform.rotation);
-			animator = GetComponentInChildren<Animator>();
-			animator.applyRootMotion = false;
+			Character.Hitbox.Register();
 		}
 
 		protected virtual void OnEnable()
 		{
 			// Register observer methods
+			Character.onDeath += OnDeath;
 			Character.onMoveTick += OnMoveTick;
 			Character.onMoveEnd += OnMoveEnd;
 			Character.onAttackStart += OnAttackStart;
 			Character.onBlockStart += OnBlockStart;
 			Character.onBlockEnd += OnBlockEnd;
 			Character.onDodgeStart += OnDodgeStart;
-			Character.onDodgeTick += OnDodgeTick;
 			Character.onDodgeEnd += OnDodgeEnd;
 		}
 
 		protected virtual void OnDisable()
 		{
 			// Deregister observer methods
+			Character.onDeath -= OnDeath;
 			Character.onMoveTick -= OnMoveTick;
 			Character.onMoveEnd -= OnMoveEnd;
 			Character.onAttackStart -= OnAttackStart;
 			Character.onBlockStart -= OnBlockStart;
 			Character.onBlockEnd -= OnBlockEnd;
 			Character.onDodgeStart -= OnDodgeStart;
-			Character.onDodgeTick -= OnDodgeTick;
 			Character.onDodgeEnd -= OnDodgeEnd;
 		}
 
@@ -73,18 +73,18 @@ namespace Glaidiator.Presenter
 		protected virtual void Update()
 		{
 			// Process inputs and pass them onto the model
-			_inputs = provider.GetInputs();
-			Character.SetInputs(_inputs);
+			inputs = provider.GetInputs();
+			Character.SetInputs(inputs);
 			// Advance the model
 			Character.Tick(Time.deltaTime);
+			_transform.position = Character.Movement.Position;
+			_transform.rotation = Character.Movement.Rotation;
 		}
 
 		// Observer methods
 
 		private void OnMoveTick()
 		{
-			_transform.position = Character.Movement.Position;
-			_transform.rotation = Character.Movement.Rotation;
 			animator.SetBool(Moving, true);
 			animator.SetFloat(VelocityX, _transform.InverseTransformDirection(Character.Movement.CurrVelocity).x);
 			animator.SetFloat(VelocityZ, _transform.InverseTransformDirection(Character.Movement.CurrVelocity).z);
@@ -118,17 +118,17 @@ namespace Glaidiator.Presenter
 			animator.SetInteger(Action, 1);
 			SetTriggers();
 		}
-		
-		private void OnDodgeTick()
-		{
-			_transform.position = Character.Movement.Position;
-			_transform.rotation = Character.Movement.Rotation;
-		}
-		
+
 		private void OnDodgeEnd()
 		{
 			animator.SetInteger(Action, 0);
 			ResetTriggers();
+		}
+		
+		private void OnDeath()
+		{
+			animator.SetTrigger(Trigger);
+			animator.SetInteger(TriggerNumber, 9);
 		}
 		
 		private void SetTriggers()
