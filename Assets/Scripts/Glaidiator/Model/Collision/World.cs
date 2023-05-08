@@ -1,32 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Differ.Data;
 using Glaidiator.Model.Actions;
-using Micosmo.SensorToolkit;
 using UnityEngine;
+
 
 namespace Glaidiator.Model.Collision
 {
-    public class World : MonoBehaviour
+    public class World
     {
-        public static World instance;
-        
+
         private readonly List<IHitbox> _hitboxes = new List<IHitbox>();
-
-        private void Awake()
-        {
-            instance = this;
-        }
-
-        private void Update()
+        
+        public void Update(float deltaTime)
         {
             var notChecked = new List<IHitbox>(_hitboxes);
             foreach (IHitbox hb in _hitboxes)
             {
                 hb.Collider.Draw();
-                hb.Update(Time.deltaTime);
+                hb.Update(deltaTime);
                 foreach (IHitbox other in from other in notChecked.ToList() 
                          where other.Active
                          where other != hb 
@@ -85,6 +77,11 @@ namespace Glaidiator.Model.Collision
             {
                 hb.Destroy();
             }
+        }
+
+        public void PrintHitboxCount()
+        {
+            Debug.Log(_hitboxes.Count);
         }
         
     }

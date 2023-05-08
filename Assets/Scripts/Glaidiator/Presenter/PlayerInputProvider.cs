@@ -4,10 +4,16 @@ using UnityEngine;
 
 namespace Glaidiator
 {
-    public class PlayerInputProvider : AInputProvider
+    public class PlayerInputProvider : MonoBehaviour, IInputProvider
     {
         private Camera _camera;
         private PlayerActions _playerActions;
+        private Input _inputs;
+        public Input Inputs
+        {
+            get => _inputs;
+            private set => _inputs = value;
+        }
 
         private void Awake()
         {
@@ -27,12 +33,12 @@ namespace Glaidiator
 
         private void Update()
         {
-            Inputs.attackLight = _playerActions.Gameplay.AttackLight.WasPressedThisFrame();
-            Inputs.attackHeavy  = _playerActions.Gameplay.AttackHeavy.WasPressedThisFrame();
-            Inputs.attackRanged  = _playerActions.Gameplay.AttackRanged.WasPressedThisFrame();
-            Inputs.block  = _playerActions.Gameplay.Block.WasPressedThisFrame();
-            Inputs.dodge  = _playerActions.Gameplay.Dodge.WasPressedThisFrame();
-            Inputs.move = GetCameraRelativeMovement(_playerActions.Gameplay.Move.ReadValue<Vector2>());
+            _inputs.attackLight = _playerActions.Gameplay.AttackLight.WasPressedThisFrame();
+            _inputs.attackHeavy  = _playerActions.Gameplay.AttackHeavy.WasPressedThisFrame();
+            _inputs.attackRanged  = _playerActions.Gameplay.AttackRanged.WasPressedThisFrame();
+            _inputs.block  = _playerActions.Gameplay.Block.WasPressedThisFrame();
+            _inputs.dodge  = _playerActions.Gameplay.Dodge.WasPressedThisFrame();
+            _inputs.move = GetCameraRelativeMovement(_playerActions.Gameplay.Move.ReadValue<Vector2>());
         }
         
         private Vector3 GetCameraRelativeMovement(Vector2 movement)
@@ -46,7 +52,7 @@ namespace Glaidiator
             return movement.x * right + movement.y * forward;
         }
 
-        public override Input GetInputs()
+        public Input GetInputs()
         {
             return Inputs;
         }

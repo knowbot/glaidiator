@@ -10,18 +10,22 @@ using Input = Glaidiator.Input;
 
 namespace BehaviorTree
 {
-    public class AIContainer : AInputProvider
+    public class AIContainer : MonoBehaviour, IInputProvider
     {
         private BTree btree;
         public String currentNode; // for debug info
-        public float enemyDistance;
         public GameObject PlayerObject;
+        private Input _inputs;
+        public Input Inputs
+        {
+            get => _inputs;
+            private set => _inputs = value;
+        }
         
         private void Awake()
         {
             //btree = new BossBT();
-            //btree = new CustomNodesBT();
-            btree = new CustomAshleyBT();
+            btree = new CustomNodesBT();
             btree.Awake();
         }
 
@@ -38,21 +42,19 @@ namespace BehaviorTree
             
             //Vector3 dir = btree.Direction;
             //Inputs.move = btree.Move ? MathUtils.Get8DDirection(dir.x, dir.z) : Vector3.zero;
+
             Vector3 dir = MathStuff.Get8DDirection(btree.Direction.x, btree.Direction.z);
-            btree.Direction = dir;
-            Inputs.move = btree.Move ? dir : Vector3.zero;
-            
-            Inputs.attackLight = btree.AttackLight;
-            Inputs.attackHeavy = btree.AttackHeavy;
-            Inputs.attackRanged = btree.AttackRanged;
-            Inputs.block = btree.Block;
-            Inputs.dodge = btree.Dodge;
+            _inputs.move = btree.Move ? dir : Vector3.zero;
+            _inputs.attackLight = btree.AttackLight;
+            _inputs.attackHeavy = btree.AttackHeavy;
+            _inputs.attackRanged = btree.AttackRanged;
+            _inputs.block = btree.Block;
+            _inputs.dodge = btree.Dodge;
 
             currentNode = btree.currentNode.ToString(); // for debug info
-            enemyDistance = btree.enemyDistance;
         }
 
-        public override Input GetInputs()
+        public Input GetInputs()
         {
             return Inputs;
         }
@@ -61,7 +63,6 @@ namespace BehaviorTree
         public void SetCurrentBTree(BTree tree)
         {
             btree = tree;
-            btree.Awake();
             btree.SetOwnerChar(GetComponent<CharacterPresenter>().GetCharacter());
             btree.SetEnemyChar(PlayerObject.GetComponent<PlayerCharacterPresenter>().GetCharacter());
             btree.Start();

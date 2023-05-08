@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Glaidiator.Model.Resources
 {
@@ -6,21 +7,32 @@ namespace Glaidiator.Model.Resources
     {
         public float Total { get; }
         public float Current { get; private set; }
+        public float RegenRate { get; }
         
-        public Health(float total)
+        public Health(float total,float regenRate)
         {
             Total = total;
             Current = Total;
+            if (regenRate is < 0f or > 1.0f)
+            {
+                throw new ArgumentException("Regeneration rate cannot be negative or exceed 1");
+            }
+            RegenRate = regenRate;
         }
 
         public void Add(float value)
         {
-            Current = Mathf.Max(Total, Current + value);
+            Current = Mathf.Min(Total, Current + value);
         }
 
         public void Subtract(float value)
         {
             Current = Mathf.Max(0, Current - value);
+        }
+        
+        public void Regen(float deltaTime)
+        {
+            Add(Total * RegenRate * deltaTime);
         }
     }
 }
