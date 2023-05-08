@@ -22,25 +22,18 @@ namespace BehaviorTree
             get => _inputs;
             private set => _inputs = value;
         }
-        
-        private void Awake()
-        {
-            //btree = new BossBT();
-            //btree = new CustomNodesBT();
-            btree = new CustomAshleyBT();
-            btree.Awake();
-        }
 
-        void Start()
+        private void Start()
         {
+            btree = new CustomAshleyBT();
             btree.SetOwnerChar(GetComponent<CharacterPresenter>().GetCharacter());
             btree.SetEnemyChar(PlayerObject.GetComponent<PlayerCharacterPresenter>().GetCharacter());
-            btree.Start();
+            btree.Init();
         }
 
-        void Update()
+        private void Update()
         {
-            btree.Update();
+            btree.Tick();
             
             //Vector3 dir = btree.Direction;
             //Inputs.move = btree.Move ? MathUtils.Get8DDirection(dir.x, dir.z) : Vector3.zero;
@@ -69,7 +62,7 @@ namespace BehaviorTree
             btree = tree;
             btree.SetOwnerChar(GetComponent<CharacterPresenter>().GetCharacter());
             btree.SetEnemyChar(PlayerObject.GetComponent<PlayerCharacterPresenter>().GetCharacter());
-            btree.Start();
+            btree.Init();
         }
     }
     

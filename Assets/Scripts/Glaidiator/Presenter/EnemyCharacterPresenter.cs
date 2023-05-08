@@ -43,7 +43,16 @@ namespace Glaidiator.Presenter
 
         protected override void Update()
         {
-            base.Update();
+            // Process inputs and pass them onto the model
+            inputs = provider.GetInputs();
+            Character.SetInputs(inputs);
+            
+            // Advance the model
+            Character.Tick(Time.deltaTime);
+            
+            Transform.position = Character.Movement.Position;
+            Transform.rotation = Character.Movement.Rotation;
+            
             displayState.text = Character.CurrentState.ToString();
             displayCooldowns.text = "";
             foreach (ICooldown cd in Character.Cooldowns.OrderBy(cd => cd.Name))

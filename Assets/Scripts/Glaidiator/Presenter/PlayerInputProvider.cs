@@ -56,7 +56,7 @@ namespace Glaidiator
 
         private Vector3 GetMouseFacingDirection(Vector2 mouse)
         {
-            return _camera.ScreenToWorldPoint(mouse.x0y());
+            return _camera.ScreenToWorldPoint(new Vector3(mouse.x, mouse.y, _camera.farClipPlane * .5f));
         }
 
         public Input GetInputs()

@@ -42,15 +42,25 @@ namespace Glaidiator.Presenter
 
 		protected override void Update()
 		{
-			Vector3 faceDir = inputs.facing - _transform.position;
-			inputs.facing = MathStuff.Get8DDirection(faceDir.x, faceDir.y);
-			base.Update();
+			// Process inputs and pass them onto the model
+			inputs = provider.GetInputs();
+			inputs.facing = Vector3.zero;
+			Character.SetInputs(inputs);
+			
+			Character.Tick(Time.deltaTime);
+			
+			Transform.position = Character.Movement.Position;
+			Transform.rotation = Character.Movement.Rotation;
+
+			
+			// update visual stuff
 			displayState.text = Character.CurrentState.ToString();
 			displayCooldowns.text = "";
 			foreach (ICooldown cd in Character.Cooldowns.OrderBy(cd => cd.Name))
 			{
 				displayCooldowns.text += cd.Name + ": " + cd.Cooldown.Duration.ToString("0.00") + "\n";
 			}
+			
 			UpdateHealth();
 			UpdateStamina();
 		}

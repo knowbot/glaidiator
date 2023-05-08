@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Glaidiator.Presenter
 {
-	public class CharacterPresenter: MonoBehaviour
+	public abstract class CharacterPresenter: MonoBehaviour
 	{
 		// Model
 		protected Character Character;
@@ -14,7 +14,7 @@ namespace Glaidiator.Presenter
 		protected IInputProvider provider;
 
 		// View
-		protected Transform _transform;
+		protected Transform Transform;
 		[HideInInspector] public Animator animator;
 		private static readonly int Moving = Animator.StringToHash("Moving");
 		private static readonly int VelocityX = Animator.StringToHash("Velocity X");
@@ -38,8 +38,8 @@ namespace Glaidiator.Presenter
 
 		protected virtual void Awake()
 		{
-			_transform = transform;
-			Character = new Character(WorldObject.instance.World, _transform.position, _transform.rotation);
+			Transform = transform;
+			Character = new Character(WorldObject.instance.World, Transform.position, Transform.rotation);
 			Character.Hitbox.Register();
 		}
 
@@ -69,25 +69,16 @@ namespace Glaidiator.Presenter
 			Character.onDodgeEnd -= OnDodgeEnd;
 		}
 
-		
-		protected virtual void Update()
-		{
-			// Process inputs and pass them onto the model
-			inputs = provider.GetInputs();
-			Character.SetInputs(inputs);
-			// Advance the model
-			Character.Tick(Time.deltaTime);
-			_transform.position = Character.Movement.Position;
-			_transform.rotation = Character.Movement.Rotation;
-		}
+
+		protected abstract void Update();
 
 		// Observer methods
 
 		private void OnMoveTick()
 		{
 			animator.SetBool(Moving, true);
-			animator.SetFloat(VelocityX, _transform.InverseTransformDirection(Character.Movement.CurrVelocity).x);
-			animator.SetFloat(VelocityZ, _transform.InverseTransformDirection(Character.Movement.CurrVelocity).z);
+			animator.SetFloat(VelocityX, Transform.InverseTransformDirection(Character.Movement.CurrVelocity).x);
+			animator.SetFloat(VelocityZ, Transform.InverseTransformDirection(Character.Movement.CurrVelocity).z);
 		}
 
 		private void OnMoveEnd()

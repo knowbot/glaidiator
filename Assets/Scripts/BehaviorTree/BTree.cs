@@ -43,7 +43,7 @@ namespace BehaviorTree
 
         public BTree() { }
 
-        public void Awake()
+        public void Init()
         {
             Direction = Vector3.forward;
             Move = false;
@@ -52,15 +52,11 @@ namespace BehaviorTree
             AttackRanged = false; 
             Block = false;
             Dodge = false;
-        }
-
-        public void Start()
-        {
             _root = SetupTree();
             Debug.Log(this.GetType() + " init");
         }
 
-        public void Update()
+        public void Tick()
         {
             Move = false;
             AttackLight = false;

@@ -187,6 +187,7 @@ namespace Glaidiator.Model
 		    else
 		    {
 			    UpdateActiveAction(deltaTime);
+			    Health.Regen(deltaTime);
 			    Stamina.Regen(deltaTime);
 			    Idling();// if not doing anything and not moving
 			    // if can move
