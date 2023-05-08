@@ -1,6 +1,7 @@
 ﻿using System;
 using BehaviorTree;
 using Glaidiator.Model;
+using Glaidiator.Model.Utils;
 using UnityEngine;
 
 namespace BasicAI
@@ -26,7 +27,8 @@ namespace BasicAI
             }
             
             Vector3 myPos = _ownerCharacter.Movement.Position;
-            tree.Direction = (target.Position - myPos).normalized;
+            Vector3 dir = (target.Position - myPos).normalized;
+            tree.Direction = MathStuff.Get8DDirection(dir.x, dir.z);
 
             state = NodeState.SUCCESS;
             return state;
