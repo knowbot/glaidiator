@@ -8,7 +8,7 @@ namespace Glaidiator.Model.Resources
         public float Total { get; }
         public float Current { get; private set; }
 
-        private float RegenRate { get; }
+        public float RegenRate { get; }
 
         public Stamina(float total, float regenRate)
         {

@@ -21,6 +21,7 @@ namespace Glaidiator.Presenter
 		protected override void Start()
 		{
 			base.Start();
+			provider = GetComponent<PlayerInputProvider>();
 			if (provider is not PlayerInputProvider)
 				throw new Exception("Player Character Presenter should have a Player Input Provider");
 		}
