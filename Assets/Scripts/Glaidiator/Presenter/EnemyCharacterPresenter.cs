@@ -22,6 +22,7 @@ namespace Glaidiator.Presenter
         protected override void Start()
         {
             base.Start();
+            provider = GetComponent<AIContainer>();
             if (provider is not AIContainer)
                 throw new Exception("Enemy Character Presenter should have an AIContainer as Input Provider");
         }

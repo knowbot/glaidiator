@@ -14,6 +14,7 @@ namespace BehaviorTree
     {
         private BTree btree;
         public String currentNode; // for debug info
+        public float currentDistance;
         public GameObject PlayerObject;
         private Input _inputs;
         public Input Inputs
@@ -53,6 +54,7 @@ namespace BehaviorTree
             _inputs.dodge = btree.Dodge;
 
             currentNode = btree.currentNode.ToString(); // for debug info
+            currentDistance = btree.enemyDistance;
         }
 
         public Input GetInputs()
