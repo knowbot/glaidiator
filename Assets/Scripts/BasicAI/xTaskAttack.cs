@@ -6,24 +6,24 @@ using BehaviorTree;
 using Glaidiator.Model;
 using UnityEngine;
 
-public class TaskAttack : Node
+public class xTaskAttack : Node // deprecated
 {
 
     private Movement _transform;
     
-    public TaskAttack(BTree bTree, Character transform)
+    public xTaskAttack(BTree bTree, Character transform)
     {
         tree = bTree;
         _transform = transform.Movement;
     }
 
-    public TaskAttack(BTree bTree, Movement transform)
+    public xTaskAttack(BTree bTree, Movement transform)
     {
         tree = bTree;
         _transform = transform;
     }
 
-    public TaskAttack(Character transform)
+    public xTaskAttack(Character transform)
     {
         _transform = transform.Movement;
     }
@@ -44,7 +44,7 @@ public class TaskAttack : Node
 
         tree.Direction = ((targetPos - currPos).normalized).xz();
         
-        if (Vector3.Distance(currPos, targetPos) <= BossBT.lightAtkRange)
+        if (Vector3.Distance(currPos, targetPos) <= xBossBT.lightAtkRange)
         {
             tree.AttackLight = true;
             // TODO: Add attack collision
@@ -64,7 +64,7 @@ public class TaskAttack : Node
 
     public override Node Clone()
     {
-        Node clone = new TaskAttack(tree, _ownerCharacter);
+        Node clone = new xTaskAttack(tree, _ownerCharacter);
         return clone;
     }
 

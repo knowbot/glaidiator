@@ -6,7 +6,7 @@ using Glaidiator.Model;
 
 namespace BasicAI
 {
-    public class GuardBT : BTree
+    public class xGuardBT : BTree // deprecated
     {
         
         public static float speed = 2f;
@@ -52,7 +52,7 @@ namespace BasicAI
             return this;
         }
 
-        public GuardBT(Character owner) : base(owner)
+        public xGuardBT(Character owner) : base(owner)
         {
         }
     }

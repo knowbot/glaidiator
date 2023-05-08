@@ -5,12 +5,12 @@ using BehaviorTree;
 
 namespace BasicAI
 {
-    public class CheckEnemyInAttackRange : Node
+    public class xCheckEnemyInAttackRange : Node // deprecated
     {
         private Transform _transform;
         //private Animator _animator;
 
-        public CheckEnemyInAttackRange(Transform transform)
+        public xCheckEnemyInAttackRange(Transform transform)
         {
             _transform = transform;
         }
@@ -26,7 +26,7 @@ namespace BasicAI
             }
 
             Transform target = (Transform)t;
-            if (Vector3.Distance(_transform.position, target.position) <= GuardBT.attackRange)
+            if (Vector3.Distance(_transform.position, target.position) <= xGuardBT.attackRange)
             {
                 // check = true
 

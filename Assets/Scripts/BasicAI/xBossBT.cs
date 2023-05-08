@@ -7,7 +7,7 @@ using UnityEngine;
 namespace BasicAI
 {
     
-    public class BossBT : BTree
+    public class xBossBT : BTree // deprecated
     {
 
         public static float aggroRange = 3f;
@@ -20,18 +20,18 @@ namespace BasicAI
             {
                 new Sequence(this, new List<Node>
                 {
-                    new CheckEnemyInRange(this, GetOwnerChar()),
-                    new TaskGoToTarget(this, GetOwnerChar()),
-                    new TaskAttack(this, GetOwnerChar())
+                    new xCheckEnemyInRange(this, GetOwnerChar()),
+                    new xTaskGoToTarget(this, GetOwnerChar()),
+                    new xTaskAttack(this, GetOwnerChar())
                 }),
-                new TaskPatrol(this, GetOwnerChar()),
+                new xTaskPatrol(this, GetOwnerChar()),
             });
             return root;
         }
 
         public override BTree Clone()
         {
-            BTree newTree = new BossBT(_ownerChar);
+            BTree newTree = new xBossBT(_ownerChar);
             newTree.SetRoot(_root.Clone());
             return newTree;
         }
@@ -40,13 +40,13 @@ namespace BasicAI
         //{
         //}
 
-        public BossBT(Character character) : base(character)
+        public xBossBT(Character character) : base(character)
         {
         }
         
-        public BossBT(Node root) : base(root) {}
+        public xBossBT(Node root) : base(root) {}
 
-        public BossBT() : base()
+        public xBossBT() : base()
         {
             
         }

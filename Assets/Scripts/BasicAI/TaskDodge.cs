@@ -2,17 +2,14 @@
 
 namespace BasicAI
 {
-    public class TaskBlock : Node
+    public class TaskDodge : Node
     {
-        public TaskBlock()
-        {
-        }
+        public TaskDodge(){}
 
         public override NodeState Evaluate()
         {
-            tree.currentNode = this;// for debug info
-            tree.Block = true;
-
+            tree.currentNode = this;
+            tree.Dodge = true;
             state = NodeState.SUCCESS;
             return state;
         }

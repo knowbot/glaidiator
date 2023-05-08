@@ -6,7 +6,7 @@ using Glaidiator.Model;
 
 namespace BasicAI
 {
-    public class TaskPatrol : Node
+    public class xTaskPatrol : Node // deprecated
     {
         private Movement _transform;
         private Vector2 _currPos;
@@ -18,7 +18,7 @@ namespace BasicAI
         private bool _isWaiting = false;
 
 
-        public TaskPatrol(BTree btree, Character myCharacter)
+        public xTaskPatrol(BTree btree, Character myCharacter)
         {
             tree = btree;
             _ownerCharacter = myCharacter;
@@ -82,7 +82,7 @@ namespace BasicAI
 
         public override Node Clone()
         {
-            return new TaskPatrol(tree, _ownerCharacter);
+            return new xTaskPatrol(tree, _ownerCharacter);
         }
 
         public override void Mutate()

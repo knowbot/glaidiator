@@ -14,12 +14,14 @@ namespace BehaviorTree
     {
         private BTree btree;
         public String currentNode; // for debug info
+        public float enemyDistance;
         public GameObject PlayerObject;
         
         private void Awake()
         {
             //btree = new BossBT();
-            btree = new CustomNodesBT();
+            //btree = new CustomNodesBT();
+            btree = new CustomAshleyBT();
             btree.Awake();
         }
 
@@ -47,6 +49,7 @@ namespace BehaviorTree
             Inputs.dodge = btree.Dodge;
 
             currentNode = btree.currentNode.ToString(); // for debug info
+            enemyDistance = btree.enemyDistance;
         }
 
         public override Input GetInputs()
@@ -58,6 +61,7 @@ namespace BehaviorTree
         public void SetCurrentBTree(BTree tree)
         {
             btree = tree;
+            btree.Awake();
             btree.SetOwnerChar(GetComponent<CharacterPresenter>().GetCharacter());
             btree.SetEnemyChar(PlayerObject.GetComponent<PlayerCharacterPresenter>().GetCharacter());
             btree.Start();

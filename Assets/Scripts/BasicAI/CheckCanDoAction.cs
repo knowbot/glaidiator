@@ -6,12 +6,12 @@ using Glaidiator.Model.Actions;
 
 namespace BasicAI
 {
-    public class CheckEnemyAction : Node
+    public class CheckCanDoAction : Node
     {
 
         private string _actionName;
         
-        public CheckEnemyAction(string actionName)
+        public CheckCanDoAction(string actionName)
         {
             _actionName = actionName;
         }
@@ -20,15 +20,18 @@ namespace BasicAI
         {
             tree.currentNode = this;
             if (tree == null) throw new NullReferenceException();
-        
-            IAction action = ((Character)GetData("enemy"))?.ActiveAction;
-            if (action == null)
+
+            IAction action = _ownerCharacter._actions[_actionName];
+            float cost = action.Action.Cost;
+            
+            if (_ownerCharacter.Cooldowns.Contains((ICooldown)action) || cost > _ownerCharacter.Stamina.Current)
             {
                 state = NodeState.FAILURE;
-                return state;
             }
-
-            state = _actionName == action.Action.Name ? NodeState.SUCCESS : NodeState.FAILURE;
+            else
+            {
+                state = NodeState.SUCCESS;
+            }
             
             return state;
         }

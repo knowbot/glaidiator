@@ -4,20 +4,20 @@ using UnityEngine;
 
 namespace BasicAI
 {
-    public class TaskTurnRight : Node
+    public class TaskTurnLeft : Node
     {
-        private int _turnSteps; 
+        private int _turnSteps;
         
-        public TaskTurnRight(int turnSteps)
+        public TaskTurnLeft(int turnSteps)
         {
             _turnSteps = turnSteps;
         }
 
-        public TaskTurnRight()
+        public TaskTurnLeft()
         {
-            _turnSteps = 2; // 2 equals a 90 degree turn
+            _turnSteps = 2;
         }
-
+        
         public override NodeState Evaluate()
         {
             tree.currentNode = this;// for debug info
@@ -26,7 +26,7 @@ namespace BasicAI
 
             if (_turnSteps == 2) // 90 degree turn
             {
-                tree.Direction = MathStuff.Get8DDirection(currDir.z, currDir.x * -1);
+                tree.Direction = MathStuff.Get8DDirection(currDir.z * -1, currDir.x);
             }
             else // 45 degree turn * turn steps
             {

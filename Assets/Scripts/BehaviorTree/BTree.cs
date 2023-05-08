@@ -26,7 +26,9 @@ namespace BehaviorTree
         public bool Block;
         public bool Dodge;
 
+        // for editor debugging info
         public Node currentNode;
+        public float enemyDistance;
 
         public BTree(Character owner)
         {
