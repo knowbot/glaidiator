@@ -151,6 +151,17 @@ namespace BehaviorTree
             });
             prototypesMap.Add("SeqHeavyAttack", seqHeavyAtk);
 
+            Node seqRanged = new Sequence(new List<Node>
+            {
+                new Inverter(new CheckEnemyDistance(3f)),
+                new CheckCanDoAction("atkRanged"),
+                new CheckEnemyDistance(6f),
+                new TaskFaceEnemy(),
+                new CheckRangedDirection(30f),
+                new TaskRangedAtk(),
+            });
+            prototypesMap.Add("SeqRangedAttack", seqRanged);
+            
             Node seqBlock = new Sequence(new List<Node>
             {
                 new CheckEnemyDistance(2f),

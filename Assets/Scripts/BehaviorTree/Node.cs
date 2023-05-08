@@ -83,6 +83,7 @@ namespace BehaviorTree
             int i = children.IndexOf(oldChild);
             newChild.SetParent(this);
             newChild.SetTree(this.tree);
+            newChild.SetOwner(this._ownerCharacter);
             children[i] = newChild;
         }
         
@@ -138,58 +139,22 @@ namespace BehaviorTree
         
         public void SetData(string key, object value)
         {
-            //_dataContext[key] = value;
             tree.SetData(key, value);
         }
 
         
         public object GetData(string key)
         {
-            /*
-            object value = null;
-            if (_dataContext.TryGetValue(key, out value)) 
-                return value;
-            
-            Node node = parent;
-            while (node != null)
-            {
-                value = node.GetData(key);
-                if (value != null) 
-                    return value;
-                
-                node = node.parent;
-            }
-            return null;
-            */
             return tree.GetData(key);
         }
 
 
         public bool ClearData(string key)
         {
-            /*
-            if (_dataContext.ContainsKey(key))
-            {
-                _dataContext.Remove(key);
-                return true;
-            }
-
-            Node node = parent;
-            while (node != null)
-            {
-                bool cleared = node.ClearData(key);
-                if (cleared) return true;
-                node = node.parent;
-            }
-            return false;
-            */
             return tree.ClearData(key);
         }
         
-        
-        
     }
-    
     
 }
 
