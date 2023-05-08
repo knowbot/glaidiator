@@ -137,12 +137,16 @@ namespace BehaviorTree
             prototypesMap.Add("CheckWPDistance", new CheckWPDistance(0.01f));
             
             prototypesMap.Add("TaskWait", new TaskWait());
-            
 
+            prototypesMap.Add("CheckEnemyLight", new CheckEnemyAction("Light Attack"));
+            prototypesMap.Add("CheckEnemyHeavy", new CheckEnemyAction("Heavy Attack"));
+            prototypesMap.Add("CheckEnemyRanged", new CheckEnemyAction("Ranged Attack"));
+            prototypesMap.Add("CheckEnemyBlock", new CheckEnemyAction("Block"));
+            prototypesMap.Add("CheckEnemyDodge", new CheckEnemyAction("Dodge"));
+            
             Node seqLightAtk = new Sequence(new List<Node>
             {
                 new CheckCanDoAction("atkLight"),
-                //new CheckOwnStamina(),
                 new TaskFaceEnemy(),
                 new TaskLightAtk(),
             });

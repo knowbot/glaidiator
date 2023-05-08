@@ -14,7 +14,29 @@ namespace BasicAI
         {
             Node root = new Selector(new List<Node>
             {
-
+                new Sequence(new List<Node>
+                {
+                    new CheckEnemyAction("Light Attack"),
+                    new TaskFaceEnemy(),
+                    new TaskBlock(),
+                }),
+                new Sequence(new List<Node>
+                {
+                    new CheckEnemyAction("Heavy Attack"),
+                    new TaskFaceEnemy(),
+                    new TaskBlock(),
+                }),
+                new Sequence(new List<Node>
+                {
+                    new CheckEnemyAction("Ranged Attack"),
+                    new TaskFaceEnemy(),
+                    new TaskBlock(),
+                }),
+                new Sequence(new List<Node>
+                { 
+                    new TaskFaceEnemy(),
+                    new TaskStop(),
+                })
             });
             
             
