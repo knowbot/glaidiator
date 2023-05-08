@@ -21,7 +21,7 @@ namespace BasicAI
             tree.currentNode = this;
             if (tree == null) throw new NullReferenceException();
 
-            IAction action = _ownerCharacter._actions[_actionName];
+            IAction action = _ownerCharacter.Actions[_actionName];
             float cost = action.Action.Cost;
             
             if (_ownerCharacter.Cooldowns.Contains((ICooldown)action) || cost > _ownerCharacter.Stamina.Current)

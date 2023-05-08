@@ -1,5 +1,6 @@
 ﻿using System;
 using Glaidiator.Model;
+using Glaidiator.Model.Utils;
 using UnityEngine;
 
 namespace Glaidiator
@@ -39,6 +40,7 @@ namespace Glaidiator
             _inputs.block  = _playerActions.Gameplay.Block.WasPressedThisFrame();
             _inputs.dodge  = _playerActions.Gameplay.Dodge.WasPressedThisFrame();
             _inputs.move = GetCameraRelativeMovement(_playerActions.Gameplay.Move.ReadValue<Vector2>());
+            _inputs.facing = GetMouseFacingDirection(_playerActions.Gameplay.Face.ReadValue<Vector2>());
         }
         
         private Vector3 GetCameraRelativeMovement(Vector2 movement)
@@ -50,6 +52,11 @@ namespace Glaidiator
             // Right vector relative to the camera always orthogonal to the forward vector.
             Vector3 right = new Vector3(forward.z, 0, -forward.x);
             return movement.x * right + movement.y * forward;
+        }
+
+        private Vector3 GetMouseFacingDirection(Vector2 mouse)
+        {
+            return _camera.ScreenToWorldPoint(mouse.x0y());
         }
 
         public Input GetInputs()

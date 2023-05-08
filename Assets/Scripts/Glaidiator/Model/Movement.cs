@@ -42,6 +42,11 @@ namespace Glaidiator.Model
 			Rotation = Quaternion.Slerp(Rotation, Quaternion.LookRotation(dir), deltaTime * ROT_SPEED);
 		}
 
+	    public void Face(Vector3 dir)
+	    {
+		    Rotation = Quaternion.LookRotation(dir);
+	    }
+
 	    public void Dodge(Vector3 dir, float deltaTime)
 	    {
 		    Rotate(dir, deltaTime);

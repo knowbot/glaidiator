@@ -42,6 +42,8 @@ namespace Glaidiator.Presenter
 
 		protected override void Update()
 		{
+			Vector3 faceDir = inputs.facing - _transform.position;
+			inputs.facing = MathStuff.Get8DDirection(faceDir.x, faceDir.y);
 			base.Update();
 			displayState.text = Character.CurrentState.ToString();
 			displayCooldowns.text = "";

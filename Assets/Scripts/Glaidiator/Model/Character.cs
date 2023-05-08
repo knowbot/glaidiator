@@ -52,14 +52,15 @@ namespace Glaidiator.Model
 	    public readonly CharacterHitbox Hitbox;
 	    
 	    private Input _inputs;
-
-	    public readonly Dictionary<string, IAction> _actions = new Dictionary<string, IAction>();
+	    
+	    public readonly Dictionary<string, IAction> Actions = new Dictionary<string, IAction>();
 	    public readonly List<ICooldown> Cooldowns  = new List<ICooldown>();
 	    public IAction? ActiveAction { get; private set; }
 	    #endregion
 
 	    #region Events
-	    
+
+	    public Action? onDeath;
 	    public Action? onLowStamina;
 	    public Action? onMoveTick;
 	    public Action? onMoveEnd;
@@ -68,10 +69,9 @@ namespace Glaidiator.Model
 	    public Action? onBlockStart;
 	    public Action? onBlockEnd;
 	    public Action? onDodgeStart;
-	    public Action? onDodgeTick;
 	    public Action? onDodgeEnd;
-	    
-	    
+
+	    private void OnDeath() => onDeath?.Invoke();
 	    private void OnLowStamina() => onLowStamina?.Invoke();
 	    private void OnMoveTick() => onMoveTick?.Invoke();
 	    private void OnMoveEnd() => onMoveEnd?.Invoke();
@@ -80,7 +80,6 @@ namespace Glaidiator.Model
 	    private void OnBlockStart() => onBlockStart?.Invoke();
 	    private void OnBlockEnd() => onBlockEnd?.Invoke();
 	    private void OnDodgeStart() => onDodgeStart?.Invoke();
-	    private void OnDodgeTick() => onDodgeTick?.Invoke();
 	    private void OnDodgeEnd() => onDodgeEnd?.Invoke();
 
 	    #endregion
@@ -99,7 +98,7 @@ namespace Glaidiator.Model
 		    IsDead = false; 
 
 		    // init actions
-		    _actions.Add("atkLight", 
+		    Actions.Add("atkLight", 
 			    new Attack(
 					new ActionInfo((int)ActionLookup.AttackLight, "Light Attack", 10f, false, false, 0.9f), 
 					new Hitbox<Attack>(
@@ -107,7 +106,7 @@ namespace Glaidiator.Model
 						this,
 						0.6f),
 					10f, 1.0f, 0.2f));
-		    _actions.Add("atkHeavy", 
+		    Actions.Add("atkHeavy", 
 			    new Attack(
 				    new ActionInfo((int)ActionLookup.AttackHeavy, "Heavy Attack",20f, false, false, 1.8f), 
 				    new Hitbox<Attack>(
@@ -115,7 +114,7 @@ namespace Glaidiator.Model
 					    this,
 					    1.2f),
 				    25f, 3.3f, 0.4f));
-		    _actions.Add("atkRanged",
+		    Actions.Add("atkRanged",
 			    new AttackRanged(
 				    new ActionInfo((int)ActionLookup.AttackRanged, "Ranged Attack",15f, false, false, 1.5f), 
 				    new ProjectileHitbox(
@@ -125,8 +124,8 @@ namespace Glaidiator.Model
 					    20f
 				    ), 
 				    10f, 5.5f));
-		    _actions.Add("block", new Block(new ActionInfo((int)ActionLookup.Block, "Block",10f, false, false,1.0f), 3.0f));
-		    _actions.Add("dodge", new Dodge(new ActionInfo((int)ActionLookup.Dodge, "Dodge",25f,false, false,0.5f), 0.8f));
+		    Actions.Add("block", new Block(new ActionInfo((int)ActionLookup.Block, "Block",10f, false, false,1.0f), 3.0f));
+		    Actions.Add("dodge", new Dodge(new ActionInfo((int)ActionLookup.Dodge, "Dodge",25f,false, false,0.5f), 0.8f));
 	    }
 	    
 	    #endregion
@@ -227,6 +226,12 @@ namespace Glaidiator.Model
 			if (ActiveAction is not null && !ActiveAction.Tick(deltaTime)) ResetActiveAction();
 		}
 
+		private void UpdateFacingDirection()
+		{
+			if (_inputs.facing == Vector3.zero) return;
+			Movement.Face(_inputs.facing);
+		}
+
 	    #endregion
 	    
         #region States
@@ -239,6 +244,7 @@ namespace Glaidiator.Model
 	        Cooldowns.Clear();
 	        Stamina.Subtract(Stamina.Current);
 	        SetCanFlags(false, false);
+	        OnDeath();
         }
 
 
@@ -249,6 +255,11 @@ namespace Glaidiator.Model
         private void Idling()
         {
 	        if (ActiveAction is null) _newState = CharacterState.Idling;
+        }
+
+        private void Idling_Tick(float deltaTime)
+        {
+	        UpdateFacingDirection();
         }
 
         #endregion
@@ -285,15 +296,15 @@ namespace Glaidiator.Model
 	        IAction? attack = null;
 	        if (_inputs.attackLight)
 	        {
-		        attack = _actions["atkLight"];
+		        attack = Actions["atkLight"];
 	        }
 	        else if (_inputs.attackHeavy)
 	        {
-		        attack = _actions["atkHeavy"];
+		        attack = Actions["atkHeavy"];
 	        }
 	        else if (_inputs.attackRanged)
 	        {
-		        attack = _actions["atkRanged"];
+		        attack = Actions["atkRanged"];
 	        }
 	        if (attack is null || IsOnCooldown<ICooldown>(attack)) return;
 	        if (!HasEnoughStamina(attack))
@@ -308,6 +319,7 @@ namespace Glaidiator.Model
         private void Attacking_Enter()
         {
 	        if (ActiveAction is not Attack atk) return;
+	        UpdateFacingDirection();
 	        Cooldowns.Add(atk.SetOnCooldown());
 	        OnAttackStart();
         }
@@ -330,19 +342,20 @@ namespace Glaidiator.Model
 
         private void Blocking()
         {
-	        IAction block = _actions["block"];
+	        IAction block = Actions["block"];
 	        if (IsOnCooldown<Block>(block)) return;
 	        if (!HasEnoughStamina(block))
 	        {
 		        OnLowStamina();
 		        return;
 	        }
-			SetActiveAction(block);
+	        SetActiveAction(block);
 			_newState = CharacterState.Blocking;
         }
         private void Blocking_Enter()
         {
 	        if (ActiveAction is null or not Block) return;
+	        UpdateFacingDirection();
 	        Cooldowns.Add((ActiveAction as Block)!.SetOnCooldown());
 	        OnBlockStart();
         }
@@ -362,7 +375,7 @@ namespace Glaidiator.Model
 
         private void Dodging()
         {
-	        IAction dodge = _actions["dodge"];
+	        IAction dodge = Actions["dodge"];
 	        if (IsOnCooldown<Dodge>(dodge)) return;
 	        if (!HasEnoughStamina(dodge))
 	        {
@@ -375,7 +388,8 @@ namespace Glaidiator.Model
         private void Dodging_Enter()
         {
 	        if (ActiveAction is null or not Dodge) return;
-	        (ActiveAction as Dodge)!.Direction = _inputs.move == Vector3.zero ? _inputs.move : Movement.LastDir;
+	        UpdateFacingDirection();
+	        (ActiveAction as Dodge)!.Direction = _inputs.move == Vector3.zero ? _inputs.move : _inputs.facing;
 	        Cooldowns.Add((ActiveAction as Dodge)!.SetOnCooldown());
 	        OnDodgeStart();
         }
@@ -383,7 +397,6 @@ namespace Glaidiator.Model
         private void Dodging_Tick(float deltaTime)
         {
 	        Movement.Dodge(Movement.LastDir, deltaTime);
-	        OnDodgeTick();
         }
         
         private void Dodging_Exit()
