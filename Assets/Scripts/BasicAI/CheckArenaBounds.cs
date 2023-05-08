@@ -1,39 +1,34 @@
 ﻿using BehaviorTree;
+using Glaidiator.Model;
+using UnityEngine;
 
 namespace BasicAI
 {
-    public class TaskWait : Node
+    public class CheckArenaBounds : Node
     {
-        private int _totalTicks;
-        private int _countTicks;
+        private float _distance;
+
+        public CheckArenaBounds(float distance)
+        {
+            _distance = distance;
+        }
         
-        public TaskWait(int ticks)
-        {
-            _totalTicks = ticks;
-            _countTicks = _totalTicks;
-        }
-
-        public TaskWait()
-        {
-            _totalTicks = 2;
-            _countTicks = _totalTicks;
-        }
-
-        public override NodeState Evaluate() // TODO: Test this
+        public override NodeState Evaluate()
         {
             tree.currentNode = this;
-            
-            _countTicks--;
-            if (_countTicks > 0)
+
+            Vector3 target = _ownerCharacter.Movement.Position + (tree.Direction * _distance);
+            if (target.x < 0f || target.x > Arena.MaxSize ||
+                target.z < 0f || target.z > Arena.MaxSize)
             {
-                state = NodeState.RUNNING;
+                state = NodeState.FAILURE;
+                Debug.Log("CheckArenaBounds outside target = " + target);
             }
             else
             {
                 state = NodeState.SUCCESS;
-                _countTicks = _totalTicks;
             }
-            
+                
             return state;
         }
 

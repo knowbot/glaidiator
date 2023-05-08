@@ -120,13 +120,16 @@ namespace BehaviorTree
             prototypesMap.Add("TaskMoveForward", new TaskMoveForward());
             prototypesMap.Add("TaskTurnLeft", new TaskTurnLeft());
             prototypesMap.Add("TaskTurnRight", new TaskTurnRight());
+            prototypesMap.Add("CheckArenaBounds", new CheckArenaBounds(1f));
             
             prototypesMap.Add("CheckEnemyDistanceMelee", new CheckEnemyDistance(2f));
             prototypesMap.Add("CheckEnemyDistanceRanged", new CheckEnemyDistance(6f));
             prototypesMap.Add("CheckEnemyDistanceAggro", new CheckEnemyDistance(8f));
             
-            prototypesMap.Add("CheckHealth", new CheckOwnHealth(50f));
-            prototypesMap.Add("CheckStam", new CheckOwnStamina(50f));
+            prototypesMap.Add("CheckOwnHealth", new CheckOwnHealth(50f));
+            prototypesMap.Add("CheckOwnStamina", new CheckOwnStamina(50f));
+            prototypesMap.Add("CheckEnemyHealth", new CheckEnemyHealth(50f));
+            prototypesMap.Add("CheckEnemyStamina", new CheckEnemyStamina(50f));
             
             prototypesMap.Add("TaskSetWP", new TaskSetWP(2f));
             prototypesMap.Add("TaskClearWP", new TaskClearWP());
@@ -139,6 +142,7 @@ namespace BehaviorTree
             Node seqLightAtk = new Sequence(new List<Node>
             {
                 new CheckCanDoAction("atkLight"),
+                //new CheckOwnStamina(),
                 new TaskFaceEnemy(),
                 new TaskLightAtk(),
             });
@@ -152,7 +156,7 @@ namespace BehaviorTree
             });
             prototypesMap.Add("SeqHeavyAttack", seqHeavyAtk);
 
-            Node seqRanged = new Sequence(new List<Node>
+            Node seqRangedAtk = new Sequence(new List<Node>
             {
                 new Inverter(new CheckEnemyDistance(3f)),
                 new CheckCanDoAction("atkRanged"),
@@ -161,7 +165,7 @@ namespace BehaviorTree
                 new CheckRangedDirection(30f),
                 new TaskRangedAtk(),
             });
-            prototypesMap.Add("SeqRangedAttack", seqRanged);
+            prototypesMap.Add("SeqRangedAttack", seqRangedAtk);
             
             Node seqBlock = new Sequence(new List<Node>
             {

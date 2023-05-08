@@ -58,7 +58,10 @@ namespace BasicAI
                         }),
                         new Sequence(new List<Node>
                         {
-                            new TaskFaceEnemy()
+                            new TaskFaceEnemy(),
+                            new TaskMoveForward(),
+                            new TaskWait(),
+                            new TaskStop(),
                         }),
                     }),
                 }),
@@ -85,18 +88,44 @@ namespace BasicAI
                             new TaskBackEnemy(),
                             new TaskDodge(),
                         }),
+                        new Sequence(new List<Node>
+                        {
+                            new Inverter(new CheckEnemyDistance(4f)),
+                            new TaskFaceEnemy(),
+                            new TaskMoveForward(),
+                            new TaskWait(),
+                            new TaskStop(),
+                        }),
                         // run away until threshold distance
                         new Sequence(new List<Node>
                         {
                             new CheckEnemyDistance(4f),
                             new TaskBackEnemy(),
                             new TaskMoveForward(),
+                            new TaskStop(),
+                            new CheckArenaBounds(1f),
+                            new TaskMoveForward(),
+                        }),
+                        // turn if hitting wall
+                        new Sequence(new List<Node>
+                        {
+                            new CheckEnemyDistance(3f),
+                            new Inverter(new CheckArenaBounds(1f)),
+                            new TaskStop(),
+                            new TaskTurnRight(),
+                            new TaskMoveForward(),
+                            new CheckArenaBounds(1f),
                         }),
                         new Sequence(new List<Node>
                         {
-                            new Inverter(new CheckEnemyDistance(4f)),
-                            new TaskFaceEnemy(),
+                            new CheckEnemyDistance(3f),
+                            new Inverter(new CheckArenaBounds(1f)),
+                            new TaskStop(),
+                            new TaskTurnLeft(),
+                            new TaskMoveForward(),
+                            new CheckArenaBounds(1f),
                         })
+                        
                         
                     })
                 }),
