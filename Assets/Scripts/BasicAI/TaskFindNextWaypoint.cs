@@ -7,14 +7,14 @@ public class TaskFindNextWaypoint : Node
 {
     private Transform _transform;
 
-    public TaskFindNextWaypoint(Transform transform)
+    public TaskFindNextWaypoint()
     {
-        _transform = transform;
+        
     }
 
     public override NodeState Evaluate()
     {
-        return state;
+        throw new System.NotImplementedException();
     }
 
     public override Node Clone()

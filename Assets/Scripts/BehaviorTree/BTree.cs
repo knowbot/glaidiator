@@ -57,7 +57,7 @@ namespace BehaviorTree
         public void Start()
         {
             _root = SetupTree();
-            Debug.Log(_root.GetType() + " init");
+            Debug.Log(this.GetType() + " init");
         }
 
         public void Update()

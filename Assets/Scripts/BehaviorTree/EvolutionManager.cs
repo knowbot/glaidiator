@@ -101,13 +101,66 @@ namespace BehaviorTree
         }
 
         // init prototype samples for random mutations
-        public void CreatePrototypes(BTree tree, Character character) // whatever params needed to init nodes
+        public void CreatePrototypes() // whatever params needed to init nodes
         {
             prototypesMap = new Dictionary<string, Node>();
             prototypesMap.Add("TaskLightAtk", new TaskLightAtk());
+            prototypesMap.Add("TaskHeavyAtk", new TaskHeavyAtk());
+            prototypesMap.Add("TaskRangedAtk", new TaskRangedAtk());
+            prototypesMap.Add("TaskBlock", new TaskBlock());
+            prototypesMap.Add("TaskDodge", new TaskDodge());
+            prototypesMap.Add("CheckLightAtk", new CheckCanDoAction("atkLight"));
+            prototypesMap.Add("CheckHeavyAtk", new CheckCanDoAction("atkHeavy"));
+            prototypesMap.Add("CheckRangedAtk", new CheckCanDoAction("atkRanged"));
+            prototypesMap.Add("CheckBlock", new CheckCanDoAction("block"));
+            prototypesMap.Add("CheckDodge", new CheckCanDoAction("dodge"));
             
-            // TODO: add all node types
+            prototypesMap.Add("TaskFaceEnemy", new TaskFaceEnemy());
+            prototypesMap.Add("TaskBackEnemy", new TaskBackEnemy());
+            prototypesMap.Add("TaskMoveForward", new TaskMoveForward());
+            prototypesMap.Add("TaskTurnLeft", new TaskTurnLeft());
+            prototypesMap.Add("TaskTurnRight", new TaskTurnRight());
+            
+            prototypesMap.Add("CheckEnemyDistanceMelee", new CheckEnemyDistance(2f));
+            prototypesMap.Add("CheckEnemyDistanceRanged", new CheckEnemyDistance(6f));
+            prototypesMap.Add("CheckEnemyDistanceAggro", new CheckEnemyDistance(8f));
+            
+            prototypesMap.Add("CheckHealth", new CheckOwnHealth(50f));
+            prototypesMap.Add("CheckStam", new CheckOwnStamina(50f));
+            
+            prototypesMap.Add("TaskSetWP", new TaskSetWP(2f));
+            prototypesMap.Add("TaskClearWP", new TaskClearWP());
+            prototypesMap.Add("CheckHasWP", new CheckHasWP());
+            
+            prototypesMap.Add("TaskWait", new TaskWait());
+            
 
+            Node seqLightAtk = new Sequence(new List<Node>
+            {
+                new CheckCanDoAction("atkLight"),
+                new TaskFaceEnemy(),
+                new TaskLightAtk(),
+            });
+            prototypesMap.Add("SeqLightAttack", seqLightAtk);
+            
+            Node seqHeavyAtk = new Sequence(new List<Node>
+            {
+                new CheckCanDoAction("atkHeavy"),
+                new TaskFaceEnemy(),
+                new TaskLightAtk(),
+            });
+            prototypesMap.Add("SeqHeavyAttack", seqHeavyAtk);
+
+            Node seqBlock = new Sequence(new List<Node>
+            {
+                new CheckEnemyDistance(2f),
+                new CheckCanDoAction("block"),
+                new TaskFaceEnemy(),
+                new TaskBlock(),
+            });
+            prototypesMap.Add("SeqBlock", seqBlock);
+
+            
             prototypes = prototypesMap.Values.ToList();
         }
 
