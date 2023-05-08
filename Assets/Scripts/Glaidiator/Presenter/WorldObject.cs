@@ -13,7 +13,10 @@ namespace Glaidiator.Presenter
 
         private void Awake()
         {
-            World = new World();
+            World = new World
+            {
+                EnableDraw = false
+            };
             if (instance != null)
                 Destroy(gameObject);
             else
@@ -25,18 +28,18 @@ namespace Glaidiator.Presenter
         private void Start()
         {
             _manager = SimManager.Instance;
-            //_manager.Init();
+            _manager.Init();
         }
 
         private void Update()
         {
             World.Update(Time.deltaTime);
-            //if(_manager.CheckDone()) _manager.Init();
+            if(_manager.CheckDone()) _manager.Init();
         }
 
         private void LateUpdate()
         {
-            //_manager.Free();
+            _manager.Free();
         }
 
         private void OnDestroy()

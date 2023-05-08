@@ -45,7 +45,7 @@ namespace Glaidiator.Model
 
 	    private Enum _newState;
 
-	    public readonly World World;
+	    public World World { get; private set; } = null!;
 	    public readonly Movement Movement;
 	    public readonly Health Health;
 	    public readonly Stamina Stamina;
@@ -86,9 +86,8 @@ namespace Glaidiator.Model
 
 	    #region Initialization
 
-	    public Character(World world, Vector3 position, Quaternion rotation)
+	    public Character(Vector3 position, Quaternion rotation)
 	    {
-		    World = world;
 		    _newState = state.current;
 		    Movement = new Movement(position, rotation);
 		    Hitbox = new CharacterHitbox(new CircleCollider(Movement.Position.xz(), 0.75f,Vector2.zero,  false), this);
@@ -145,6 +144,11 @@ namespace Glaidiator.Model
 	    #endregion
 
 	    #region Setters
+
+	    public void SetWorld(World world)
+	    {
+		    World = world;
+	    }
 
 	    public void SetInputs(Input inputs)
 	    {

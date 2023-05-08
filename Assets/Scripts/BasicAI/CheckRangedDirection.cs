@@ -26,7 +26,7 @@ namespace BasicAI
             Movement target = ((Character)GetData("enemy"))?.Movement;
             if (target == null)
             {
-                Debug.Log("CheckRangedDirection target = null");
+                //Debug.Log("CheckRangedDirection target = null");
                 state = NodeState.FAILURE;
                 return state;
             }
@@ -39,13 +39,13 @@ namespace BasicAI
             
             if (angle <= _maxAngle && angle >= (_maxAngle*-1f))
             {
-                //Debug.Log("aim angle = " + angle);
-                Debug.DrawLine(_ownerCharacter.Movement.Position, target.Position, Color.cyan, .1f);
+                ////Debug.Log("aim angle = " + angle);
+                //Debug.DrawLine(_ownerCharacter.Movement.Position, target.Position, Color.cyan, .1f);
                 state = NodeState.SUCCESS;
             }
             else
             {
-                Debug.DrawLine(_ownerCharacter.Movement.Position, target.Position, Color.yellow, .1f);
+                //Debug.DrawLine(_ownerCharacter.Movement.Position, target.Position, Color.yellow, .1f);
                 state = NodeState.FAILURE;
             }
             

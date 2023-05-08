@@ -33,7 +33,7 @@ namespace BasicAI
             var target = GetData(_targetName);
             if (target is not Vector3)
             {
-                Debug.Log("CheckDistanceToWP, no waypoint found");
+                //Debug.Log("CheckDistanceToWP, no waypoint found");
                 state = NodeState.FAILURE;
                 return state;
             }
@@ -45,13 +45,13 @@ namespace BasicAI
             
             if (distance <= _threshold || nnDir != tree.Direction)
             {
-                //Debug.Log("successfully reached waypoint = " + target);
-                Debug.Log(_ownerCharacter.Movement.Position);
+                ////Debug.Log("successfully reached waypoint = " + target);
+                //Debug.Log(_ownerCharacter.Movement.Position);
                 state = NodeState.SUCCESS;
             }
             else
             {
-                //Debug.Log("wp dist = "+distance);
+                ////Debug.Log("wp dist = "+distance);
                 state = NodeState.FAILURE;
             }
             

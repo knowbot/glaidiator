@@ -22,7 +22,7 @@ namespace BasicAI
             Movement target = ((Character)GetData("enemy"))?.Movement;
             if (target == null)
             {
-                Debug.Log("CheckEnemyDistance target = null");
+                ////Debug.Log("CheckEnemyDistance target = null");
                 state = NodeState.FAILURE;
                 return state;
             }
@@ -33,13 +33,13 @@ namespace BasicAI
             if (dist <= _threshold)
             {
                 state = NodeState.SUCCESS;
-                Debug.DrawLine(_ownerCharacter.Movement.Position, target.Position, Color.green, 0.1f);
-                //Debug.Log("CheckEnemyDistance state = "+state);
+                //Debug.DrawLine(_ownerCharacter.Movement.Position, target.Position, Color.green, 0.1f);
+                ////Debug.Log("CheckEnemyDistance state = "+state);
             }
             else
             {
                 state = NodeState.FAILURE;
-                Debug.DrawLine(_ownerCharacter.Movement.Position, target.Position, Color.red, 0.1f);
+                //Debug.DrawLine(_ownerCharacter.Movement.Position, target.Position, Color.red, 0.1f);
             }
             
             return state;

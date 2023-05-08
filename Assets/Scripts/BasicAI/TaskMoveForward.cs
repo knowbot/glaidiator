@@ -38,8 +38,8 @@ namespace BasicAI
                     
                     target = (tree.Direction * _distance) + _ownerCharacter.Movement.Position;
                     SetData("wp", target);
-                    Debug.Log("MoveForwards new target =" + target);
-                    Debug.Log("dir: "+tree.Direction);
+                    //Debug.Log("MoveForwards new target =" + target);
+                    //Debug.Log("dir: "+tree.Direction);
                 }
                 
                 //tree.Move = true;
@@ -49,18 +49,18 @@ namespace BasicAI
                 {
                     ClearData("wp");
                     state = NodeState.SUCCESS;
-                    Debug.Log("MoveForwards dist success");
+                    //Debug.Log("MoveForwards dist success");
                 }
                 else
                 {
-                    Debug.Log("moving towards target =" + target);
+                    //Debug.Log("moving towards target =" + target);
                     tree.Move = true;
                     state = NodeState.RUNNING;
                 }
             }
             else
             {
-                //Debug.Log("move forward DIR = " + tree.Direction);
+                ////Debug.Log("move forward DIR = " + tree.Direction);
                 tree.Move = true;
                 state = NodeState.SUCCESS;
             }

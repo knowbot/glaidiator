@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using BehaviorTree;
 using Glaidiator.Model;
 using Glaidiator.Model.Collision;
 using Glaidiator.Presenter;
@@ -17,7 +18,7 @@ namespace Glaidiator
 
         public static float Step => 0.033f;
         public static float MaxDuration => 30f;
-        public static readonly int SimCount = 30;
+        public static readonly int SimCount = 5;
 
         private int _completed = 0;
         private readonly List<Sim> _sims;
@@ -56,7 +57,8 @@ namespace Glaidiator
             public World world;
             public Character player;
             public Character enemy;
-            public RandomInputProvider inputs;
+            public BTInputProvider PInputs;
+            public BTInputProvider EInputs;
 
             private int Outcome()
             {
@@ -68,10 +70,12 @@ namespace Glaidiator
             {
                 _outcome = 0;
                 _duration = 0f;
+                player.SetWorld(world);
+                enemy.SetWorld(world);
                 while (_duration < MaxDuration && _outcome == 0)
                 {
-                    player.SetInputs(inputs.RandomInputs());
-                    enemy.SetInputs(inputs.RandomInputs());
+                    player.SetInputs(PInputs.GetInputs());
+                    enemy.SetInputs(EInputs.GetInputs());
                     _duration += Step;
                     player.Tick(Step);
                     enemy.Tick(Step);
@@ -79,9 +83,9 @@ namespace Glaidiator
                     _outcome = Outcome();
                 }
 
-                fitness[simID] = _outcome * 1000f / _duration // rewards fast wins, slow losses
-                    + player.DamageTaken*100f/enemy.DamageTaken - 100f // damage dealt vs damage taken ratio
-                    + enemy.Health.Current; // reward keeping more health at the end
+                fitness[simID] = _outcome * 1000f / _duration + enemy.Health.Current;; // rewards fast wins, slow losses
+                // + player.DamageTaken*100f/enemy.DamageTaken - 100f // damage dealt vs damage taken ratio
+                 // reward keeping more health at the end
             }
         }
 
@@ -106,15 +110,19 @@ namespace Glaidiator
             for(int i = 0; i < SimCount; i++)
             {
                 var world = new World();
+                var p = new Character(Arena.PlayerStartPos, Arena.PlayerStartRot);
+                var e = new Character(Arena.EnemyStartPos, Arena.EnemyStartRot);
                 var sim = new Sim
                 {
                     simID = i,
                     fitness = _fitnessArray,
                     world = world,
-                    player = new Character(world, Arena.PlayerStartPos, Arena.PlayerStartRot),
-                    enemy = new Character(world, Arena.EnemyStartPos, Arena.EnemyStartRot),
-                    inputs = new RandomInputProvider()
+                    player = p,
+                    enemy = e,
+                    PInputs = new BTInputProvider(p, e),
+                    EInputs = new BTInputProvider(e, p)
                 };
+                
                 GCHandle simHandle = GCHandle.Alloc(sim);
                 var simJob = new SimJob
                 {

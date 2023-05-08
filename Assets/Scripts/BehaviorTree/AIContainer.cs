@@ -27,7 +27,7 @@ namespace BehaviorTree
         {
             btree = new CustomAshleyBT();
             btree.SetOwnerChar(GetComponent<CharacterPresenter>().GetCharacter());
-            btree.SetEnemyChar(PlayerObject.GetComponent<PlayerCharacterPresenter>().GetCharacter());
+            btree.SetEnemyChar(PlayerObject.GetComponent<CharacterPresenter>().GetCharacter());
             btree.Init();
         }
 

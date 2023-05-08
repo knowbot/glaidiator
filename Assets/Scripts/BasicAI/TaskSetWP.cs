@@ -18,7 +18,7 @@ namespace BasicAI
             tree.currentNode = this;// for debug info
             Vector3 wp = _ownerCharacter.Movement.Position + (tree.Direction * _distance);
             SetData("wp", wp);
-            //Debug.Log("set waypoint: " + wp);
+            ////Debug.Log("set waypoint: " + wp);
             state = NodeState.SUCCESS;
             return state;
         }

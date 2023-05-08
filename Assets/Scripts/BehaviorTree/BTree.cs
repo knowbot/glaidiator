@@ -53,7 +53,7 @@ namespace BehaviorTree
             Block = false;
             Dodge = false;
             _root = SetupTree();
-            Debug.Log(this.GetType() + " init");
+            //Debug.Log(this.GetType() + " init");
         }
 
         public void Tick()

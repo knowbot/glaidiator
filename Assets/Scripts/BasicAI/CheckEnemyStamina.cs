@@ -20,7 +20,7 @@ namespace BasicAI
             Character enemy = (Character)GetData("enemy");
             if (enemy == null)
             {
-                Debug.Log("CheckEnemyStamina enemy = null");
+                //Debug.Log("CheckEnemyStamina enemy = null");
                 state = NodeState.FAILURE;
                 return state;
             }

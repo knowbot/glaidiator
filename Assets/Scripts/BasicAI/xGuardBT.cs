@@ -18,7 +18,7 @@ namespace BasicAI
 
         protected override Node SetupTree()
         {
-            Debug.Log("Setup GuardBT");
+            //Debug.Log("Setup GuardBT");
             //_transform = transform;
             //Node root = new TaskPatrol(transform, waypoints);
 

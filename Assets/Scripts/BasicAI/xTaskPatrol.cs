@@ -60,7 +60,7 @@ namespace BasicAI
                     _isWaiting = true;
 
                     _currentWP = (_currentWP + 1) % _waypoints.Count;
-                    //Debug.Log("current WP is " + _currentWP);
+                    ////Debug.Log("current WP is " + _currentWP);
                     
                 }
                 else
@@ -70,7 +70,7 @@ namespace BasicAI
                     
                     Vector3 temp3d = _currPos.x0y();
                     Vector3 wp3d = wp.x0y();
-                    Debug.DrawLine(temp3d, wp3d, Color.blue);
+                    //Debug.DrawLine(temp3d, wp3d, Color.blue);
                 }
 
             }

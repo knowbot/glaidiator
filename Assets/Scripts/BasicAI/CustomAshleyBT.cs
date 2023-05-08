@@ -6,7 +6,7 @@ namespace BasicAI
     public class CustomAshleyBT : BTree
     {
         
-        private static float aggroDist = 8f;
+        private static float aggroDist = 30f;
         private static float rangedDist = 6f;
         private static float meleeDist = 2f;
         
@@ -22,8 +22,8 @@ namespace BasicAI
                 new Sequence(new List<Node>{ 
                     // conditions for aggression
                     new CheckEnemyDistance(aggroDist),
-                    new CheckOwnHealth(50f), 
-                    new CheckOwnStamina(15f),
+                    // new CheckOwnHealth(50f), 
+                    // new CheckOwnStamina(15f),
                     new Selector(new List<Node> 
                     { 
                         new Sequence(new List<Node>

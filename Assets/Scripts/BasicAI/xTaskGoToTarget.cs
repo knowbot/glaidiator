@@ -28,7 +28,7 @@ namespace BasicAI
 
             var currPos = _transform.Position;
             var targetPos = target.Position;
-            Debug.DrawLine(currPos, targetPos, Color.red);
+            //Debug.DrawLine(currPos, targetPos, Color.red);
 
             if (Vector3.Distance(currPos, targetPos) > 0.01f)
             {

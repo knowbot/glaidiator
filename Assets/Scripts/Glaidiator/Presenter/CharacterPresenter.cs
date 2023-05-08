@@ -34,13 +34,14 @@ namespace Glaidiator.Presenter
 		{
 			animator = GetComponentInChildren<Animator>();
 			animator.applyRootMotion = false;
+			Character.SetWorld(WorldObject.instance.World);
+			Character.Hitbox.Register();
 		}
 
 		protected virtual void Awake()
 		{
 			Transform = transform;
-			Character = new Character(WorldObject.instance.World, Transform.position, Transform.rotation);
-			Character.Hitbox.Register();
+			Character = new Character(Transform.position, Transform.rotation);
 		}
 
 		protected virtual void OnEnable()
