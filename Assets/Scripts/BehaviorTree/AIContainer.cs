@@ -25,7 +25,8 @@ namespace BehaviorTree
         private void Awake()
         {
             //btree = new BossBT();
-            btree = new CustomNodesBT();
+            //btree = new CustomNodesBT();
+            btree = new CustomAshleyBT();
             btree.Awake();
         }
 
