@@ -63,3 +63,5 @@ Thumbs.db.meta
 *.vscode
 UserSettings/EditorUserSettings.asset
 UserSettings/EditorUserSettings.asset
+Assets/ExplosiveLLC/SuperCharacterController/Scenes/TestTerrain.asset
+Assets/ExplosiveLLC/SuperCharacterController/Textures/Tile.png
