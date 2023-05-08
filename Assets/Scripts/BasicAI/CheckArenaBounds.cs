@@ -22,7 +22,7 @@ namespace BasicAI
                 target.z < 0f || target.z > Arena.MaxSize)
             {
                 state = NodeState.FAILURE;
-                Debug.Log("CheckArenaBounds outside target = " + target);
+                //Debug.Log("CheckArenaBounds outside target = " + target);
             }
             else
             {
