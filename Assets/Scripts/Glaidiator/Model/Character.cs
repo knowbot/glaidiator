@@ -148,11 +148,13 @@ namespace Glaidiator.Model
 	    public void SetWorld(World world)
 	    {
 		    World = world;
+		    Hitbox.Register();
 	    }
 
 	    public void SetInputs(Input inputs)
 	    {
 		    _inputs = inputs;
+		    Debug.Log(inputs);
 	    }
 
 	    private void SetCanFlags(bool movement, bool action)

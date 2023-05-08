@@ -35,7 +35,6 @@ namespace Glaidiator.Presenter
 			animator = GetComponentInChildren<Animator>();
 			animator.applyRootMotion = false;
 			Character.SetWorld(WorldObject.instance.World);
-			Character.Hitbox.Register();
 		}
 
 		protected virtual void Awake()
