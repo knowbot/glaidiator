@@ -44,7 +44,7 @@ namespace BasicAI
                     new Sequence(new List<Node>
                     {
                         new CheckHasWP(),
-                        new CheckDistanceToWP(0.01f),
+                        new CheckWPDistance(0.01f),
                         new TaskClearWP(),
                         new TaskTurnRight(),
                         new TaskSetWP(4f)

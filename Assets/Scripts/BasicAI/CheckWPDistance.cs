@@ -7,21 +7,21 @@ using Vector3 = UnityEngine.Vector3;
 
 namespace BasicAI
 {
-    public class CheckDistanceToWP : Node
+    public class CheckWPDistance : Node
     {
         private string _targetName;
         private float _threshold;
         
-        public CheckDistanceToWP() : base()
+        public CheckWPDistance() : base()
         {
         }
 
-        public CheckDistanceToWP(string targetName)
+        public CheckWPDistance(string targetName)
         {
             _targetName = targetName;
         }
 
-        public CheckDistanceToWP(float threshold)
+        public CheckWPDistance(float threshold)
         {
             _targetName = "wp";
             _threshold = threshold;

@@ -131,6 +131,7 @@ namespace BehaviorTree
             prototypesMap.Add("TaskSetWP", new TaskSetWP(2f));
             prototypesMap.Add("TaskClearWP", new TaskClearWP());
             prototypesMap.Add("CheckHasWP", new CheckHasWP());
+            prototypesMap.Add("CheckWPDistance", new CheckWPDistance(0.01f));
             
             prototypesMap.Add("TaskWait", new TaskWait());
             
