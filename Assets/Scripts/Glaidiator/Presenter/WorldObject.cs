@@ -1,4 +1,5 @@
 ﻿using System;
+using Glaidiator.Model;
 using Glaidiator.Model.Collision;
 using UnityEngine;
 
@@ -13,38 +14,23 @@ namespace Glaidiator.Presenter
 
         private void Awake()
         {
-            World = new World
-            {
-                EnableDraw = false
-            };
             if (instance != null)
                 Destroy(gameObject);
             else
                 instance = this;
+            
+            World = new World
+            {
+                EnableDraw = true
+            };
+            
     
             DontDestroyOnLoad(gameObject);
         }
-
-        private void Start()
-        {
-            _manager = SimManager.Instance;
-            _manager.Init();
-        }
-
+        
         private void Update()
         {
             World.Update(Time.deltaTime);
-            if(_manager.CheckDone()) _manager.Init();
-        }
-
-        private void LateUpdate()
-        {
-            _manager.Free();
-        }
-
-        private void OnDestroy()
-        {
-            _manager.Destroy();
         }
     }
 }

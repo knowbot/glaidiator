@@ -48,7 +48,7 @@ namespace BehaviorTree
 
             currentNode = _btree.currentNode.ToString(); // for debug info
             currentDistance = _btree.enemyDistance;
-            return Inputs;
+            return _inputs;
         }
 
         // set and setup new BTree, for runtime use

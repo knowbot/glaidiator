@@ -50,6 +50,7 @@ namespace Glaidiator.Presenter
 			Character.onMoveTick += OnMoveTick;
 			Character.onMoveEnd += OnMoveEnd;
 			Character.onAttackStart += OnAttackStart;
+			Character.onAttackEnd += OnAttackEnd;
 			Character.onBlockStart += OnBlockStart;
 			Character.onBlockEnd += OnBlockEnd;
 			Character.onDodgeStart += OnDodgeStart;
@@ -63,6 +64,7 @@ namespace Glaidiator.Presenter
 			Character.onMoveTick -= OnMoveTick;
 			Character.onMoveEnd -= OnMoveEnd;
 			Character.onAttackStart -= OnAttackStart;
+			Character.onAttackEnd -= OnAttackEnd;
 			Character.onBlockStart -= OnBlockStart;
 			Character.onBlockEnd -= OnBlockEnd;
 			Character.onDodgeStart -= OnDodgeStart;
@@ -70,7 +72,7 @@ namespace Glaidiator.Presenter
 		}
 
 
-		protected abstract void Update();
+		protected abstract void LateUpdate();
 
 		// Observer methods
 
@@ -92,6 +94,12 @@ namespace Glaidiator.Presenter
 			animator.SetInteger(Action, 1);
 			SetTriggers();
 		}
+		
+		private void OnAttackEnd()
+		{
+			animator.SetInteger(Action, 0);
+			ResetTriggers();
+		}
 
 		private void OnBlockStart()
 		{
@@ -102,6 +110,7 @@ namespace Glaidiator.Presenter
 		private void OnBlockEnd()
 		{
 			animator.SetBool(Blocking, false);
+			ResetTriggers();
 		}
 		
 		private void OnDodgeStart()

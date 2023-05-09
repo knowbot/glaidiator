@@ -35,26 +35,29 @@ namespace BasicAI
                             new CheckRangedDirection(30f), // aim good?
                             new TaskRangedAtk(),
                         }),
-                        new Sequence(new List<Node>
+                        new Selector(new List<Node>
                         {
-                            new CheckCanDoAction("atkHeavy"),
-                            new CheckEnemyDistance(meleeDist),
-                            new TaskFaceEnemy(),
-                            new TaskHeavyAtk(),
-                        }),
-                        new Sequence(new List<Node>
-                        {
-                            new CheckCanDoAction("atkLight"),
-                            new CheckEnemyDistance(meleeDist),
-                            new TaskFaceEnemy(),
-                            new TaskLightAtk(),
-                        }),
-                        new Sequence(new List<Node>
-                        {
-                            new CheckEnemyDistance(aggroDist),
-                            new Inverter(new CheckEnemyDistance(0.5f)),
-                            new TaskFaceEnemy(),
-                            new TaskMoveForward(),
+                            new Sequence(new List<Node>
+                            {
+                                new CheckCanDoAction("atkHeavy"),
+                                new CheckEnemyDistance(meleeDist),
+                                new TaskFaceEnemy(),
+                                new TaskHeavyAtk(),
+                            }),
+                            new Sequence(new List<Node>
+                            {
+                                new CheckCanDoAction("atkLight"),
+                                new CheckEnemyDistance(meleeDist),
+                                new TaskFaceEnemy(),
+                                new TaskLightAtk(),
+                            }),
+                            new Sequence(new List<Node>
+                            {
+                                new CheckEnemyDistance(aggroDist),
+                                new Inverter(new CheckEnemyDistance(0.5f)),
+                                new TaskFaceEnemy(),
+                                new TaskMoveForward(),
+                            })
                         }),
                         new Sequence(new List<Node>
                         {

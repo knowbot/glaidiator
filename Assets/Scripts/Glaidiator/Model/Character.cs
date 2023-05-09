@@ -65,7 +65,7 @@ namespace Glaidiator.Model
 	    public Action? onMoveTick;
 	    public Action? onMoveEnd;
 	    public Action? onAttackStart;
-	    // public Action? onAttackEnd;
+	    public Action? onAttackEnd;
 	    public Action? onBlockStart;
 	    public Action? onBlockEnd;
 	    public Action? onDodgeStart;
@@ -76,7 +76,7 @@ namespace Glaidiator.Model
 	    private void OnMoveTick() => onMoveTick?.Invoke();
 	    private void OnMoveEnd() => onMoveEnd?.Invoke();
 	    private void OnAttackStart() => onAttackStart?.Invoke();
-	    // private void OnAttackEnd() => onAttackEnd?.Invoke();
+	    private void OnAttackEnd() => onAttackEnd?.Invoke();
 	    private void OnBlockStart() => onBlockStart?.Invoke();
 	    private void OnBlockEnd() => onBlockEnd?.Invoke();
 	    private void OnDodgeStart() => onDodgeStart?.Invoke();
@@ -104,7 +104,7 @@ namespace Glaidiator.Model
 						new BoxCollider(Vector2.zero, new Vector2(2, 2), new Vector2(0, 1), true), 
 						this,
 						0.6f),
-					10f, 1.0f, 0.2f));
+					10f, 1.2f, 0.2f));
 		    Actions.Add("atkHeavy", 
 			    new Attack(
 				    new ActionInfo((int)ActionLookup.AttackHeavy, "Heavy Attack",20f, false, false, 1.8f), 
@@ -136,9 +136,9 @@ namespace Glaidiator.Model
 		    return action.Action.Cost <= Stamina.Current;
 	    }
 
-	    private bool IsOnCooldown<T>(object obj) where T : class, ICooldown
+	    private bool IsOnCooldown(int id)
 	    {
-		    return Cooldowns.Contains((obj as T)!);
+		    return Cooldowns.Contains(A);
 	    }
 
 	    #endregion
@@ -154,7 +154,7 @@ namespace Glaidiator.Model
 	    public void SetInputs(Input inputs)
 	    {
 		    _inputs = inputs;
-		    Debug.Log(inputs);
+		    //Debug.Log(JsonUtility.ToJson(inputs, true));
 	    }
 
 	    private void SetCanFlags(bool movement, bool action)
@@ -169,6 +169,7 @@ namespace Glaidiator.Model
 		    ActiveAction = action;
 		    SetCanFlags(ActiveAction.Action.CanMove, ActiveAction.Action.CanAction);
 		    ActiveAction.Start();
+		    if(ActiveAction is ICooldown cd) Cooldowns.Add(cd.SetOnCooldown());
 	    }
 	    
 	    private void ResetActiveAction()
@@ -220,7 +221,7 @@ namespace Glaidiator.Model
 		 */
 	    private void UpdateCooldowns(float deltaTime)
 	    {
-		    for (int index = 0; index < Cooldowns.Count; index++)
+		    for (int index = Cooldowns.Count - 1; index >= 0; index--)
 		    {
 			    ICooldown cd = Cooldowns[index];
 			    if (!cd.Cooldown.Tick(deltaTime))
@@ -230,7 +231,7 @@ namespace Glaidiator.Model
 
 		private void UpdateActiveAction(float deltaTime)
 		{
-			if (ActiveAction is not null && !ActiveAction.Tick(deltaTime)) ResetActiveAction();
+			if (ActiveAction is not null && !ActiveAction.Tick(deltaTime)) { ResetActiveAction(); }
 		}
 
 		private void UpdateFacingDirection()
@@ -313,7 +314,12 @@ namespace Glaidiator.Model
 	        {
 		        attack = Actions["atkRanged"];
 	        }
-	        if (attack is null || IsOnCooldown<ICooldown>(attack)) return;
+
+	        if (attack is null || IsOnCooldown<ICooldown>(attack))
+	        {
+		        Debug.Log(attack?.Action.Name + " is on cooldown");
+		        return;
+	        }
 	        if (!HasEnoughStamina(attack))
 	        {
 		        OnLowStamina();
@@ -327,8 +333,8 @@ namespace Glaidiator.Model
         {
 	        if (ActiveAction is not Attack atk) return;
 	        UpdateFacingDirection();
-	        Cooldowns.Add(atk.SetOnCooldown());
 	        OnAttackStart();
+	        Debug.Log("We attacking now");
         }
         
         private void Attacking_Tick(float deltaTime)
@@ -341,6 +347,7 @@ namespace Glaidiator.Model
         private void Attacking_Exit()
         {
 	        ResetActiveAction();
+	        OnAttackEnd();
         }
 
         #endregion
@@ -363,7 +370,6 @@ namespace Glaidiator.Model
         {
 	        if (ActiveAction is null or not Block) return;
 	        UpdateFacingDirection();
-	        Cooldowns.Add((ActiveAction as Block)!.SetOnCooldown());
 	        OnBlockStart();
         }
         
@@ -397,7 +403,6 @@ namespace Glaidiator.Model
 	        if (ActiveAction is null or not Dodge) return;
 	        UpdateFacingDirection();
 	        (ActiveAction as Dodge)!.Direction = _inputs.move == Vector3.zero ? _inputs.move : _inputs.facing;
-	        Cooldowns.Add((ActiveAction as Dodge)!.SetOnCooldown());
 	        OnDodgeStart();
         }
         

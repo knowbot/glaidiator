@@ -40,7 +40,7 @@ namespace Glaidiator.Presenter
 		}
 
 
-		protected override void Update()
+		protected override void LateUpdate()
 		{
 			// Process inputs and pass them onto the model
 			inputs = provider.GetInputs();
