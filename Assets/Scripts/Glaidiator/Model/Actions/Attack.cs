@@ -11,7 +11,6 @@ namespace Glaidiator.Model.Actions
     public class Attack : IAction, ICooldown
     {
         public ActionInfo Action { get; }
-        public int ID { get; }
         public string Name { get; }
         public readonly float Damage;
         public Timer Cooldown { get; }
@@ -25,7 +24,6 @@ namespace Glaidiator.Model.Actions
         public Attack(ActionInfo action, Hitbox<Attack> hitbox, float damage, float cooldown = 0f, float delay = 0f)
         {
             Action = action;
-            ID = action.ID;
             Name = action.Name;
             Damage = damage;
             Cooldown = new Timer(cooldown);

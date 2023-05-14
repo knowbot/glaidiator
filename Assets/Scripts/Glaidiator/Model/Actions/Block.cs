@@ -10,7 +10,7 @@ namespace Glaidiator.Model.Actions
         public void End()
         {
         }
-
+        
         public string Name { get; }
         public Timer Cooldown { get; }
 

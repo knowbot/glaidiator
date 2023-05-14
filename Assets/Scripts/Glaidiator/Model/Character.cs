@@ -136,9 +136,9 @@ namespace Glaidiator.Model
 		    return action.Action.Cost <= Stamina.Current;
 	    }
 
-	    private bool IsOnCooldown(int id)
+	    private bool IsOnCooldown(string name)
 	    {
-		    return Cooldowns.Contains(A);
+		    return Cooldowns.Exists(c => c.Name == name);
 	    }
 
 	    #endregion
@@ -231,7 +231,9 @@ namespace Glaidiator.Model
 
 		private void UpdateActiveAction(float deltaTime)
 		{
-			if (ActiveAction is not null && !ActiveAction.Tick(deltaTime)) { ResetActiveAction(); }
+			if (ActiveAction is null || ActiveAction.Tick(deltaTime)) return;
+			CurrentState = CharacterState.Idling;
+			ResetActiveAction();
 		}
 
 		private void UpdateFacingDirection()
@@ -315,9 +317,8 @@ namespace Glaidiator.Model
 		        attack = Actions["atkRanged"];
 	        }
 
-	        if (attack is null || IsOnCooldown<ICooldown>(attack))
+	        if (attack is null || IsOnCooldown(attack.Action.Name))
 	        {
-		        Debug.Log(attack?.Action.Name + " is on cooldown");
 		        return;
 	        }
 	        if (!HasEnoughStamina(attack))
@@ -334,7 +335,6 @@ namespace Glaidiator.Model
 	        if (ActiveAction is not Attack atk) return;
 	        UpdateFacingDirection();
 	        OnAttackStart();
-	        Debug.Log("We attacking now");
         }
         
         private void Attacking_Tick(float deltaTime)
@@ -357,7 +357,7 @@ namespace Glaidiator.Model
         private void Blocking()
         {
 	        IAction block = Actions["block"];
-	        if (IsOnCooldown<Block>(block)) return;
+	        if (IsOnCooldown(block.Action.Name)) return;
 	        if (!HasEnoughStamina(block))
 	        {
 		        OnLowStamina();
@@ -389,7 +389,7 @@ namespace Glaidiator.Model
         private void Dodging()
         {
 	        IAction dodge = Actions["dodge"];
-	        if (IsOnCooldown<Dodge>(dodge)) return;
+	        if (IsOnCooldown(dodge.Action.Name)) return;
 	        if (!HasEnoughStamina(dodge))
 	        {
 		        OnLowStamina();
