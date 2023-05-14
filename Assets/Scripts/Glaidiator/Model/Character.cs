@@ -19,6 +19,7 @@ namespace Glaidiator.Model
     {
 	    private enum CharacterState
 	    {
+		    Switching = -1,
 		    Dead = 0,
 		    Idling = 1,
 		    Moving = 2,
@@ -182,6 +183,33 @@ namespace Glaidiator.Model
 	    #endregion
 
 	    #region Update
+	    
+	    /**
+		 * make cooldowns tick!
+		 */
+	    private void UpdateCooldowns(float deltaTime)
+	    {
+		    for (int index = Cooldowns.Count - 1; index >= 0; index--)
+		    {
+			    ICooldown cd = Cooldowns[index];
+			    if (!cd.Cooldown.Tick(deltaTime))
+				    Cooldowns.RemoveAt(index);
+		    }
+	    }
+
+	    private void UpdateActiveAction(float deltaTime)
+	    {
+		    if (ActiveAction is null || ActiveAction.Tick(deltaTime)) return;
+		    CurrentState = CharacterState.Switching; // just useful to force call to exit method
+		    ResetActiveAction();
+	    }
+
+	    private void UpdateFacingDirection()
+	    {
+		    if (_inputs.facing == Vector3.zero) return;
+		    Movement.Face(_inputs.facing);
+	    }
+
 
 	    public override void Tick(float deltaTime)
 	    {
@@ -216,32 +244,7 @@ namespace Glaidiator.Model
 		    CurrentState = _newState;
 		    state.Tick(deltaTime);
 	    }
-		/**
-		 * make cooldowns tick!
-		 */
-	    private void UpdateCooldowns(float deltaTime)
-	    {
-		    for (int index = Cooldowns.Count - 1; index >= 0; index--)
-		    {
-			    ICooldown cd = Cooldowns[index];
-			    if (!cd.Cooldown.Tick(deltaTime))
-				    Cooldowns.RemoveAt(index);
-		    }
-	    }
-
-		private void UpdateActiveAction(float deltaTime)
-		{
-			if (ActiveAction is null || ActiveAction.Tick(deltaTime)) return;
-			CurrentState = CharacterState.Idling;
-			ResetActiveAction();
-		}
-
-		private void UpdateFacingDirection()
-		{
-			if (_inputs.facing == Vector3.zero) return;
-			Movement.Face(_inputs.facing);
-		}
-
+		
 	    #endregion
 	    
         #region States
