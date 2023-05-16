@@ -1,17 +1,13 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
-using Differ.Data;
 using Glaidiator.Model.Actions;
 using Glaidiator.Model.Actions.Lookups;
 using Glaidiator.Model.Collision;
 using Glaidiator.Model.Resources;
-using Glaidiator.Model.Utils;
-using RPGCharacterAnims.Actions;
+using Glaidiator.Utils;
 using UnityEngine;
-using Attack = Glaidiator.Model.Actions.Attack;
 using BoxCollider = Glaidiator.Model.Collision.BoxCollider;
-using Collider2D = Glaidiator.Model.Collision.Collider2D;
 
 namespace Glaidiator.Model
 {
@@ -19,6 +15,7 @@ namespace Glaidiator.Model
     {
 	    private enum CharacterState
 	    {
+		    Switching = -1,
 		    Dead = 0,
 		    Idling = 1,
 		    Moving = 2,
@@ -45,7 +42,7 @@ namespace Glaidiator.Model
 
 	    private Enum _newState;
 
-	    public readonly World World;
+	    public World World { get; private set; } = null!;
 	    public readonly Movement Movement;
 	    public readonly Health Health;
 	    public readonly Stamina Stamina;
@@ -65,7 +62,7 @@ namespace Glaidiator.Model
 	    public Action? onMoveTick;
 	    public Action? onMoveEnd;
 	    public Action? onAttackStart;
-	    // public Action? onAttackEnd;
+	    public Action? onAttackEnd;
 	    public Action? onBlockStart;
 	    public Action? onBlockEnd;
 	    public Action? onDodgeStart;
@@ -76,7 +73,7 @@ namespace Glaidiator.Model
 	    private void OnMoveTick() => onMoveTick?.Invoke();
 	    private void OnMoveEnd() => onMoveEnd?.Invoke();
 	    private void OnAttackStart() => onAttackStart?.Invoke();
-	    // private void OnAttackEnd() => onAttackEnd?.Invoke();
+	    private void OnAttackEnd() => onAttackEnd?.Invoke();
 	    private void OnBlockStart() => onBlockStart?.Invoke();
 	    private void OnBlockEnd() => onBlockEnd?.Invoke();
 	    private void OnDodgeStart() => onDodgeStart?.Invoke();
@@ -86,9 +83,8 @@ namespace Glaidiator.Model
 
 	    #region Initialization
 
-	    public Character(World world, Vector3 position, Quaternion rotation)
+	    public Character(Vector3 position, Quaternion rotation)
 	    {
-		    World = world;
 		    _newState = state.current;
 		    Movement = new Movement(position, rotation);
 		    Hitbox = new CharacterHitbox(new CircleCollider(Movement.Position.xz(), 0.75f,Vector2.zero,  false), this);
@@ -105,7 +101,7 @@ namespace Glaidiator.Model
 						new BoxCollider(Vector2.zero, new Vector2(2, 2), new Vector2(0, 1), true), 
 						this,
 						0.6f),
-					10f, 1.0f, 0.2f));
+					10f, 1.2f, 0.2f));
 		    Actions.Add("atkHeavy", 
 			    new Attack(
 				    new ActionInfo((int)ActionLookup.AttackHeavy, "Heavy Attack",20f, false, false, 1.8f), 
@@ -137,18 +133,25 @@ namespace Glaidiator.Model
 		    return action.Action.Cost <= Stamina.Current;
 	    }
 
-	    private bool IsOnCooldown<T>(object obj) where T : class, ICooldown
+	    private bool IsOnCooldown(string name)
 	    {
-		    return Cooldowns.Contains((obj as T)!);
+		    return Cooldowns.Exists(c => c.Name == name);
 	    }
 
 	    #endregion
 
 	    #region Setters
 
+	    public void SetWorld(World world)
+	    {
+		    World = world;
+		    Hitbox.Register();
+	    }
+
 	    public void SetInputs(Input inputs)
 	    {
 		    _inputs = inputs;
+		    //Debug.Log(JsonUtility.ToJson(inputs, true));
 	    }
 
 	    private void SetCanFlags(bool movement, bool action)
@@ -163,6 +166,7 @@ namespace Glaidiator.Model
 		    ActiveAction = action;
 		    SetCanFlags(ActiveAction.Action.CanMove, ActiveAction.Action.CanAction);
 		    ActiveAction.Start();
+		    if(ActiveAction is ICooldown cd) Cooldowns.Add(cd.SetOnCooldown());
 	    }
 	    
 	    private void ResetActiveAction()
@@ -175,6 +179,33 @@ namespace Glaidiator.Model
 	    #endregion
 
 	    #region Update
+	    
+	    /**
+		 * make cooldowns tick!
+		 */
+	    private void UpdateCooldowns(float deltaTime)
+	    {
+		    for (int index = Cooldowns.Count - 1; index >= 0; index--)
+		    {
+			    ICooldown cd = Cooldowns[index];
+			    if (!cd.Cooldown.Tick(deltaTime))
+				    Cooldowns.RemoveAt(index);
+		    }
+	    }
+
+	    private void UpdateActiveAction(float deltaTime)
+	    {
+		    if (ActiveAction is null || ActiveAction.Tick(deltaTime)) return;
+		    CurrentState = CharacterState.Switching; // just useful to force call to exit method
+		    ResetActiveAction();
+	    }
+
+	    private void UpdateFacingDirection()
+	    {
+		    if (_inputs.facing == Vector3.zero) return;
+		    Movement.Face(_inputs.facing);
+	    }
+
 
 	    public override void Tick(float deltaTime)
 	    {
@@ -209,30 +240,7 @@ namespace Glaidiator.Model
 		    CurrentState = _newState;
 		    state.Tick(deltaTime);
 	    }
-		/**
-		 * make cooldowns tick!
-		 */
-	    private void UpdateCooldowns(float deltaTime)
-	    {
-		    for (int index = 0; index < Cooldowns.Count; index++)
-		    {
-			    ICooldown cd = Cooldowns[index];
-			    if (!cd.Cooldown.Tick(deltaTime))
-				    Cooldowns.RemoveAt(index);
-		    }
-	    }
-
-		private void UpdateActiveAction(float deltaTime)
-		{
-			if (ActiveAction is not null && !ActiveAction.Tick(deltaTime)) ResetActiveAction();
-		}
-
-		private void UpdateFacingDirection()
-		{
-			if (_inputs.facing == Vector3.zero) return;
-			Movement.Face(_inputs.facing);
-		}
-
+		
 	    #endregion
 	    
         #region States
@@ -307,7 +315,11 @@ namespace Glaidiator.Model
 	        {
 		        attack = Actions["atkRanged"];
 	        }
-	        if (attack is null || IsOnCooldown<ICooldown>(attack)) return;
+
+	        if (attack is null || IsOnCooldown(attack.Action.Name))
+	        {
+		        return;
+	        }
 	        if (!HasEnoughStamina(attack))
 	        {
 		        OnLowStamina();
@@ -321,7 +333,6 @@ namespace Glaidiator.Model
         {
 	        if (ActiveAction is not Attack atk) return;
 	        UpdateFacingDirection();
-	        Cooldowns.Add(atk.SetOnCooldown());
 	        OnAttackStart();
         }
         
@@ -335,6 +346,7 @@ namespace Glaidiator.Model
         private void Attacking_Exit()
         {
 	        ResetActiveAction();
+	        OnAttackEnd();
         }
 
         #endregion
@@ -344,7 +356,7 @@ namespace Glaidiator.Model
         private void Blocking()
         {
 	        IAction block = Actions["block"];
-	        if (IsOnCooldown<Block>(block)) return;
+	        if (IsOnCooldown(block.Action.Name)) return;
 	        if (!HasEnoughStamina(block))
 	        {
 		        OnLowStamina();
@@ -357,7 +369,6 @@ namespace Glaidiator.Model
         {
 	        if (ActiveAction is null or not Block) return;
 	        UpdateFacingDirection();
-	        Cooldowns.Add((ActiveAction as Block)!.SetOnCooldown());
 	        OnBlockStart();
         }
         
@@ -377,7 +388,7 @@ namespace Glaidiator.Model
         private void Dodging()
         {
 	        IAction dodge = Actions["dodge"];
-	        if (IsOnCooldown<Dodge>(dodge)) return;
+	        if (IsOnCooldown(dodge.Action.Name)) return;
 	        if (!HasEnoughStamina(dodge))
 	        {
 		        OnLowStamina();
@@ -391,7 +402,6 @@ namespace Glaidiator.Model
 	        if (ActiveAction is null or not Dodge) return;
 	        UpdateFacingDirection();
 	        (ActiveAction as Dodge)!.Direction = _inputs.move == Vector3.zero ? _inputs.move : _inputs.facing;
-	        Cooldowns.Add((ActiveAction as Dodge)!.SetOnCooldown());
 	        OnDodgeStart();
         }
         

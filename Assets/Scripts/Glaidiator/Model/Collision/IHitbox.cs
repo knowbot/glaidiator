@@ -1,10 +1,7 @@
-﻿using Collider2D = Glaidiator.Model.Collision.Collider2D;
-
-namespace Glaidiator.Model.Collision
+﻿namespace Glaidiator.Model.Collision
 {
     public interface IHitbox
     {
-        public World World { get; }
         public bool Active { get; }
         public Character Owner { get; }
         Collider2D Collider { get; }

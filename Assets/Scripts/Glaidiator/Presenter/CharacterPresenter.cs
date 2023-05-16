@@ -1,5 +1,4 @@
 ﻿using Glaidiator.Model;
-using Glaidiator.Model.Utils;
 using UnityEngine;
 
 namespace Glaidiator.Presenter
@@ -34,13 +33,13 @@ namespace Glaidiator.Presenter
 		{
 			animator = GetComponentInChildren<Animator>();
 			animator.applyRootMotion = false;
+			Character.SetWorld(WorldObject.instance.World);
 		}
 
 		protected virtual void Awake()
 		{
 			Transform = transform;
-			Character = new Character(WorldObject.instance.World, Transform.position, Transform.rotation);
-			Character.Hitbox.Register();
+			Character = new Character(Transform.position, Transform.rotation);
 		}
 
 		protected virtual void OnEnable()
@@ -50,6 +49,7 @@ namespace Glaidiator.Presenter
 			Character.onMoveTick += OnMoveTick;
 			Character.onMoveEnd += OnMoveEnd;
 			Character.onAttackStart += OnAttackStart;
+			Character.onAttackEnd += OnAttackEnd;
 			Character.onBlockStart += OnBlockStart;
 			Character.onBlockEnd += OnBlockEnd;
 			Character.onDodgeStart += OnDodgeStart;
@@ -63,6 +63,7 @@ namespace Glaidiator.Presenter
 			Character.onMoveTick -= OnMoveTick;
 			Character.onMoveEnd -= OnMoveEnd;
 			Character.onAttackStart -= OnAttackStart;
+			Character.onAttackEnd -= OnAttackEnd;
 			Character.onBlockStart -= OnBlockStart;
 			Character.onBlockEnd -= OnBlockEnd;
 			Character.onDodgeStart -= OnDodgeStart;
@@ -70,7 +71,7 @@ namespace Glaidiator.Presenter
 		}
 
 
-		protected abstract void Update();
+		protected abstract void LateUpdate();
 
 		// Observer methods
 
@@ -92,6 +93,12 @@ namespace Glaidiator.Presenter
 			animator.SetInteger(Action, 1);
 			SetTriggers();
 		}
+		
+		private void OnAttackEnd()
+		{
+			animator.SetInteger(Action, 0);
+			ResetTriggers();
+		}
 
 		private void OnBlockStart()
 		{
@@ -102,6 +109,7 @@ namespace Glaidiator.Presenter
 		private void OnBlockEnd()
 		{
 			animator.SetBool(Blocking, false);
+			ResetTriggers();
 		}
 		
 		private void OnDodgeStart()

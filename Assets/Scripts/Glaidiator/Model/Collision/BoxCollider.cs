@@ -1,6 +1,5 @@
-﻿using System;
-using Differ.Shapes;
-using Glaidiator.Model.Utils;
+﻿using Differ.Shapes;
+using Glaidiator.Utils;
 using UnityEngine;
 
 namespace Glaidiator.Model.Collision
@@ -28,7 +27,7 @@ namespace Glaidiator.Model.Collision
 
         public override void Draw()
         {
-            DebugUtils.DrawRect(Position.x0y(), Quaternion.Euler(0, Rotation, 0), Size, Color.cyan);
+            DebugStuff.DrawRect(Position.x0y(), Quaternion.Euler(0, Rotation, 0), Size, Color.cyan);
         }
     }
 }

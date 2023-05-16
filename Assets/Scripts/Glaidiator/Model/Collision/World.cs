@@ -4,12 +4,12 @@ using Differ.Data;
 using Glaidiator.Model.Actions;
 using UnityEngine;
 
-
 namespace Glaidiator.Model.Collision
 {
     public class World
     {
 
+        public bool EnableDraw = false;
         private readonly List<IHitbox> _hitboxes = new List<IHitbox>();
         
         public void Update(float deltaTime)
@@ -17,7 +17,7 @@ namespace Glaidiator.Model.Collision
             var notChecked = new List<IHitbox>(_hitboxes);
             foreach (IHitbox hb in _hitboxes)
             {
-                hb.Collider.Draw();
+                if(EnableDraw) hb.Collider.Draw();
                 hb.Update(deltaTime);
                 foreach (IHitbox other in from other in notChecked.ToList() 
                          where other.Active

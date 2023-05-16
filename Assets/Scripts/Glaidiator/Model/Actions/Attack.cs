@@ -1,10 +1,5 @@
-﻿using System;
-using Glaidiator.Model.Actions;
-using Unity.VisualScripting;
+﻿using Glaidiator.Model.Collision;
 using UnityEngine;
-using Glaidiator.Model.Collision;
-using Timer = Glaidiator.Model.Utils.Timer;
-using Collider2D = Glaidiator.Model.Collision.Collider2D;
 
 namespace Glaidiator.Model.Actions
 {
@@ -12,7 +7,7 @@ namespace Glaidiator.Model.Actions
     {
         public ActionInfo Action { get; }
         public string Name { get; }
-        public float Damage;
+        public readonly float Damage;
         public Timer Cooldown { get; }
         public Timer Delay { get; }
         private Hitbox<Attack> Hitbox { get; set; }

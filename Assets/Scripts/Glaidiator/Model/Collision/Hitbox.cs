@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Numerics;
 using Glaidiator.Model.Actions;
-using Glaidiator.Model.Utils;
+using Glaidiator.Utils;
 using UnityEngine;
-using Quaternion = UnityEngine.Quaternion;
-using Vector2 = UnityEngine.Vector2;
-using Vector3 = UnityEngine.Vector3;
 
 namespace Glaidiator.Model.Collision
 {
     public class Hitbox<T> : IHitbox, ICloneable
     {
-        public World World { get; private set; }
         private readonly Collider2D _collider;
         private readonly float _lifetime;
         public bool ToDestroy { get; protected set; }
@@ -25,7 +20,6 @@ namespace Glaidiator.Model.Collision
         public Hitbox(Collider2D collider, Character owner, float lifetime = 0f)
         {
             Owner = owner;
-            World = Owner.World;
             _collider = collider;
             Collider = (Collider2D)_collider.Clone();
             ToDestroy = false;
@@ -53,12 +47,12 @@ namespace Glaidiator.Model.Collision
 
         public void Register()
         {
-            World.Add(this);
+            Owner.World.Add(this);
         }
 
         public void Deregister()
         {
-            World.Remove(this);
+            Owner.World.Remove(this);
         }
         
         public virtual void Update(float deltaTime)

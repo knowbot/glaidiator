@@ -1,9 +1,4 @@
-﻿using System.Numerics;
-using Glaidiator.Model.Actions;
-using UnityEngine;
-using Vector2 = UnityEngine.Vector2;
-
-namespace Glaidiator.Model.Collision
+﻿namespace Glaidiator.Model.Collision
 {
     public class CharacterHitbox : Hitbox<Character>
     {
