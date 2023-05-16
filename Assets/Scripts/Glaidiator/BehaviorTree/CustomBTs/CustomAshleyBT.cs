@@ -19,7 +19,7 @@ namespace BasicAI
         
         protected override Node SetupTree()
         {
-            Node root = new Selector(new List<Node>
+            Node newRoot = new Selector(new List<Node>
             {
                 // attack sequence
                 new Sequence(new List<Node>{ 
@@ -134,8 +134,6 @@ namespace BasicAI
                             new TaskMoveForward(),
                             new CheckArenaBounds(1f),
                         })
-                        
-                        
                     })
                 }),
                 
@@ -144,20 +142,20 @@ namespace BasicAI
                 //new Sequence(),
             });
             
-            root.SetOwner(_ownerChar);
-            root.SetTree(this);
-            SetData("enemy", _enemyChar);
+            newRoot.SetOwner(owner);
+            newRoot.SetTree(this);
+            SetData("enemy", enemy);
             
             var doc = new XmlDocument();
             var w = new XmlTextWriter($@"BTs/Test/{Guid.NewGuid()}.xml", Encoding.UTF8);
             w.Formatting = Formatting.Indented;
             w.WriteStartElement("AshleyBT");
-            root.WriteXml(w);
+            newRoot.WriteXml(w);
             w.WriteEndElement();
             w.Close();
             doc.Save(w);
             
-            return root;
+            return newRoot;
         }
 
         public override BTree Clone()

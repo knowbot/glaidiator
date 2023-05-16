@@ -8,13 +8,13 @@ namespace BehaviorTree
 {
     public abstract class BTree
     {
-        protected Transform _transform;
-        protected Node _root = null;
-        protected Character _enemyChar;
-        protected Character _ownerChar;
-        protected float _fitness; // remove in favor of evo manager candidate class?
+        protected Transform transform;
+        protected Node root = null;
+        protected Character enemy;
+        protected Character owner;
+        protected float fitness = 0; // remove in favor of evo manager candidate class?
         
-        private Dictionary<string, object> _dataContext = new Dictionary<string, object>();
+        private readonly Dictionary<string, object> _dataContext = new Dictionary<string, object>();
 
         public Vector3 Direction;
 
@@ -28,11 +28,11 @@ namespace BehaviorTree
         // for editor debugging info
         public Node currentNode;
         public float enemyDistance;
+        
 
         public BTree(Character owner)
         {
-            if (owner == null) throw new NullReferenceException("BTree init with null owner");
-            _ownerChar = owner;
+            this.owner = owner ?? throw new NullReferenceException("BTree init with null owner");
         }
 
         public BTree(Node root)
@@ -40,7 +40,8 @@ namespace BehaviorTree
             SetRoot(root);
         }
 
-        public BTree() { }
+        public BTree()
+        { }
 
         public void Init()
         {
@@ -51,7 +52,7 @@ namespace BehaviorTree
             AttackRanged = false; 
             Block = false;
             Dodge = false;
-            _root = SetupTree();
+            root = SetupTree();
             //Debug.Log(this.GetType() + " init");
         }
 
@@ -63,7 +64,7 @@ namespace BehaviorTree
             AttackRanged = false; 
             Block = false;
             Dodge = false;
-            if (_root != null) _root.Evaluate();
+            if (root != null) root.Evaluate();
         }
 
         protected abstract Node SetupTree();
@@ -75,11 +76,11 @@ namespace BehaviorTree
             if (chance < Random.Range(0f, 1f)) return;
 
             List<Node> nodes1 = new List<Node>();
-            _root.Flatten(nodes1);
+            root.Flatten(nodes1);
             Node swapNode1 = nodes1[Random.Range(0, nodes1.Count)];
 
             List<Node> nodes2 = new List<Node>();
-            mate._root.Flatten(nodes2);
+            mate.root.Flatten(nodes2);
             Node swapNode2 = nodes2[Random.Range(0, nodes2.Count)];
 
             Node parent1 = swapNode1.GetParent();
@@ -91,9 +92,9 @@ namespace BehaviorTree
             }
             else
             {
-                _root = parent2;
-                _root.SetOwner(swapNode1.GetOwner());
-                _root.SetParent(null); // a root node has no parent
+                root = parent2;
+                root.SetOwner(swapNode1.GetOwner());
+                root.SetParent(null); // a root node has no parent
             }
 
             if (parent2 != null) 
@@ -102,9 +103,9 @@ namespace BehaviorTree
             }
             else
             {
-                mate._root = swapNode1;
-                mate._root.SetOwner(swapNode2.GetOwner());
-                mate._root.SetParent(null); 
+                mate.root = swapNode1;
+                mate.root.SetOwner(swapNode2.GetOwner());
+                mate.root.SetParent(null); 
             }
             
             // dirty flag?
@@ -116,7 +117,7 @@ namespace BehaviorTree
             if (chance < Random.Range(0f, 1f)) return;
 
             List<Node> nodes = new List<Node>();
-            _root.Flatten(nodes);
+            root.Flatten(nodes);
 
             if (0.8f < Random.Range(0f, 1f)) // 80% chance of mutating a random child
             {
@@ -139,49 +140,49 @@ namespace BehaviorTree
 
         public void SetEnemyChar(Character enemy)
         {
-            _enemyChar = enemy;
+            this.enemy = enemy;
         }
 
         public Character GetEnemyChar()
         {
-            return _enemyChar;
+            return enemy;
         }
 
         public void SetOwnerChar(Character owner)
         {
-            _ownerChar = owner;
+            this.owner = owner;
         }
         
         public Character GetOwnerChar()
         {
-            if (_ownerChar == null) throw new NullReferenceException("tree has no owner character");
-            return _ownerChar;
+            if (owner == null) throw new NullReferenceException("tree has no owner character");
+            return owner;
         }
         
         public Node GetRoot()
         {
-            return _root;
+            return root;
         }
 
         public void SetRoot(Node newRoot)
         {
-            _root = newRoot;
+            root = newRoot;
         }
 
         public float GetFitness()
         {
             // TODO: Implement fitness calculation
-            return _fitness;
+            return fitness;
         }
 
         public void SetTransform(Transform newTransform)
         {
-            _transform = newTransform;
+            transform = newTransform;
         }
 
         public Transform GetTransform()
         {
-            return _transform;
+            return transform;
         }
         
         public void SetData(string key, object value)

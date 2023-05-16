@@ -13,13 +13,13 @@ namespace BasicAI
 
         protected override Node SetupTree()
         {
-            return _root;
+            return root;
         }
 
         public override BTree Clone()
         {
             BTree newTree = new EvoBT();
-            newTree.SetRoot(_root.Clone());
+            newTree.SetRoot(root.Clone());
             return newTree;
         }
     }

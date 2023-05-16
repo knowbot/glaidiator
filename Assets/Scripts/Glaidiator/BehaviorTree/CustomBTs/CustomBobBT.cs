@@ -41,9 +41,9 @@ namespace BasicAI
             });
             
             
-            root.SetOwner(_ownerChar);
+            root.SetOwner(owner);
             root.SetTree(this);
-            SetData("enemy", _enemyChar);
+            SetData("enemy", enemy);
             return root;
         }
 
