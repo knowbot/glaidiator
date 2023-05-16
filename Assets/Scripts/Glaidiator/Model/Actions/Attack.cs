@@ -1,10 +1,5 @@
-﻿using System;
-using Glaidiator.Model.Actions;
-using Unity.VisualScripting;
+﻿using Glaidiator.Model.Collision;
 using UnityEngine;
-using Glaidiator.Model.Collision;
-using Timer = Glaidiator.Model.Utils.Timer;
-using Collider2D = Glaidiator.Model.Collision.Collider2D;
 
 namespace Glaidiator.Model.Actions
 {

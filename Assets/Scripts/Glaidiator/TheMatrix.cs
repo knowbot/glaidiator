@@ -1,6 +1,4 @@
-﻿using System;
-using Glaidiator.Model;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Glaidiator
 {
@@ -30,6 +28,11 @@ namespace Glaidiator
         private void Update()
         {
             if(_manager.CheckDone()) _manager.Schedule();
+        }
+
+        private void OnDestroy()
+        {
+            _manager.ForceComplete();
         }
     }
 }

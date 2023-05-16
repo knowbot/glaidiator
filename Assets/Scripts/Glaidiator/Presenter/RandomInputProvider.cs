@@ -1,6 +1,4 @@
-﻿using Glaidiator.Model.Utils;
-using UnityEditor;
-using UnityEngine;
+﻿using Glaidiator.Utils;
 
 namespace Glaidiator.Presenter
 {
@@ -9,15 +7,14 @@ namespace Glaidiator.Presenter
         public Input Inputs { get; private set; }
         public Input RandomInputs()
         {
-            var rnd = new Unity.Mathematics.Random(42069);
             return new Input()
             {
-                attackLight = rnd.NextBool(),
-                attackHeavy = rnd.NextBool(),
-                attackRanged = rnd.NextBool(),
-                block = rnd.NextBool(),
-                dodge = rnd.NextBool(),
-                move = MathStuff.Get8DDirection(rnd.NextFloat(), rnd.NextFloat())
+                attackLight = MathStuff.Rand.NextBool(),
+                attackHeavy = MathStuff.Rand.NextBool(),
+                attackRanged = MathStuff.Rand.NextBool(),
+                block = MathStuff.Rand.NextBool(),
+                dodge = MathStuff.Rand.NextBool(),
+                move = MathStuff.Get8DDirection(MathStuff.Rand.NextFloat(), MathStuff.Rand.NextFloat())
             };
         }
         

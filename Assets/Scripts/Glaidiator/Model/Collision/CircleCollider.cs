@@ -1,5 +1,5 @@
 ﻿using Differ.Shapes;
-using Glaidiator.Model.Utils;
+using Glaidiator.Utils;
 using UnityEngine;
 
 namespace Glaidiator.Model.Collision
@@ -28,7 +28,7 @@ namespace Glaidiator.Model.Collision
     
         public override void Draw()
         {
-            DebugUtils.DrawCircle(Position.x0y(), Radius, 20, Color.cyan);
+            DebugStuff.DrawCircle(Position.x0y(), Radius, 20, Color.cyan);
         }
     }
 }

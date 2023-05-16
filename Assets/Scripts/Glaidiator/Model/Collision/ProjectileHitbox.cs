@@ -1,7 +1,5 @@
-﻿using System.Numerics;
-using Glaidiator.Model.Actions;
+﻿using Glaidiator.Model.Actions;
 using UnityEngine;
-using Vector2 = UnityEngine.Vector2;
 
 namespace Glaidiator.Model.Collision
 {

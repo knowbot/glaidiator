@@ -1,6 +1,4 @@
-﻿using Collider2D = Glaidiator.Model.Collision.Collider2D;
-
-namespace Glaidiator.Model.Collision
+﻿namespace Glaidiator.Model.Collision
 {
     public interface IHitbox
     {

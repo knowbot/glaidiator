@@ -1,6 +1,4 @@
-﻿using System;
-using Glaidiator.Model;
-using Glaidiator.Model.Collision;
+﻿using Glaidiator.Model.Collision;
 using UnityEngine;
 
 namespace Glaidiator.Presenter

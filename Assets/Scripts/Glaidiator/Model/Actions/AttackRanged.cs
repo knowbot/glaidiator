@@ -1,6 +1,5 @@
 ﻿using Glaidiator.Model.Collision;
 using UnityEngine;
-using Collider2D = Glaidiator.Model.Collision.Collider2D;
 
 namespace Glaidiator.Model.Actions
 {

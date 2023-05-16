@@ -1,8 +1,8 @@
 ﻿using System;
-using Differ.Data;
-using Differ.Shapes;
 using System.Collections.Generic;
+using Differ.Data;
 using Differ.Sat;
+using Differ.Shapes;
 
 namespace Differ
 {

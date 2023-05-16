@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Differ.Math
+﻿namespace Differ.Math
 {
 	public class Util
 	{

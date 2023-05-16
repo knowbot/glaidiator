@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Numerics;
 using Glaidiator.Model.Actions;
-using Glaidiator.Model.Utils;
+using Glaidiator.Utils;
 using UnityEngine;
-using Quaternion = UnityEngine.Quaternion;
-using Vector2 = UnityEngine.Vector2;
-using Vector3 = UnityEngine.Vector3;
 
 namespace Glaidiator.Model.Collision
 {

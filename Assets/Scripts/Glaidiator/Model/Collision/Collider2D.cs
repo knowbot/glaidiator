@@ -1,8 +1,6 @@
 ﻿using System;
 using Differ.Math;
 using Differ.Shapes;
-using Glaidiator.Model.Utils;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Glaidiator.Model.Collision

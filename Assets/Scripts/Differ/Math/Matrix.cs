@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Differ.Math
+﻿namespace Differ.Math
 {
 	//NOTE : Only implements the basics required for the shape transformations
 	//NOTE : Not a full implementation, some code copied from openfl/flash/geom/Matrix.hx

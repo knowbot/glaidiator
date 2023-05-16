@@ -1,7 +1,4 @@
-﻿using System;
-using Glaidiator.Model.Actions;
-using Glaidiator.Model.Utils;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Glaidiator.Model.Actions
 {

@@ -4,7 +4,6 @@ using Differ.Data;
 using Glaidiator.Model.Actions;
 using UnityEngine;
 
-
 namespace Glaidiator.Model.Collision
 {
     public class World

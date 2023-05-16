@@ -1,8 +1,4 @@
-﻿using System;
-using Glaidiator.Model.Actions;
-using Glaidiator.Model.Utils;
-
-namespace Glaidiator.Model.Actions
+﻿namespace Glaidiator.Model.Actions
 {
     public class Block : ICooldown, IAction
     {

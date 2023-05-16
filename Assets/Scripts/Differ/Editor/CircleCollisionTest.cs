@@ -1,8 +1,6 @@
-﻿using UnityEngine;
-using UnityEditor;
-using NUnit.Framework;
-using Differ;
+﻿using Differ;
 using Differ.Shapes;
+using NUnit.Framework;
 
 public class CircleCollisionTest {
 
@@ -15,7 +13,7 @@ public class CircleCollisionTest {
 
         //Act
         //Try to rename the GameObject
-        var collision = Differ.Collision.shapeWithShape(circle, anotherCircle);
+        var collision = Collision.shapeWithShape(circle, anotherCircle);
 
         //Assert
         //The object has a new name

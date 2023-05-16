@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Differ.Math;
 using Differ.Data;
+using Differ.Math;
 
 namespace Differ.Shapes
 {

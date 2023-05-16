@@ -1,17 +1,13 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
-using Differ.Data;
 using Glaidiator.Model.Actions;
 using Glaidiator.Model.Actions.Lookups;
 using Glaidiator.Model.Collision;
 using Glaidiator.Model.Resources;
-using Glaidiator.Model.Utils;
-using RPGCharacterAnims.Actions;
+using Glaidiator.Utils;
 using UnityEngine;
-using Attack = Glaidiator.Model.Actions.Attack;
 using BoxCollider = Glaidiator.Model.Collision.BoxCollider;
-using Collider2D = Glaidiator.Model.Collision.Collider2D;
 
 namespace Glaidiator.Model
 {

@@ -1,5 +1,4 @@
-﻿using System;
-using Differ.Shapes;
+﻿using Differ.Shapes;
 
 namespace Differ.Data
 {

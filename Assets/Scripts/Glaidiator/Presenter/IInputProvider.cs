@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace Glaidiator
+﻿namespace Glaidiator
 {
     public interface IInputProvider
     {
