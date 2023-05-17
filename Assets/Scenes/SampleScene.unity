@@ -1324,6 +1324,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -6828681789028139135, guid: ff8e2ceecd2e5334ea3416004b3b5bef, type: 3}
+      propertyPath: selectTree
+      value: 98
+      objectReference: {fileID: 0}
+    - target: {fileID: -6828681789028139135, guid: ff8e2ceecd2e5334ea3416004b3b5bef, type: 3}
       propertyPath: PlayerObject
       value: 
       objectReference: {fileID: 902887459}

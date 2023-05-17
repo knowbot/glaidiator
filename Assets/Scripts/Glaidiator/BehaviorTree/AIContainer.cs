@@ -1,8 +1,10 @@
 using System;
+using System.ComponentModel;
 using BasicAI;
 using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Presenter;
 using Glaidiator.Utils;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Glaidiator.BehaviorTree
@@ -10,6 +12,7 @@ namespace Glaidiator.BehaviorTree
     public class AIContainer : MonoBehaviour, IInputProvider
     {
         private BTree btree;
+        public char selectTree;
         public String currentNode; // for debug info
         public float currentDistance;
         public GameObject PlayerObject;
@@ -22,7 +25,28 @@ namespace Glaidiator.BehaviorTree
 
         private void Start()
         {
-            btree = new CustomAshleyBT();
+            switch (selectTree) //ugly hack to allow tree selection in editor
+            {
+                case 'a':
+                    btree = new CustomAshleyBT();
+                    break;
+                case 'b':
+                    btree = new CustomBobBT();
+                    break;
+                case 'c':
+                    btree = new CustomCharlieBT();
+                    break;
+                case 'd':
+                    btree = new CustomMaximusDecimusMeridiusBT();
+                    break;
+                case 'e':
+                    btree = new EvoBT();
+                    break;
+                default:
+                    btree = new CustomAshleyBT();
+                    break;
+            }
+            
             btree.SetOwnerChar(GetComponent<CharacterPresenter>().GetCharacter());
             btree.SetEnemyChar(PlayerObject.GetComponent<CharacterPresenter>().GetCharacter());
             btree.Init();
