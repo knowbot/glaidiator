@@ -4,7 +4,7 @@ using Glaidiator.Model.Actions;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public class ConditionCanDoAction: ConditionNode<string>
+    public class ConditionCanDoAction: Condition<string>
     {
 
         public ConditionCanDoAction(string actionName) : base(actionName) {}

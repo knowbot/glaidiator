@@ -3,7 +3,7 @@ using Glaidiator.BehaviorTree.Base;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public class ConditionHasTarget: ConditionNode<string>
+    public class ConditionHasTarget: Condition<string>
     {
         public ConditionHasTarget(string targetName) : base(targetName) { }
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
 {
-    public class TaskWait : TaskNode
+    public class TaskWait : Task
     {
         private int _totalTicks;
         private int _countTicks;

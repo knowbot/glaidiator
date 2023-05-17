@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
 {
-    public class TaskSetWP : TaskNode
+    public class TaskSetWP : Task
     {
 
         private float _distance;

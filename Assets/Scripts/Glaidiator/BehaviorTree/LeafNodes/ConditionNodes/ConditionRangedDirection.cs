@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public class ConditionRangedDirection: ConditionNode<float>
+    public class ConditionRangedDirection: Condition<float>
     {
         public ConditionRangedDirection(float maxAngle = 5f) : base(maxAngle) {}
 

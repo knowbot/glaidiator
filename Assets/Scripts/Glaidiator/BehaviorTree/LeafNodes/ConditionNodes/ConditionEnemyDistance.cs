@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public class ConditionEnemyDistance: ConditionNode<float>
+    public class ConditionEnemyDistance: Condition<float>
     {
         public ConditionEnemyDistance(float distance) : base(distance) {}
 

@@ -3,7 +3,7 @@ using Glaidiator.BehaviorTree.Base;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
 {
-    public class TaskBlock : TaskNode
+    public class TaskBlock : Task
     {
         public TaskBlock()
         {

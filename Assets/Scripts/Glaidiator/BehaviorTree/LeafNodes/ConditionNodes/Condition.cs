@@ -3,10 +3,17 @@ using System.Collections.Generic;
 using System.Xml;
 using Glaidiator.BehaviorTree.Base;
 
-namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
+namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public abstract class TaskNode : Node
+    public abstract class Condition<T> : Leaf
     {
+        protected T value;
+
+        protected Condition (T value)
+        {
+            this.value = value;
+        }
+        
         public override void Flatten(List<Node> nodes)
         {
             nodes.Add(this);
@@ -25,6 +32,8 @@ namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
         public override void WriteXml(XmlWriter w)
         {
             w.WriteStartElement(GetType().Name);
+            w.WriteAttributeString("valueType", value.GetType().Name);
+            w.WriteAttributeString("value", value.ToString());
             w.WriteEndElement();
         }
     }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
 {
-    public class TaskTurnLeft : TaskNode
+    public class TaskTurnLeft : Task
     {
         private int _turnSteps;
         

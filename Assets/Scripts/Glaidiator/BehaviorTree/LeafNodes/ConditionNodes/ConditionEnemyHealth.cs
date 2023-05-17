@@ -4,7 +4,7 @@ using Glaidiator.Model;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public class ConditionEnemyHealth: ConditionNode<float>
+    public class ConditionEnemyHealth: Condition<float>
     {
         public ConditionEnemyHealth(float threshold) : base(threshold) {}
 

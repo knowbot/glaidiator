@@ -3,7 +3,7 @@ using Glaidiator.BehaviorTree.Base;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public class ConditionOwnHealth: ConditionNode<float>
+    public class ConditionOwnHealth: Condition<float>
     {
         public ConditionOwnHealth(float threshold) : base(threshold) {}
         public override NodeState Evaluate()

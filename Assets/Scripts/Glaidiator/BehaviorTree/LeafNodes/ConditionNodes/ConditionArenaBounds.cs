@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public class ConditionArenaBounds: ConditionNode<float>
+    public class ConditionArenaBounds: Condition<float>
     {
         public ConditionArenaBounds(float distance) : base(distance) {}
         

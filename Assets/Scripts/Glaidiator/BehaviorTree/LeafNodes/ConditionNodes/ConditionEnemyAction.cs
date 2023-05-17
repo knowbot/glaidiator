@@ -5,7 +5,7 @@ using Glaidiator.Model.Actions;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public class ConditionEnemyAction: ConditionNode<string>
+    public class ConditionEnemyAction: Condition<string>
     {
 
         public ConditionEnemyAction(string actionName) : base(actionName) {}

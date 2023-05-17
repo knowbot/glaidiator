@@ -10,8 +10,8 @@ namespace Glaidiator.BehaviorTree
         private static int _minChildren = 2; // minimum children (leaf nodes) for each node
         private static int _maxDepth = 4; // maximum depth of the tree (decorators excluded)
         private static int _maxChildren = 5; // maximum children (leaf nodes) for each node
-        public static List<Node> composites;
-        public static List<Node> leafs;
+        public static List<Composite> composites;
+        public static List<Leaf> leafs;
 
         static RandomTreeBuilder()
         {

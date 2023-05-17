@@ -3,7 +3,7 @@ using Glaidiator.BehaviorTree.Base;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public class ConditionOwnStamina: ConditionNode<float>
+    public class ConditionOwnStamina: Condition<float>
     {
         
         

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
 {
-    public class TaskBackEnemy : TaskNode
+    public class TaskBackEnemy : Task
     {
         public TaskBackEnemy()
         {

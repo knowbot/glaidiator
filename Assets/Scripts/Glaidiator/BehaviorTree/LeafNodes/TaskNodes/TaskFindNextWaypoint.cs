@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
 {
-    public class TaskFindNextWaypoint : TaskNode
+    public class TaskFindNextWaypoint : Task
     {
         private Transform _transform;
 

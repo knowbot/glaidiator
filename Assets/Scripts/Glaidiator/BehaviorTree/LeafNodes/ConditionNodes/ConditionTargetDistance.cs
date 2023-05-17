@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public class ConditionTargetDistance: ConditionNode<float>
+    public class ConditionTargetDistance: Condition<float>
     {
         private string _targetName;
 

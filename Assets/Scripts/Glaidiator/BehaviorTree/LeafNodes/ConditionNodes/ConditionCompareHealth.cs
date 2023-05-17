@@ -4,7 +4,7 @@ using Glaidiator.Model;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public class ConditionCompareHealth : ConditionNode<float>
+    public class ConditionCompareHealth : Condition<float>
     {
         public ConditionCompareHealth(float ratio) : base(ratio) {}
 

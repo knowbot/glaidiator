@@ -3,7 +3,7 @@ using Glaidiator.BehaviorTree.Base;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
 {
-    public class TaskStop : TaskNode
+    public class TaskStop : Task
     {
         public override NodeState Evaluate()
         {

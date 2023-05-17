@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
 {
-    public class TaskMoveForward : TaskNode
+    public class TaskMoveForward : Task
     {
         private float _distance;
         private bool _hasDistance;
