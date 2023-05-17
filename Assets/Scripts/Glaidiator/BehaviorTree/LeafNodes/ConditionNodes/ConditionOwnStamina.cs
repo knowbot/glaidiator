@@ -1,23 +1,19 @@
 ﻿using System;
 using Glaidiator.BehaviorTree.Base;
 
-namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
+namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public class CheckOwnStamina : Node
+    public class ConditionOwnStamina: ConditionNode<float>
     {
-
-        private float _threshold;
         
-        public CheckOwnStamina(float threshold)
-        {
-            _threshold = threshold;
-        }
+        
+        public ConditionOwnStamina(float threshold) : base(threshold) {}
 
         public override NodeState Evaluate()
         {
             tree.currentNode = this;
 
-            if (owner.Stamina.Current >= _threshold)
+            if (owner.Stamina.Current >= value)
             {
                 state = NodeState.SUCCESS;
                 return state;

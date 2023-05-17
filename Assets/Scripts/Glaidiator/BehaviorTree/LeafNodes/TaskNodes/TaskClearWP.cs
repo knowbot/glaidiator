@@ -3,7 +3,7 @@ using Glaidiator.BehaviorTree.Base;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
 {
-    public class TaskClearWP : Node
+    public class TaskClearWP : TaskNode
     {
 
         public TaskClearWP()

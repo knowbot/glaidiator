@@ -1,7 +1,7 @@
 ﻿using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Model;
 
-namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
+namespace Glaidiator.BehaviorTree.CustomBTs
 {
     public class EvoBT : BTree
     {

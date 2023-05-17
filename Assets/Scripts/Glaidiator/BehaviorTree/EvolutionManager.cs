@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Glaidiator.BehaviorTree;
 using Glaidiator.BehaviorTree.Base;
+using Glaidiator.BehaviorTree.CustomBTs;
+using Glaidiator.BehaviorTree.LeafNodes.ConditionNodes;
 using Glaidiator.BehaviorTree.LeafNodes.TaskNodes;
-using Glaidiator.BehaviorTree.LeafNodes.TaskNodes.CheckNodes;
-using Glaidiator.BehaviorTree.LeafNodes.TaskNodes.TaskNodes;
 using Random = UnityEngine.Random;
 
 namespace Glaidiator.BehaviorTree
@@ -108,44 +107,44 @@ namespace Glaidiator.BehaviorTree
             prototypesMap.Add("TaskRangedAtk", new TaskRangedAtk());
             prototypesMap.Add("TaskBlock", new TaskBlock());
             prototypesMap.Add("TaskDodge", new TaskDodge());
-            prototypesMap.Add("CheckLightAtk", new CheckCanDoAction("atkLight"));
-            prototypesMap.Add("CheckHeavyAtk", new CheckCanDoAction("atkHeavy"));
-            prototypesMap.Add("CheckRangedAtk", new CheckCanDoAction("atkRanged"));
-            prototypesMap.Add("CheckBlock", new CheckCanDoAction("block"));
-            prototypesMap.Add("CheckDodge", new CheckCanDoAction("dodge"));
+            prototypesMap.Add("CheckLightAtk", new ConditionCanDoAction("atkLight"));
+            prototypesMap.Add("CheckHeavyAtk", new ConditionCanDoAction("atkHeavy"));
+            prototypesMap.Add("CheckRangedAtk", new ConditionCanDoAction("atkRanged"));
+            prototypesMap.Add("CheckBlock", new ConditionCanDoAction("block"));
+            prototypesMap.Add("CheckDodge", new ConditionCanDoAction("dodge"));
             
             prototypesMap.Add("TaskFaceEnemy", new TaskFaceEnemy());
             prototypesMap.Add("TaskBackEnemy", new TaskBackEnemy());
             prototypesMap.Add("TaskMoveForward", new TaskMoveForward());
             prototypesMap.Add("TaskTurnLeft", new TaskTurnLeft());
             prototypesMap.Add("TaskTurnRight", new TaskTurnRight());
-            prototypesMap.Add("CheckArenaBounds", new CheckArenaBounds(1f));
+            prototypesMap.Add("CheckArenaBounds", new ConditionArenaBounds(1f));
             
-            prototypesMap.Add("CheckEnemyDistanceMelee", new CheckEnemyDistance(2f));
-            prototypesMap.Add("CheckEnemyDistanceRanged", new CheckEnemyDistance(6f));
-            prototypesMap.Add("CheckEnemyDistanceAggro", new CheckEnemyDistance(8f));
+            prototypesMap.Add("CheckEnemyDistanceMelee", new ConditionEnemyDistance(2f));
+            prototypesMap.Add("CheckEnemyDistanceRanged", new ConditionEnemyDistance(6f));
+            prototypesMap.Add("CheckEnemyDistanceAggro", new ConditionEnemyDistance(8f));
             
-            prototypesMap.Add("CheckOwnHealth", new CheckOwnHealth(50f));
-            prototypesMap.Add("CheckOwnStamina", new CheckOwnStamina(50f));
-            prototypesMap.Add("CheckEnemyHealth", new CheckEnemyHealth(50f));
-            prototypesMap.Add("CheckEnemyStamina", new CheckEnemyStamina(50f));
+            prototypesMap.Add("CheckOwnHealth", new ConditionOwnHealth(50f));
+            prototypesMap.Add("CheckOwnStamina", new ConditionOwnStamina(50f));
+            prototypesMap.Add("CheckEnemyHealth", new ConditionEnemyHealth(50f));
+            prototypesMap.Add("CheckEnemyStamina", new ConditionEnemyStamina(50f));
             
             prototypesMap.Add("TaskSetWP", new TaskSetWP(2f));
             prototypesMap.Add("TaskClearWP", new TaskClearWP());
-            prototypesMap.Add("CheckHasWP", new CheckHasWP());
-            prototypesMap.Add("CheckWPDistance", new CheckWPDistance(0.01f));
+            prototypesMap.Add("CheckHasWP", new ConditionHasTarget("wp"));
+            prototypesMap.Add("CheckWPDistance", new ConditionTargetDistance("wp", 0.01f));
             
             prototypesMap.Add("TaskWait", new TaskWait());
 
-            prototypesMap.Add("CheckEnemyLight", new CheckEnemyAction("Light Attack"));
-            prototypesMap.Add("CheckEnemyHeavy", new CheckEnemyAction("Heavy Attack"));
-            prototypesMap.Add("CheckEnemyRanged", new CheckEnemyAction("Ranged Attack"));
-            prototypesMap.Add("CheckEnemyBlock", new CheckEnemyAction("Block"));
-            prototypesMap.Add("CheckEnemyDodge", new CheckEnemyAction("Dodge"));
+            prototypesMap.Add("CheckEnemyLight", new ConditionEnemyAction("Light Attack"));
+            prototypesMap.Add("CheckEnemyHeavy", new ConditionEnemyAction("Heavy Attack"));
+            prototypesMap.Add("CheckEnemyRanged", new ConditionEnemyAction("Ranged Attack"));
+            prototypesMap.Add("CheckEnemyBlock", new ConditionEnemyAction("Block"));
+            prototypesMap.Add("CheckEnemyDodge", new ConditionEnemyAction("Dodge"));
             
             Node seqLightAtk = new Sequence(new List<Node>
             {
-                new CheckCanDoAction("atkLight"),
+                new ConditionCanDoAction("atkLight"),
                 new TaskFaceEnemy(),
                 new TaskLightAtk(),
             });
@@ -153,7 +152,7 @@ namespace Glaidiator.BehaviorTree
             
             Node seqHeavyAtk = new Sequence(new List<Node>
             {
-                new CheckCanDoAction("atkHeavy"),
+                new ConditionCanDoAction("atkHeavy"),
                 new TaskFaceEnemy(),
                 new TaskLightAtk(),
             });
@@ -161,19 +160,19 @@ namespace Glaidiator.BehaviorTree
 
             Node seqRangedAtk = new Sequence(new List<Node>
             {
-                new Inverter(new CheckEnemyDistance(3f)),
-                new CheckCanDoAction("atkRanged"),
-                new CheckEnemyDistance(6f),
+                new Inverter(new ConditionEnemyDistance(3f)),
+                new ConditionCanDoAction("atkRanged"),
+                new ConditionEnemyDistance(6f),
                 new TaskFaceEnemy(),
-                new CheckRangedDirection(30f),
+                new ConditionRangedDirection(30f),
                 new TaskRangedAtk(),
             });
             prototypesMap.Add("SeqRangedAttack", seqRangedAtk);
             
             Node seqBlock = new Sequence(new List<Node>
             {
-                new CheckEnemyDistance(2f),
-                new CheckCanDoAction("block"),
+                new ConditionEnemyDistance(2f),
+                new ConditionCanDoAction("block"),
                 new TaskFaceEnemy(),
                 new TaskBlock(),
             });

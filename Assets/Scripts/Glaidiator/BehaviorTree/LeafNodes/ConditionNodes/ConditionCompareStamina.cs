@@ -1,10 +1,13 @@
-﻿using Glaidiator.BehaviorTree.Base;
+﻿using System;
+using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Model;
 
-namespace Glaidiator.BehaviorTree.LeafNodes.CheckNodes
+namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public class CheckCompareStamina : Node
+    public class ConditionCompareStamina : ConditionNode<float>
     {
+        
+        public ConditionCompareStamina(float ratio) : base(ratio) {}
         public override NodeState Evaluate()
         {
             tree.currentNode = this;
@@ -16,23 +19,24 @@ namespace Glaidiator.BehaviorTree.LeafNodes.CheckNodes
                 return state;
             }
 
-            state = enemy.Stamina.Current < owner.Stamina.Current ? NodeState.SUCCESS : NodeState.FAILURE;
+            float ratio = owner.Stamina.Current / enemy.Stamina.Current; 
+            state = ratio > value ? NodeState.SUCCESS : NodeState.FAILURE;
             return state;
         }
 
         public override Node Clone()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override void Mutate()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override Node Randomized()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

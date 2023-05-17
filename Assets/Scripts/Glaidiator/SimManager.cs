@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Glaidiator.BehaviorTree.Base;
 using Glaidiator.BehaviorTree;
 using Glaidiator.Model;
 using Glaidiator.Model.Collision;

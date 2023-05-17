@@ -1,16 +1,11 @@
-using System.Collections.Generic;
-using Glaidiator.BehaviorTree.Base;
-
 namespace Glaidiator.BehaviorTree.Base
 {
 
-    public class Inverter : Decorator
+    public class Inverter : Decorator<Node>
     {
         
         public Inverter() : base() {}
-
-        public Inverter(List<Node> children) : base(children) {}
-
+        
         public Inverter(Node child)
         {
             Child = child;

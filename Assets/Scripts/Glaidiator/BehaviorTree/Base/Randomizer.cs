@@ -1,18 +1,13 @@
-using System.Collections.Generic;
-using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Utils;
 
 namespace Glaidiator.BehaviorTree.Base
 {
 
-    public class Randomizer : Decorator
+    public class Randomizer : Decorator<Composite>
     {
-        
         public Randomizer() : base() {}
 
-        public Randomizer(List<Node> children) : base(children) {}
-
-        public Randomizer(Node child)
+        public Randomizer(Composite child)
         {
             Child = child;
         }
@@ -29,7 +24,7 @@ namespace Glaidiator.BehaviorTree.Base
             Node clone;
             if (Child != null)
             {
-                clone = new Randomizer(Child.Clone());
+                clone = new Randomizer((Composite)Child.Clone());
             }
             else
             {
@@ -43,7 +38,8 @@ namespace Glaidiator.BehaviorTree.Base
         {
             if (Child == null)
             {
-                Child = EvolutionManager.GetNewRandomNode().Clone();
+                // TODO: replace with composite
+                // //Child = EvolutionManager.GetNewRandomNode().Clone();
             }
         }
 

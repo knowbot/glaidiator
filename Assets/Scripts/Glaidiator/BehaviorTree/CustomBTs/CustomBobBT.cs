@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Glaidiator.BehaviorTree.Base;
-using Glaidiator.BehaviorTree.LeafNodes.CheckNodes;
-using Glaidiator.BehaviorTree.LeafNodes.TaskNodes.CheckNodes;
-using Glaidiator.BehaviorTree.LeafNodes.TaskNodes.TaskNodes;
+using Glaidiator.BehaviorTree.LeafNodes.ConditionNodes;
+using Glaidiator.BehaviorTree.LeafNodes.TaskNodes;
 
-namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
+namespace Glaidiator.BehaviorTree.CustomBTs
 {
     public class CustomBobBT : BTree
     {
@@ -24,24 +24,24 @@ namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
                     // defend melee sequence
                     new Sequence(new List<Node>
                     {
-                        new CheckEnemyDistance(meleeDist),
+                        new ConditionEnemyDistance(meleeDist),
                         new Selector(new List<Node> // if enemy melee
                         {
-                            new CheckEnemyAction("Light Attack"),
-                            new CheckEnemyAction("Heavy Attack"),
+                            new ConditionEnemyAction("Light Attack"),
+                            new ConditionEnemyAction("Heavy Attack"),
                         }),
                         
                         new Selector(new List<Node>
                         {
                             new Sequence(new List<Node> // try block or
                             {
-                                new CheckCanDoAction("block"),
+                                new ConditionCanDoAction("block"),
                                 new TaskFaceEnemy(),
                                 new TaskBlock(),
                             }),
                             new Sequence(new List<Node> // try dodge
                             {
-                                new CheckCanDoAction("dodge"),
+                                new ConditionCanDoAction("dodge"),
                                 new TaskBackEnemy(),
                                 new TaskMoveForward(),
                                 new TaskDodge(),
@@ -52,18 +52,18 @@ namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
                     // defend ranged sequence
                     new Sequence(new List<Node>
                     {
-                        new CheckEnemyAction("Ranged Attack"), // if enemy ranged
+                        new ConditionEnemyAction("Ranged Attack"), // if enemy ranged
                         new Selector(new List<Node>
                         {
                             new Sequence(new List<Node> // try block or
                             {
-                                new CheckCanDoAction("block"),
+                                new ConditionCanDoAction("block"),
                                 new TaskFaceEnemy(),
                                 new TaskBlock(),
                             }),
                             new Sequence(new List<Node> // try dodge
                             {
-                                new CheckCanDoAction("dodge"),
+                                new ConditionCanDoAction("dodge"),
                                 new TaskBackEnemy(),
                                 new TaskTurnLeft(),
                                 new TaskMoveForward(),
@@ -79,21 +79,21 @@ namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
                 {
                     new Sequence(new List<Node> // try melee lightAtk
                     { 
-                        new CheckEnemyDistance(meleeDist), 
-                        new CheckCanDoAction("atkLight"),
+                        new ConditionEnemyDistance(meleeDist), 
+                        new ConditionCanDoAction("atkLight"),
                         new TaskFaceEnemy(),
                         new TaskLightAtk(),
                     }),
                     new Sequence(new List<Node> // try dodge into heavyAtk
                     {
-                        new CheckCanDoAction("dodge"),
-                        new CheckCanDoAction("atkHeavy"), // might not have stam for both
-                        new Inverter(new CheckEnemyDistance(3f)),
-                        new CheckEnemyDistance(5f),
+                        new ConditionCanDoAction("dodge"),
+                        new ConditionCanDoAction("atkHeavy"), // might not have stam for both
+                        new Inverter(new ConditionEnemyDistance(3f)),
+                        new ConditionEnemyDistance(5f),
                         new TaskFaceEnemy(),
                         new TaskDodge(), // gap close if (3 < dist < 5)
                         new TaskWait(),
-                        new CheckEnemyDistance(meleeDist),
+                        new ConditionEnemyDistance(meleeDist),
                         new TaskHeavyAtk(),
                     }),
                 }),
@@ -104,18 +104,18 @@ namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
                     // evade sequence
                     new Sequence(new List<Node> // evade if less hp than enemy
                     {
-                        new Inverter(new CheckCompareHealth()), 
-                        new CheckEnemyDistance(rangedDist),
+                        new Inverter(new ConditionCompareHealth(1f)), 
+                        new ConditionEnemyDistance(rangedDist),
                         new Sequence(new List<Node>// run away until threshold distance
                         {
                             new TaskBackEnemy(),
                             new TaskMoveForward(),
                             new TaskStop(),
-                            new CheckArenaBounds(1f),
+                            new ConditionArenaBounds(1f),
                             new TaskMoveForward(),
                         }),
                         
-                        new Inverter(new CheckArenaBounds(1f)),
+                        new Inverter(new ConditionArenaBounds(1f)),
                         new Selector(new List<Node> // turn if hitting wall
                         {
                             new Sequence(new List<Node>
@@ -123,31 +123,31 @@ namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
                                 new TaskStop(),
                                 new TaskTurnRight(),
                                 new TaskMoveForward(),
-                                new CheckArenaBounds(1f),
+                                new ConditionArenaBounds(1f),
                             }),
                             new Sequence(new List<Node>
                             {
                                 new TaskStop(),
                                 new TaskTurnLeft(),
                                 new TaskMoveForward(),
-                                new CheckArenaBounds(1f),
+                                new ConditionArenaBounds(1f),
                             }),
                         }),
                     }),
                     // move to melee sequence
                     new Sequence(new List<Node> // stop when melee dist
                     { 
-                        new CheckEnemyDistance(meleeDist), // if less
-                        new CheckOwnHealth(evadeThresholdHP),
-                        new CheckOwnStamina(evadeThresholdStam),
+                        new ConditionEnemyDistance(meleeDist), // if less
+                        new ConditionOwnHealth(evadeThresholdHP),
+                        new ConditionOwnStamina(evadeThresholdStam),
                         new TaskFaceEnemy(),
                         new TaskStop(),
                     }),
                     new Sequence(new List<Node> // move until melee dist
                     {
-                        new Inverter(new CheckEnemyDistance(meleeDist)), // if more
-                        new CheckOwnHealth(evadeThresholdHP),
-                        new CheckOwnStamina(evadeThresholdStam),
+                        new Inverter(new ConditionEnemyDistance(meleeDist)), // if more
+                        new ConditionOwnHealth(evadeThresholdHP),
+                        new ConditionOwnStamina(evadeThresholdStam),
                         new TaskFaceEnemy(),
                         new TaskMoveForward(),
                     }),
@@ -163,7 +163,7 @@ namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
 
         public override BTree Clone()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

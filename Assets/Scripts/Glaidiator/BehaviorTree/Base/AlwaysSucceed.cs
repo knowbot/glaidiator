@@ -1,15 +1,10 @@
-using System.Collections.Generic;
-using Glaidiator.BehaviorTree.Base;
-
 namespace Glaidiator.BehaviorTree.Base
 {
 
-    public class AlwaysSucceed : Decorator
+    public class AlwaysSucceed : Decorator<Node>
     {
 
         public AlwaysSucceed() : base() { }
-        
-        public AlwaysSucceed(List<Node> children) : base(children) {}
 
         public AlwaysSucceed(Node child)
         {

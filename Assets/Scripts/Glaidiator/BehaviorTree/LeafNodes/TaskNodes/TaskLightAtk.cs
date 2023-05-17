@@ -3,7 +3,7 @@ using Glaidiator.BehaviorTree.Base;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
 {
-    public class TaskLightAtk : Node
+    public class TaskLightAtk : TaskNode
     {
         public TaskLightAtk()
         {

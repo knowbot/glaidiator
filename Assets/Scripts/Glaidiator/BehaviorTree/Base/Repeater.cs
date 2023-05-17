@@ -1,10 +1,8 @@
-using System.Xml;
-using Glaidiator.BehaviorTree.Base;
 using UnityEngine;
 
 namespace Glaidiator.BehaviorTree.Base
 {
-    public class Repeater : Decorator
+    public class Repeater : Decorator<Node>
     {
         private int _count = -1;
 
@@ -35,7 +33,7 @@ namespace Glaidiator.BehaviorTree.Base
             
             if (evalCount == -1)
             {
-                while (true) // FIXME: less dirty solution?
+                while (true) // TODO: less dirty solution?
                 {
                     childState = Child.Evaluate();
                 }
@@ -105,17 +103,6 @@ namespace Glaidiator.BehaviorTree.Base
                 return new Repeater(newChild);
             }
             return new Repeater(newChild, Random.Range(1, 6));
-        }
-        
-        public override void WriteXml(XmlWriter w)
-        {
-            w.WriteStartElement(GetType().Name);
-            w.WriteAttributeString("count", _count.ToString());
-            foreach (var child in Children)
-            {
-                child.WriteXml(w);
-            }
-            w.WriteEndElement();
         }
     }
 }

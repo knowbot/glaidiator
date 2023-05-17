@@ -3,21 +3,11 @@ using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Model;
 using UnityEngine;
 
-namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
+namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public class CheckRangedDirection : Node
+    public class ConditionRangedDirection: ConditionNode<float>
     {
-        private float _maxAngle;
-
-        public CheckRangedDirection()
-        {
-            _maxAngle = 5f;
-        }
-
-        public CheckRangedDirection(float maxAngle)
-        {
-            _maxAngle = maxAngle;
-        }
+        public ConditionRangedDirection(float maxAngle = 5f) : base(maxAngle) {}
 
         public override NodeState Evaluate()
         {
@@ -37,7 +27,7 @@ namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
             //float angle = Vector3.Angle(currDirection, targetDirection);
             float angle = Vector3.SignedAngle(currDirection, targetDirection, Vector3.up);
             
-            if (angle <= _maxAngle && angle >= (_maxAngle*-1f))
+            if (angle <= value && angle >= (value*-1f))
             {
                 ////Debug.Log("aim angle = " + angle);
                 //Debug.DrawLine(_ownerCharacter.Movement.Position, target.Position, Color.cyan, .1f);

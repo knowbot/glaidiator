@@ -1,33 +1,46 @@
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Xml;
-using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Model;
 
 namespace Glaidiator.BehaviorTree.Base
 {
-    public abstract class Decorator : Node
+    public abstract class Decorator<T> : Node where T : Node
     {
-        public Node Child { get; protected set; }
+        public T Child { get; protected set; }
 
         public Decorator() : base()
         {
         }
 
-        public Decorator(List<Node> children) : base(children)
-        {
-            Child = children[0];
-        }
-    
-        public Decorator(Node child)
+        public Decorator(T child)
         {
             Child = child;
         }
 
-        public Decorator(BTree btree, Node child)
+        public Decorator(BTree btree, T child)
         {
             tree = btree;
             Child = child;
         }
+
+        public override void Flatten(List<Node> nodes)
+        {
+            nodes.Add(this);
+            Child.Flatten(nodes);
+        }
+        
+        public override void ReplaceChild(Node oldChild, Node newChild)
+        {
+            if (oldChild as T != Child) throw new ConstraintException("Child replaced different from current child");
+            newChild.SetParent(this);
+            newChild.SetTree(tree);
+            newChild.SetOwner(owner);
+            Child = newChild as T;
+        }
+
+        #region Getters and Setters
         
         public override void SetTree(BTree newTree)
         {
@@ -37,10 +50,15 @@ namespace Glaidiator.BehaviorTree.Base
         
         public override void SetOwner(Character owner)
         {
-            base.owner = owner;
+            this.owner = owner;
             Child.SetOwner(owner);
         }
-        
+        #endregion
+        public override void ReadXml(XmlReader reader)
+        {
+            throw new NotImplementedException();
+        }
+
         public override void WriteXml(XmlWriter w)
         {
             w.WriteStartElement(GetType().Name);

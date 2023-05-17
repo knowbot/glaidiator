@@ -2,16 +2,11 @@
 using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Model;
 
-namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes.CheckNodes
+namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public class CheckEnemyHealth : Node
+    public class ConditionEnemyHealth: ConditionNode<float>
     {
-        private float _threshold;
-
-        public CheckEnemyHealth(float threshold)
-        {
-            _threshold = threshold;
-        }
+        public ConditionEnemyHealth(float threshold) : base(threshold) {}
 
         public override NodeState Evaluate()
         {
@@ -26,7 +21,7 @@ namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes.CheckNodes
             }
 
             float enemyHealth = enemy.Health.Current;
-            state = enemyHealth >= _threshold ? NodeState.SUCCESS : NodeState.FAILURE;
+            state = enemyHealth >= value ? NodeState.SUCCESS : NodeState.FAILURE;
             
             return state;
         }

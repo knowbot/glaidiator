@@ -3,22 +3,17 @@ using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Model;
 using UnityEngine;
 
-namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
+namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public class CheckArenaBounds : Node
+    public class ConditionArenaBounds: ConditionNode<float>
     {
-        private float _distance;
-
-        public CheckArenaBounds(float distance)
-        {
-            _distance = distance;
-        }
+        public ConditionArenaBounds(float distance) : base(distance) {}
         
         public override NodeState Evaluate()
         {
             tree.currentNode = this;
 
-            Vector3 target = owner.Movement.Position + (tree.Direction * _distance);
+            Vector3 target = owner.Movement.Position + (tree.Direction * value);
             if (target.x < 0f || target.x > Arena.MaxSize ||
                 target.z < 0f || target.z > Arena.MaxSize)
             {

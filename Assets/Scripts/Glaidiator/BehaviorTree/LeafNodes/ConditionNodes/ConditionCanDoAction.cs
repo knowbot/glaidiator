@@ -2,24 +2,19 @@
 using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Model.Actions;
 
-namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes.CheckNodes
+namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public class CheckCanDoAction : Node
+    public class ConditionCanDoAction: ConditionNode<string>
     {
 
-        private string _actionName;
-        
-        public CheckCanDoAction(string actionName)
-        {
-            _actionName = actionName;
-        }
+        public ConditionCanDoAction(string actionName) : base(actionName) {}
 
         public override NodeState Evaluate()
         {
             tree.currentNode = this;
             if (tree == null) throw new NullReferenceException();
 
-            IAction action = owner.Actions[_actionName];
+            IAction action = owner.Actions[value];
             float cost = action.Action.Cost;
             
             if (owner.Cooldowns.Contains((ICooldown)action) || cost > owner.Stamina.Current)
@@ -37,7 +32,7 @@ namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes.CheckNodes
         
         public override Node Clone()
         {
-            return new CheckEnemyAction(_actionName);
+            return new ConditionEnemyAction(value);
         }
 
         public override void Mutate()
@@ -47,7 +42,7 @@ namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes.CheckNodes
 
         public override Node Randomized()
         {
-            return new CheckEnemyAction(_actionName);
+            return new ConditionEnemyAction(value);
         }
     }
 }

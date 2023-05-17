@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Utils;
 using Random = UnityEngine.Random;
 
 namespace Glaidiator.BehaviorTree.Base
 {
     [Serializable]
-    public class Selector : Node
+    public class Selector : Composite
     {
         public Selector() : base() {}
         public Selector(List<Node> children) : base(children) {}
@@ -39,7 +38,7 @@ namespace Glaidiator.BehaviorTree.Base
 
         public override Node Clone()
         {
-            Node clone = new Selector();
+            var clone = new Selector();
             clone.SetParent(parent);    // FIXME: Test for correct parent and tree refs
             clone.SetTree(tree);
             foreach (Node child in Children)

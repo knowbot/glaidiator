@@ -1,13 +1,9 @@
-using System.Collections.Generic;
-using Glaidiator.BehaviorTree.Base;
-
 namespace Glaidiator.BehaviorTree.Base
 {
-    public class UntilFail : Decorator
+    public class UntilFail : Decorator<Node>
     {
 
         public UntilFail() : base() { }
-        public UntilFail(List<Node> children) : base(children) {}
         public UntilFail(Node child) : base(child)
         {
             Child = child;

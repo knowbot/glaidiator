@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Model;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -66,6 +65,7 @@ namespace Glaidiator.BehaviorTree.Base
             Block = false;
             Dodge = false;
             if (root != null) root.Evaluate();
+            Debug.Log(currentNode.GetType().Name);
         }
 
         protected abstract Node SetupTree();

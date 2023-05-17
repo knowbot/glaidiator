@@ -1,11 +1,10 @@
 using System.Collections.Generic;
-using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Utils;
 using UnityEngine;
 
 namespace Glaidiator.BehaviorTree.Base
 {
-    public class Sequence : Node
+    public class Sequence : Composite
     {
         public Sequence() : base() { }
 
@@ -42,7 +41,7 @@ namespace Glaidiator.BehaviorTree.Base
 
         public override Node Clone()
         {
-            Node clone = new Sequence();
+            var clone = new Sequence();
             clone.SetParent(parent); // redundant?
             clone.SetTree(tree);
             foreach (Node child in Children)

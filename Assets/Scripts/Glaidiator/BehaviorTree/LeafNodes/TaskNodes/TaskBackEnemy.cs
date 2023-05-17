@@ -5,22 +5,24 @@ using UnityEngine;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
 {
-    public class TaskBackEnemy : Node
+    public class TaskBackEnemy : TaskNode
     {
-        public TaskBackEnemy(){}
+        public TaskBackEnemy()
+        {
+        }
 
 
         public override NodeState Evaluate()
         {
             tree.currentNode = this;
-            
+
             Movement target = ((Character)GetData("enemy"))?.Movement;
             if (target == null)
             {
                 state = NodeState.FAILURE;
                 return state;
             }
-            
+
             Vector3 myPos = owner.Movement.Position;
             tree.Direction = (myPos - target.Position).normalized;
 

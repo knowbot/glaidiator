@@ -2,16 +2,12 @@
 using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Model;
 
-namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
+namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public class CheckEnemyStamina : Node
+    public class ConditionEnemyStamina: ConditionNode<float>
     {
-        private float _threshold;
 
-        public CheckEnemyStamina(float threshold)
-        {
-            _threshold = threshold;
-        }
+        public ConditionEnemyStamina(float threshold) : base(threshold) {}
 
         public override NodeState Evaluate()
         {
@@ -26,7 +22,7 @@ namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
             }
 
             float enemyStamina = enemy.Stamina.Current;
-            if (enemyStamina >= _threshold)
+            if (enemyStamina >= value)
             {
                 state = NodeState.SUCCESS;
             }

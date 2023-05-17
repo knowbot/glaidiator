@@ -1,28 +1,18 @@
 ﻿using System;
 using Glaidiator.BehaviorTree.Base;
 
-namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
+namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public class CheckOwnHealth : Node
+    public class ConditionHasTarget: ConditionNode<string>
     {
-        private float _threshold;
-        
-        public CheckOwnHealth(float threshold)
-        {
-            _threshold = threshold;
-        }
+        public ConditionHasTarget(string targetName) : base(targetName) { }
 
         public override NodeState Evaluate()
         {
             tree.currentNode = this;
+            
+            state = GetData(value) != null ? NodeState.SUCCESS : NodeState.FAILURE;
 
-            if (owner.Health.Current >= _threshold)
-            {
-                state = NodeState.SUCCESS;
-                return state;
-            }
-
-            state = NodeState.FAILURE;
             return state;
         }
 

@@ -3,28 +3,17 @@ using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Utils;
 using UnityEngine;
 
-namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
+namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public class CheckWPDistance : Node
+    public class ConditionTargetDistance: ConditionNode<float>
     {
         private string _targetName;
-        private float _threshold;
-        
-        public CheckWPDistance() : base()
-        {
-        }
 
-        public CheckWPDistance(string targetName)
+        public ConditionTargetDistance(string targetName, float distance) : base(distance)
         {
             _targetName = targetName;
         }
-
-        public CheckWPDistance(float threshold)
-        {
-            _targetName = "wp";
-            _threshold = threshold;
-        }
-
+        
         public override NodeState Evaluate()
         {
             tree.currentNode = this;// for debug info
@@ -41,7 +30,7 @@ namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
             Vector3 nDir = ((Vector3)target - owner.Movement.Position).normalized;
             Vector3 nnDir = MathStuff.Get8DDirection(nDir.x, nDir.z);
             
-            if (distance <= _threshold || nnDir != tree.Direction)
+            if (distance <= value || nnDir != tree.Direction)
             {
                 ////Debug.Log("successfully reached waypoint = " + target);
                 //Debug.Log(_ownerCharacter.Movement.Position);

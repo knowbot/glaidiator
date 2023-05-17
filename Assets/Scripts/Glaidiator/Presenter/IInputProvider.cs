@@ -1,4 +1,6 @@
-﻿namespace Glaidiator
+﻿using Glaidiator.Model;
+
+namespace Glaidiator.Presenter
 {
     public interface IInputProvider
     {

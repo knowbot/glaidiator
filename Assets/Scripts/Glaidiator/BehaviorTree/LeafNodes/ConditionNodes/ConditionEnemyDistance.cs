@@ -4,15 +4,11 @@ using Glaidiator.Model;
 using Glaidiator.Utils;
 using UnityEngine;
 
-namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
+namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public class CheckEnemyDistance : Node
+    public class ConditionEnemyDistance: ConditionNode<float>
     {
-        private float _threshold;
-        public CheckEnemyDistance(float threshold)
-        {
-            _threshold = threshold;
-        }
+        public ConditionEnemyDistance(float distance) : base(distance) {}
 
         public override NodeState Evaluate()
         {
@@ -30,7 +26,7 @@ namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
             float dist = Vector3.Distance(owner.Movement.Position, target.Position);
             tree.enemyDistance = dist;
 
-            if (dist <= _threshold)
+            if (dist <= value)
             {
                 state = NodeState.SUCCESS;
                 //Debug.DrawLine(_ownerCharacter.Movement.Position, target.Position, Color.green, 0.1f);
@@ -48,18 +44,18 @@ namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
         
         public override Node Clone()
         {
-            return new CheckEnemyDistance(_threshold);
+            return new ConditionEnemyDistance(value);
         }
 
         public override void Mutate()
         {
-            _threshold += MathStuff.Rand.NextFloat(2f) - 1f;
-           _threshold = Mathf.Clamp(_threshold, 0f, Arena.MaxSize);
+            value += MathStuff.Rand.NextFloat(2f) - 1f;
+            value = Mathf.Clamp(value, 0f, Arena.MaxSize);
         }
 
         public override Node Randomized()
         {
-            return new CheckEnemyDistance(MathStuff.Rand.NextFloat(Arena.MaxSize));
+            return new ConditionEnemyDistance(MathStuff.Rand.NextFloat(Arena.MaxSize));
         }
     }
 }

@@ -1,21 +1,22 @@
 ﻿using System;
 using Glaidiator.BehaviorTree.Base;
 
-namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
+namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public class CheckHasWP : Node
+    public class ConditionOwnHealth: ConditionNode<float>
     {
-        public CheckHasWP()
-        {
-            
-        }
-
+        public ConditionOwnHealth(float threshold) : base(threshold) {}
         public override NodeState Evaluate()
         {
             tree.currentNode = this;
-            
-            state = GetData("wp") != null ? NodeState.SUCCESS : NodeState.FAILURE;
 
+            if (owner.Health.Current >= value)
+            {
+                state = NodeState.SUCCESS;
+                return state;
+            }
+
+            state = NodeState.FAILURE;
             return state;
         }
 

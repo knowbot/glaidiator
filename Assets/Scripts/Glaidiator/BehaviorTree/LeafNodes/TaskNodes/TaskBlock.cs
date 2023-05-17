@@ -1,9 +1,9 @@
 ﻿using System;
 using Glaidiator.BehaviorTree.Base;
 
-namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes.TaskNodes
+namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
 {
-    public class TaskBlock : Node
+    public class TaskBlock : TaskNode
     {
         public TaskBlock()
         {

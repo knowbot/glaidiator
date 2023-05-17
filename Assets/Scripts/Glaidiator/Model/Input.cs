@@ -1,7 +1,7 @@
 ﻿
 using UnityEngine;
 
-namespace Glaidiator
+namespace Glaidiator.Model
 {
     public struct Input
     {

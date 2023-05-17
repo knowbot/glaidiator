@@ -3,7 +3,7 @@ using Glaidiator.BehaviorTree.Base;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
 {
-    public class TaskRangedAtk : Node
+    public class TaskRangedAtk : TaskNode
     {
         public TaskRangedAtk(){}
 

@@ -1,5 +1,6 @@
 ﻿using Glaidiator.Model;
 using UnityEngine;
+using Input = Glaidiator.Model.Input;
 
 namespace Glaidiator.Presenter
 {
