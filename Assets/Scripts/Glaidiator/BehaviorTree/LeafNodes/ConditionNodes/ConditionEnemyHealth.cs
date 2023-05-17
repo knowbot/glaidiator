@@ -1,12 +1,18 @@
 ﻿using System;
+using System.Xml;
 using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Model;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public class ConditionEnemyHealth: Condition<float>
+    public class ConditionEnemyHealth: Condition
     {
-        public ConditionEnemyHealth(float threshold) : base(threshold) {}
+        private float _threshold;
+
+        public ConditionEnemyHealth(float threshold)
+        {
+            _threshold = threshold;
+        }
 
         public override NodeState Evaluate()
         {
@@ -21,7 +27,7 @@ namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
             }
 
             float enemyHealth = enemy.Health.Current;
-            state = enemyHealth >= value ? NodeState.SUCCESS : NodeState.FAILURE;
+            state = enemyHealth >= _threshold ? NodeState.SUCCESS : NodeState.FAILURE;
             
             return state;
         }
@@ -39,6 +45,13 @@ namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
         public override Node Randomized()
         {
             throw new NotImplementedException();
+        }
+        
+        public override void WriteXml(XmlWriter w)
+        {
+            w.WriteStartElement(GetType().Name);
+            w.WriteAttributeString("threshold", _threshold.ToString());
+            w.WriteEndElement();
         }
     }
 }

@@ -5,15 +5,8 @@ using Glaidiator.BehaviorTree.Base;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public abstract class Condition<T> : Leaf
+    public abstract class Condition : Leaf
     {
-        protected T value;
-
-        protected Condition (T value)
-        {
-            this.value = value;
-        }
-        
         public override void Flatten(List<Node> nodes)
         {
             nodes.Add(this);
@@ -27,14 +20,6 @@ namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
         public override void ReadXml(XmlReader reader)
         {
             throw new NotImplementedException();
-        }
-
-        public override void WriteXml(XmlWriter w)
-        {
-            w.WriteStartElement(GetType().Name);
-            w.WriteAttributeString("valueType", value.GetType().Name);
-            w.WriteAttributeString("value", value.ToString());
-            w.WriteEndElement();
         }
     }
 }

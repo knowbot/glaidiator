@@ -1,13 +1,19 @@
 ﻿using System;
+using System.Xml;
 using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Model;
 using UnityEngine;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public class ConditionRangedDirection: Condition<float>
+    public class ConditionRangedDirection: Condition
     {
-        public ConditionRangedDirection(float maxAngle = 5f) : base(maxAngle) {}
+        private float _maxAngle;
+
+        public ConditionRangedDirection(float maxAngle = 5f)
+        {
+            _maxAngle = maxAngle;
+        }
 
         public override NodeState Evaluate()
         {
@@ -27,7 +33,7 @@ namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
             //float angle = Vector3.Angle(currDirection, targetDirection);
             float angle = Vector3.SignedAngle(currDirection, targetDirection, Vector3.up);
             
-            if (angle <= value && angle >= (value*-1f))
+            if (angle <= _maxAngle && angle >= (_maxAngle*-1f))
             {
                 ////Debug.Log("aim angle = " + angle);
                 //Debug.DrawLine(_ownerCharacter.Movement.Position, target.Position, Color.cyan, .1f);
@@ -55,6 +61,13 @@ namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
         public override Node Randomized()
         {
             throw new NotImplementedException();
+        }
+        
+        public override void WriteXml(XmlWriter w)
+        {
+            w.WriteStartElement(GetType().Name);
+            w.WriteAttributeString("maxAngle", _maxAngle.ToString());
+            w.WriteEndElement();
         }
     }
 }

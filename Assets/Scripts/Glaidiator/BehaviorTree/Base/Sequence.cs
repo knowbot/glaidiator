@@ -48,7 +48,6 @@ namespace Glaidiator.BehaviorTree.Base
             {
                 clone.Attach(child.Clone());
             }
-
             return clone;
         }
 

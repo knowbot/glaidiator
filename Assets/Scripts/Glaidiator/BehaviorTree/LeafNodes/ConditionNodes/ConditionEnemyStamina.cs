@@ -1,13 +1,18 @@
 ﻿using System;
+using System.Xml;
 using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Model;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public class ConditionEnemyStamina: Condition<float>
+    public class ConditionEnemyStamina: Condition
     {
+        private float _threshold;
+        public ConditionEnemyStamina(float threshold)
+        {
+            _threshold = threshold;
+        }
 
-        public ConditionEnemyStamina(float threshold) : base(threshold) {}
 
         public override NodeState Evaluate()
         {
@@ -22,7 +27,7 @@ namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
             }
 
             float enemyStamina = enemy.Stamina.Current;
-            if (enemyStamina >= value)
+            if (enemyStamina >= _threshold)
             {
                 state = NodeState.SUCCESS;
             }
@@ -48,6 +53,13 @@ namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
         public override Node Randomized()
         {
             throw new NotImplementedException();
+        }
+        
+        public override void WriteXml(XmlWriter w)
+        {
+            w.WriteStartElement(GetType().Name);
+            w.WriteAttributeString("threshold", _threshold.ToString());
+            w.WriteEndElement();
         }
     }
 }

@@ -1,12 +1,17 @@
 ﻿using System;
+using System.Xml;
 using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Model;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public class ConditionCompareHealth : Condition<float>
+    public class ConditionCompareHealth : Condition
     {
-        public ConditionCompareHealth(float ratio) : base(ratio) {}
+        private float _ratio;
+        public ConditionCompareHealth(float ratio)
+        {
+            _ratio = ratio;
+        }
 
         public override NodeState Evaluate()
         {
@@ -20,7 +25,7 @@ namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
             }
 
             float ratio = owner.Health.Current / enemy.Health.Current; 
-            state = ratio > value ? NodeState.SUCCESS : NodeState.FAILURE;
+            state = ratio > _ratio ? NodeState.SUCCESS : NodeState.FAILURE;
             return state;
         }
 
@@ -37,6 +42,13 @@ namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
         public override Node Randomized()
         {
             throw new NotImplementedException();
+        }
+        
+        public override void WriteXml(XmlWriter w)
+        {
+            w.WriteStartElement(GetType().Name);
+            w.WriteAttributeString("ratio", _ratio.ToString());
+            w.WriteEndElement();
         }
     }
 }

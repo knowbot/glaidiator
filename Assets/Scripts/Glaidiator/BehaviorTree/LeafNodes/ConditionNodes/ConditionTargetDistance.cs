@@ -1,16 +1,19 @@
 ﻿using System;
+using System.Xml;
 using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Utils;
 using UnityEngine;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public class ConditionTargetDistance: Condition<float>
+    public class ConditionTargetDistance: Condition
     {
+        private float _distance;
         private string _targetName;
 
-        public ConditionTargetDistance(string targetName, float distance) : base(distance)
+        public ConditionTargetDistance(string targetName,float distance)
         {
+            _distance = distance;
             _targetName = targetName;
         }
         
@@ -30,7 +33,7 @@ namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
             Vector3 nDir = ((Vector3)target - owner.Movement.Position).normalized;
             Vector3 nnDir = MathStuff.Get8DDirection(nDir.x, nDir.z);
             
-            if (distance <= value || nnDir != tree.Direction)
+            if (distance <= _distance || nnDir != tree.Direction)
             {
                 ////Debug.Log("successfully reached waypoint = " + target);
                 //Debug.Log(_ownerCharacter.Movement.Position);
@@ -59,5 +62,13 @@ namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
         {
             throw new NotImplementedException();
         }
+        
+        public override void WriteXml(XmlWriter w)
+        {
+            w.WriteStartElement(GetType().Name);
+            w.WriteAttributeString("distance", _distance.ToString());
+            w.WriteEndElement();
+        }
+
     }
 }

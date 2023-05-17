@@ -1,17 +1,23 @@
 ﻿using System;
+using System.Xml;
 using Glaidiator.BehaviorTree.Base;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public class ConditionHasTarget: Condition<string>
+    public class ConditionHasTarget: Condition
     {
-        public ConditionHasTarget(string targetName) : base(targetName) { }
+        private string _targetName;
+
+        public ConditionHasTarget(string targetName)
+        {
+            _targetName = targetName;
+        }
 
         public override NodeState Evaluate()
         {
             tree.currentNode = this;
             
-            state = GetData(value) != null ? NodeState.SUCCESS : NodeState.FAILURE;
+            state = GetData(_targetName) != null ? NodeState.SUCCESS : NodeState.FAILURE;
 
             return state;
         }
@@ -29,6 +35,13 @@ namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
         public override Node Randomized()
         {
             throw new NotImplementedException();
+        }
+        
+        public override void WriteXml(XmlWriter w)
+        {
+            w.WriteStartElement(GetType().Name);
+            w.WriteAttributeString("target", _targetName.ToString());
+            w.WriteEndElement();
         }
     }
 }

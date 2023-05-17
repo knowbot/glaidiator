@@ -1,14 +1,20 @@
 ﻿using System;
+using System.Xml;
 using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Model;
 using Glaidiator.Model.Actions;
 
 namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 {
-    public class ConditionEnemyAction: Condition<string>
+    public class ConditionEnemyAction: Condition
     {
 
-        public ConditionEnemyAction(string actionName) : base(actionName) {}
+        private string _actionName;
+
+        public ConditionEnemyAction(string actionName)
+        {
+            _actionName = actionName;
+        }
 
         public override NodeState Evaluate()
         {
@@ -22,7 +28,7 @@ namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
                 return state;
             }
 
-            state = value == action.Action.Name ? NodeState.SUCCESS : NodeState.FAILURE;
+            state = _actionName == action.Action.Name ? NodeState.SUCCESS : NodeState.FAILURE;
             
             return state;
         }
@@ -30,7 +36,7 @@ namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
         
         public override Node Clone()
         {
-            return new ConditionEnemyAction(value);
+            return new ConditionEnemyAction(_actionName);
         }
 
         public override void Mutate()
@@ -40,7 +46,14 @@ namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 
         public override Node Randomized()
         {
-            return new ConditionEnemyAction(value);
+            return new ConditionEnemyAction(_actionName);
+        }
+        
+        public override void WriteXml(XmlWriter w)
+        {
+            w.WriteStartElement(GetType().Name);
+            w.WriteAttributeString("actionName", _actionName);
+            w.WriteEndElement();
         }
     }
 }
