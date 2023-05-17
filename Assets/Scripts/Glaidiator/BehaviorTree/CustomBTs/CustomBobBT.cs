@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using BehaviorTree;
 
 namespace BasicAI
@@ -15,29 +14,92 @@ namespace BasicAI
         {
             Node root = new Selector(new List<Node>
             {
-                new Sequence(new List<Node>
+                // select defense branch
+                new Selector(new List<Node>
                 {
-                    new CheckEnemyAction("Light Attack"),
-                    new TaskFaceEnemy(),
-                    new TaskBlock(),
+                    // block melee sequence
+                    new Sequence(new List<Node>
+                    {
+                        new CheckCanDoAction("block"),
+                        new CheckEnemyDistance(meleeDist),
+                        new Sequence(new List<Node>
+                        {
+                            new CheckEnemyAction("Light Attack"),
+                            new TaskFaceEnemy(),
+                            new TaskBlock(),
+                        }),
+                        new Sequence(new List<Node>
+                        {
+                            new CheckEnemyAction("Heavy Attack"),
+                            new TaskFaceEnemy(),
+                            new TaskBlock(),
+                        }),
+                        
+                    }),
+                    
+                    // block ranged sequence
+                    new Sequence(new List<Node>
+                    {
+                        new CheckCanDoAction("block"),
+                        new Sequence(new List<Node>
+                        {
+                            new CheckEnemyAction("Ranged Attack"),
+                            new TaskFaceEnemy(),
+                            new TaskBlock(),
+                        }),
+                    }),
+                    
+                    // dodge sequence
+                    new Sequence(new List<Node>
+                    {
+                        new CheckCanDoAction("block"),
+                        new Sequence(new List<Node>
+                        {
+                            new CheckEnemyAction("Ranged Attack"),
+                            new TaskFaceEnemy(),
+                            new TaskBlock(),
+                        }),
+                    }),
                 }),
-                new Sequence(new List<Node>
+                
+                // select movement branch
+                new Selector(new List<Node>
                 {
-                    new CheckEnemyAction("Heavy Attack"),
-                    new TaskFaceEnemy(),
-                    new TaskBlock(),
+                    new Sequence(new List<Node>
+                    { 
+                        new CheckEnemyDistance(meleeDist),
+                        new TaskFaceEnemy(),
+                        new TaskStop(),
+                    }),
+                    
+                    new Sequence(new List<Node>
+                    {
+                        new Inverter(new CheckEnemyDistance(meleeDist)),
+                        new TaskFaceEnemy(),
+                        new TaskMoveForward(),
+                    }),
                 }),
-                new Sequence(new List<Node>
+                
+                // select offense branch
+                new Selector(new List<Node>
                 {
-                    new CheckEnemyAction("Ranged Attack"),
-                    new TaskFaceEnemy(),
-                    new TaskBlock(),
+                    new Sequence(new List<Node>
+                    { 
+                        new CheckCanDoAction("atkLight"),
+                        new TaskFaceEnemy(),
+                        new TaskLightAtk(),
+                    }),
+                    
+                    new Sequence(new List<Node>
+                    {
+                        new CheckCanDoAction("dodge"),
+                        new CheckCanDoAction("atkHeavy"),
+                        new Inverter(new CheckEnemyDistance(3f)),
+                        
+                    }),
+                    
                 }),
-                new Sequence(new List<Node>
-                { 
-                    new TaskFaceEnemy(),
-                    new TaskStop(),
-                })
+                
             });
             
             
@@ -49,7 +111,7 @@ namespace BasicAI
 
         public override BTree Clone()
         {
-            throw new NotImplementedException();
+            throw new System.NotImplementedException();
         }
     }
 }
