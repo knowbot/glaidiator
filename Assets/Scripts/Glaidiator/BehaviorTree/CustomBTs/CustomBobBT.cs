@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using BehaviorTree;
+using Glaidiator.BehaviorTree.Base;
 
 namespace BasicAI
 {

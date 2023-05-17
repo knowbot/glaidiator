@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using BehaviorTree;
+using Glaidiator.BehaviorTree.Base;
 
 namespace BasicAI
 {
@@ -145,16 +146,6 @@ namespace BasicAI
             newRoot.SetOwner(owner);
             newRoot.SetTree(this);
             SetData("enemy", enemy);
-            
-            var doc = new XmlDocument();
-            var w = new XmlTextWriter($@"BTs/Test/{Guid.NewGuid()}.xml", Encoding.UTF8);
-            w.Formatting = Formatting.Indented;
-            w.WriteStartElement("AshleyBT");
-            newRoot.WriteXml(w);
-            w.WriteEndElement();
-            w.Close();
-            doc.Save(w);
-            
             return newRoot;
         }
 

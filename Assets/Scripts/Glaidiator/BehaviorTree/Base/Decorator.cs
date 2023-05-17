@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Xml;
+using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Model;
 
 namespace BehaviorTree

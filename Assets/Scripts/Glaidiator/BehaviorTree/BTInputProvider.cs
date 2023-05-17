@@ -1,12 +1,11 @@
 ﻿using System;
 using BasicAI;
-using Glaidiator;
+using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Model;
 using Glaidiator.Utils;
 using UnityEngine;
-using Input = Glaidiator.Input;
 
-namespace BehaviorTree
+namespace Glaidiator.BehaviorTree
 {
     public class BTInputProvider : IInputProvider
     {

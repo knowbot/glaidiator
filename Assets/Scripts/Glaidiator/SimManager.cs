@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using BehaviorTree;
+using Glaidiator.BehaviorTree;
 using Glaidiator.Model;
 using Glaidiator.Model.Collision;
 using Unity.Collections;

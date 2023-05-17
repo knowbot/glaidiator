@@ -4,6 +4,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Model;
 
 // ReSharper disable once InvalidXmlDocComment

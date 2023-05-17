@@ -1,12 +1,11 @@
 using System;
 using BasicAI;
-using Glaidiator;
+using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Presenter;
 using Glaidiator.Utils;
 using UnityEngine;
-using Input = Glaidiator.Input;
 
-namespace BehaviorTree
+namespace Glaidiator.BehaviorTree
 {
     public class AIContainer : MonoBehaviour, IInputProvider
     {
@@ -27,6 +26,7 @@ namespace BehaviorTree
             btree.SetOwnerChar(GetComponent<CharacterPresenter>().GetCharacter());
             btree.SetEnemyChar(PlayerObject.GetComponent<CharacterPresenter>().GetCharacter());
             btree.Init();
+            TreeSerializer.Serialize(btree);
         }
 
         private void Update()

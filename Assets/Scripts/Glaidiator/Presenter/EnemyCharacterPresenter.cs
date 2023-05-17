@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Linq;
 using BehaviorTree;
+using Glaidiator.BehaviorTree;
 using Glaidiator.Model.Actions;
 using TMPro;
 using UnityEngine;

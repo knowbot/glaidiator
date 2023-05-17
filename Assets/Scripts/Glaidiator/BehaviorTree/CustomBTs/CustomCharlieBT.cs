@@ -1,5 +1,6 @@
 ﻿using System;
 using BehaviorTree;
+using Glaidiator.BehaviorTree.Base;
 
 namespace BasicAI
 {

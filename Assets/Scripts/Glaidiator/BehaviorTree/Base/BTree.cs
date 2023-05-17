@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using BehaviorTree;
 using Glaidiator.Model;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace BehaviorTree
+namespace Glaidiator.BehaviorTree.Base
 {
     public abstract class BTree
     {
