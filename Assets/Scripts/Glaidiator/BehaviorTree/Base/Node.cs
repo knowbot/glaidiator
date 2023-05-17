@@ -4,7 +4,6 @@ using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Model;
 
 // ReSharper disable once InvalidXmlDocComment
@@ -16,7 +15,7 @@ using Glaidiator.Model;
     * Modified to support evolution
 */
 
-namespace BehaviorTree
+namespace Glaidiator.BehaviorTree.Base
 {
     public enum NodeState
     {

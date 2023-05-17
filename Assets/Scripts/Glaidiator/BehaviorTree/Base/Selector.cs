@@ -4,7 +4,7 @@ using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Utils;
 using Random = UnityEngine.Random;
 
-namespace BehaviorTree
+namespace Glaidiator.BehaviorTree.Base
 {
     [Serializable]
     public class Selector : Node

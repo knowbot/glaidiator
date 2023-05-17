@@ -1,7 +1,8 @@
 using System.Collections.Generic;
+using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Utils;
 
-namespace BehaviorTree
+namespace Glaidiator.BehaviorTree.Base
 {
 
     public class Randomizer : Decorator

@@ -1,10 +1,10 @@
 ﻿using System;
-using BehaviorTree;
+using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Model;
 using Glaidiator.Utils;
 using UnityEngine;
 
-namespace BasicAI
+namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
 {
     public class TaskFaceEnemy : Node
     {

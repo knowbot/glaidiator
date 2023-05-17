@@ -1,7 +1,8 @@
 ﻿using System;
-using BehaviorTree;
+using Glaidiator.BehaviorTree.Base;
+using UnityEngine;
 
-namespace BasicAI
+namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
 {
     public class TaskWait : Node
     {
@@ -23,7 +24,7 @@ namespace BasicAI
         public override NodeState Evaluate() // TODO: Test this
         {
             tree.currentNode = this;
-            
+            Debug.Log("TaskWait tick = " + _countTicks);
             _countTicks--;
             if (_countTicks > 0)
             {

@@ -1,5 +1,5 @@
 ﻿using System;
-using BasicAI;
+using Glaidiator.BehaviorTree.LeafNodes.TaskNodes;
 using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Model;
 using Glaidiator.Utils;

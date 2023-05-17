@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
-using BehaviorTree;
 using Glaidiator.BehaviorTree.Base;
+using Glaidiator.BehaviorTree.LeafNodes.TaskNodes.CheckNodes;
+using Glaidiator.BehaviorTree.LeafNodes.TaskNodes.TaskNodes;
 
-namespace BasicAI
+namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
 {
     public class CustomAshleyBT : BTree
     {

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using BehaviorTree;
+using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Model;
 using UnityEngine;
 using Random = UnityEngine.Random;

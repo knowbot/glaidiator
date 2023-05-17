@@ -1,7 +1,8 @@
 using System.Xml;
+using Glaidiator.BehaviorTree.Base;
 using UnityEngine;
 
-namespace BehaviorTree
+namespace Glaidiator.BehaviorTree.Base
 {
     public class Repeater : Decorator
     {

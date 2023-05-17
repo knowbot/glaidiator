@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using BehaviorTree;
 using Glaidiator.BehaviorTree.Base;
 
-namespace BasicAI
+namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
 {
     public class CustomNodesBT : BTree
     {

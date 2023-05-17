@@ -1,8 +1,8 @@
 ﻿using System;
-using BehaviorTree;
+using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Model.Actions;
 
-namespace BasicAI
+namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes.CheckNodes
 {
     public class CheckCanDoAction : Node
     {

@@ -1,5 +1,5 @@
 using System;
-using BehaviorTree;
+using Glaidiator.BehaviorTree.Base;
 using UnityEngine;
 
 public class TaskFindNextWaypoint : Node

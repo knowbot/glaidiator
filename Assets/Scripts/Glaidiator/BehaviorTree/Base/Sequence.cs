@@ -3,7 +3,7 @@ using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Utils;
 using UnityEngine;
 
-namespace BehaviorTree
+namespace Glaidiator.BehaviorTree.Base
 {
     public class Sequence : Node
     {

@@ -1,8 +1,8 @@
 using System;
-using BehaviorTree;
+using Glaidiator.BehaviorTree.Base;
 using UnityEngine;
 
-namespace BasicAI
+namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
 {
     public class TaskMoveForward : Node
     {

@@ -1,8 +1,8 @@
 ﻿using System;
-using BehaviorTree;
+using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Model;
 
-namespace BasicAI
+namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes.CheckNodes
 {
     public class CheckEnemyHealth : Node
     {
@@ -26,14 +26,7 @@ namespace BasicAI
             }
 
             float enemyHealth = enemy.Health.Current;
-            if (enemyHealth >= _threshold)
-            {
-                state = NodeState.SUCCESS;
-            }
-            else
-            {
-                state = NodeState.FAILURE;
-            }
+            state = enemyHealth >= _threshold ? NodeState.SUCCESS : NodeState.FAILURE;
             
             return state;
         }

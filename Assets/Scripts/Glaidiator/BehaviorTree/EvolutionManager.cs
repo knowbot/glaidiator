@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BasicAI;
+using Glaidiator.BehaviorTree;
 using Glaidiator.BehaviorTree.Base;
+using Glaidiator.BehaviorTree.LeafNodes.TaskNodes;
+using Glaidiator.BehaviorTree.LeafNodes.TaskNodes.CheckNodes;
+using Glaidiator.BehaviorTree.LeafNodes.TaskNodes.TaskNodes;
 using Random = UnityEngine.Random;
 
-namespace BehaviorTree
+namespace Glaidiator.BehaviorTree
 {
     public class EvolutionManager
     {

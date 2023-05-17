@@ -3,7 +3,7 @@ using System.Xml;
 using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Model;
 
-namespace BehaviorTree
+namespace Glaidiator.BehaviorTree.Base
 {
     public abstract class Decorator : Node
     {

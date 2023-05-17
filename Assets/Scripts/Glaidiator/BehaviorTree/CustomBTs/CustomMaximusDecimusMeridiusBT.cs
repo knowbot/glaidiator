@@ -1,7 +1,6 @@
-﻿using BehaviorTree;
-using Glaidiator.BehaviorTree.Base;
+﻿using Glaidiator.BehaviorTree.Base;
 
-namespace BasicAI
+namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
 {
     public class CustomMaximusDecimusMeridiusBT : BTree
     {

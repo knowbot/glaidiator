@@ -1,9 +1,9 @@
 ﻿using System;
-using BehaviorTree;
+using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Model;
 using Glaidiator.Model.Actions;
 
-namespace BasicAI
+namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
 {
     public class CheckEnemyAction : Node
     {

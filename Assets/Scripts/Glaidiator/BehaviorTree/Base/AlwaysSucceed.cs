@@ -1,6 +1,7 @@
 using System.Collections.Generic;
+using Glaidiator.BehaviorTree.Base;
 
-namespace BehaviorTree
+namespace Glaidiator.BehaviorTree.Base
 {
 
     public class AlwaysSucceed : Decorator
