@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Glaidiator.BehaviorTree;
+using UnityEngine;
 
 namespace Glaidiator
 {
@@ -6,7 +7,8 @@ namespace Glaidiator
     {
         
         public static TheMatrix instance;
-        private SimManager _manager;
+        private SimManager _simManager;
+        private EvoManager _evoManager;
     
         private void Awake(){
             if (instance == null){
@@ -16,23 +18,25 @@ namespace Glaidiator
                 Destroy(this);
             }
             
-            _manager = SimManager.Instance;
-            _manager.Schedule();
+            _simManager = SimManager.Instance;
+            _evoManager = EvoManager.Instance;
+            _simManager.Schedule();
+            _evoManager.InitPopulation();
         }
 
         private void LateUpdate()
         {
-            _manager.Complete();
+            _simManager.Complete();
         }
 
         private void Update()
         {
-            if(_manager.CheckDone()) _manager.Schedule();
+            if(_simManager.CheckDone()) _simManager.Schedule();
         }
 
         private void OnDestroy()
         {
-            _manager.ForceComplete();
+            _simManager.ForceComplete();
         }
     }
 }

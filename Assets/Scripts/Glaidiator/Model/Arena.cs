@@ -10,5 +10,6 @@ namespace Glaidiator.Model
         public static Vector3 EnemyStartPos = new Vector3(29, 0, 29);
         public static Quaternion EnemyStartRot = Quaternion.Euler(0, 225, 0);
         public static float MaxSize = Mathf.Max(Size.x, Size.y);
+        public static float Diagonal = Mathf.Sqrt(Mathf.Pow(Size.x, 2) + Mathf.Pow(Size.y, 2));
     }
 }

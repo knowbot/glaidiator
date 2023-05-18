@@ -65,7 +65,6 @@ namespace Glaidiator.BehaviorTree.Base
             Block = false;
             Dodge = false;
             if (root != null) root.Evaluate();
-            Debug.Log(currentNode.GetType().Name);
         }
 
         protected abstract Node SetupTree();
@@ -129,11 +128,11 @@ namespace Glaidiator.BehaviorTree.Base
             {
                 // sample node from EvolutionManager
                 // replace random existing node with the sample
-                int pSize = EvolutionManager.prototypes.Count;
-                Node newNode = EvolutionManager.prototypes[Random.Range(0, pSize)].Randomized();
+                int pSize = EvoManager.Instance.prototypes.Count;
+                Node newNode = EvoManager.Instance.prototypes[Random.Range(0, pSize)].Randomized();
                 Node oldNode = nodes[Random.Range(0, nodes.Count)];
                 Node parent = oldNode.GetParent();
-                if (parent != null) parent.ReplaceChild(oldNode, newNode);
+                parent?.ReplaceChild(oldNode, newNode);
             }
             
             // add dirty flag?

@@ -14,6 +14,7 @@ namespace Glaidiator.BehaviorTree.Base
 
         public override NodeState Evaluate()
         {
+            tree.currentNode = this;
             bool hasChildRunning = false;
             
             foreach (Node node in Children)
@@ -63,7 +64,7 @@ namespace Glaidiator.BehaviorTree.Base
                     break;
                 // add new random child
                 case 1:
-                    Attach(EvolutionManager.GetNewRandomNode().Clone());
+                    Attach(EvoManager.Instance.GetRandomNode().Clone());
                     break;
                 // shuffle order of children
                 case 2:
@@ -75,12 +76,12 @@ namespace Glaidiator.BehaviorTree.Base
         // returns a new sequence-node with 1-5 new random children
         public override Node Randomized()
         {
-            int newCount = Random.Range(1, 5);
+            int newCount = Random.Range(2, EvoManager.MaxChildren);
             List<Node> newChildren = new List<Node>();
             
             for (int i = 0; i < newCount; i++)
             {
-                newChildren.Add(EvolutionManager.GetNewRandomNode().Randomized());
+                newChildren.Add(EvoManager.Instance.GetRandomNode().Randomized());
             }
 
             return new Sequence(newChildren);

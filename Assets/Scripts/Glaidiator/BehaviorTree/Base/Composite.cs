@@ -2,28 +2,30 @@
 using System.Collections.Generic;
 using System.Xml;
 using Glaidiator.Model;
+using UnityEngine;
 
 namespace Glaidiator.BehaviorTree.Base
 {
-    public class Composite : Node
+    public abstract class Composite : Node
     {
-        public readonly List<Node> Children = new List<Node>();
-        
-        public Composite() {}
-        public Composite(List<Node> children)
+        public List<Node> Children = new List<Node>();
+
+        protected Composite() {}
+
+        protected Composite(List<Node> children)
         {
             foreach (Node node in children) Attach(node);
         }
 
-        
-        public Composite(BTree btree, List<Node> children)
+
+        protected Composite(BTree btree, List<Node> children)
         {
             tree = btree;
             foreach (Node node in children) Attach(node);
         }
         
         #region Children Management
-        
+
         public void Attach(Node node) // add child
         {
             node.parent = this;
@@ -33,22 +35,19 @@ namespace Glaidiator.BehaviorTree.Base
 
         public void Detach(Node node) // remove child
         {
-            if (Children.Remove(node))
-            {
-                
-            }
-            else
-            {
-                // throw error?
-            }
+            node.parent = null;
+            node.SetTree(null);
+            Children.Remove(node);
         }
 
         public override void ReplaceChild(Node oldChild, Node newChild)
         {
             int i = Children.IndexOf(oldChild);
+            if (i == -1)
+                throw new Exception("Child not found");
             newChild.SetParent(this);
-            newChild.SetTree(this.tree);
-            newChild.SetOwner(this.owner);
+            newChild.SetTree(tree);
+            newChild.SetOwner(owner);
             Children[i] = newChild;
         }
         
@@ -108,7 +107,7 @@ namespace Glaidiator.BehaviorTree.Base
         public override void WriteXml(XmlWriter w)
         {
             w.WriteStartElement(GetType().Name);
-            foreach (var child in Children)
+            foreach (Node child in Children)
             {
                 child.WriteXml(w);
             }

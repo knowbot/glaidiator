@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Glaidiator.BehaviorTree.Base;
+using Glaidiator.BehaviorTree.CustomNodes.CheckNodes;
+using Glaidiator.BehaviorTree.CustomNodes.TaskNodes;
 using Glaidiator.BehaviorTree.LeafNodes.ConditionNodes;
-using Glaidiator.BehaviorTree.LeafNodes.TaskNodes;
 
 namespace Glaidiator.BehaviorTree.CustomBTs
 {
@@ -25,13 +26,13 @@ namespace Glaidiator.BehaviorTree.CustomBTs
                 {
                     new Sequence(new List<Node>
                     {
-                        new ConditionEnemyDistance(atkDist),
+                        new CheckEnemyDistance(atkDist),
                         new TaskFaceEnemy(),
                         new TaskLightAtk(),
                     }),
                     new Sequence(new List<Node>
                     {
-                        new ConditionEnemyDistance(aggroDist),
+                        new CheckEnemyDistance(aggroDist),
                         new TaskFaceEnemy(),
                         new TaskWait(),
                         new TaskMoveForward(),                                    
@@ -41,13 +42,13 @@ namespace Glaidiator.BehaviorTree.CustomBTs
                 new Selector(new List<Node>
                 {
                     new Sequence(new List<Node> {
-                        new Inverter(new ConditionHasTarget("wp")),
+                        new Inverter(new CheckHasTarget("wp")),
                         new TaskSetWP(4f)
                     }),
                     new Sequence(new List<Node>
                     {
-                        new ConditionHasTarget("wp"),
-                        new ConditionTargetDistance("wp", 0.01f),
+                        new CheckHasTarget("wp"),
+                        new CheckTargetDistance("wp", 0.01f),
                         new TaskClearWP(),
                         new TaskTurnRight(),
                         new TaskSetWP(4f)

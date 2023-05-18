@@ -49,7 +49,6 @@ namespace Glaidiator.BehaviorTree
             btree.SetOwnerChar(GetComponent<CharacterPresenter>().GetCharacter());
             btree.SetEnemyChar(PlayerObject.GetComponent<CharacterPresenter>().GetCharacter());
             btree.Init();
-            TreeSerializer.Serialize(btree);
         }
 
         private void Update()

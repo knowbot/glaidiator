@@ -3,8 +3,7 @@ namespace Glaidiator.BehaviorTree.Base
 
     public class Inverter : Decorator<Node>
     {
-        
-        public Inverter() : base() {}
+        public Inverter() {}
         
         public Inverter(Node child)
         {
@@ -33,30 +32,20 @@ namespace Glaidiator.BehaviorTree.Base
 
         public override Node Clone()
         {
-            Node clone;
-            if (Child != null)
-            {
-                clone = new Inverter(Child.Clone());
-            }
-            else
-            {
-                clone = new Inverter();
-            }
-            
-            return clone;
+            return Child != null ? new Inverter(Child.Clone()) : new Inverter();;
         }
 
         public override void Mutate()
         {
-            if (Child == null)
-            {
-                Child = EvolutionManager.GetNewRandomNode().Clone();
-            }
+            Child ??= EvoManager.Instance.GetRandomNode().Clone();
         }
 
         public override Node Randomized()
         {
-            return new Inverter(EvolutionManager.GetNewRandomNode().Randomized());
+            if (Child == null) return new Inverter(EvoManager.Instance.GetRandomNode().Randomized());
+            var newNode = Clone() as Inverter;
+            newNode?.ReplaceChild(newNode.Child, newNode.Child.Randomized());
+            return newNode;
         }
     }
 }

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Glaidiator.BehaviorTree.Base;
+using Glaidiator.BehaviorTree.CustomNodes.CheckNodes;
+using Glaidiator.BehaviorTree.CustomNodes.TaskNodes;
 using Glaidiator.BehaviorTree.LeafNodes.ConditionNodes;
-using Glaidiator.BehaviorTree.LeafNodes.TaskNodes;
 
 namespace Glaidiator.BehaviorTree.CustomBTs
 {
@@ -24,47 +25,44 @@ namespace Glaidiator.BehaviorTree.CustomBTs
                 // attack sequence
                 new Sequence(new List<Node>{ 
                     // conditions for aggression
-                    new ConditionEnemyDistance(aggroDist),
+                    new CheckEnemyDistance(aggroDist),
                     // new CheckOwnHealth(50f), 
                     // new CheckOwnStamina(15f),
                     new Selector(new List<Node> 
                     { 
                         new Sequence(new List<Node>
                         {
-                            new Inverter(new ConditionEnemyDistance(3f)), // min range
-                            new ConditionCanDoAction("atkRanged"),
-                            new ConditionEnemyDistance(rangedDist),
+                            new Inverter(new CheckEnemyDistance(3f)), // min range
+                            new CheckCanDoAction("atkRanged"),
+                            new CheckEnemyDistance(rangedDist),
                             new TaskFaceEnemy(),
-                            new ConditionRangedDirection(30f), // aim good?
+                            new CheckRangedDirection(30f), // aim good?
                             new TaskRangedAtk(),
                         }),
-                        
-                        new Randomizer(
-                            new Selector(new List<Node>
+                        new Selector(new List<Node>
+                        {
+                            new Sequence(new List<Node>
                             {
-                                new Sequence(new List<Node>
-                                {
-                                    new ConditionCanDoAction("atkHeavy"),
-                                    new ConditionEnemyDistance(meleeDist),
-                                    new TaskFaceEnemy(),
-                                    new TaskHeavyAtk(),
-                                }),
-                                new Sequence(new List<Node>
-                                {
-                                    new ConditionCanDoAction("atkLight"),
-                                    new ConditionEnemyDistance(meleeDist),
-                                    new TaskFaceEnemy(),
-                                    new TaskLightAtk(),
-                                }),
-                                new Sequence(new List<Node>
-                                {
-                                    new ConditionEnemyDistance(aggroDist),
-                                    new Inverter(new ConditionEnemyDistance(0.5f)),
-                                    new TaskFaceEnemy(),
-                                    new TaskMoveForward(),
-                                })
+                                new CheckCanDoAction("atkHeavy"),
+                                new CheckEnemyDistance(meleeDist),
+                                new TaskFaceEnemy(),
+                                new TaskHeavyAtk(),
+                            }),
+                            new Sequence(new List<Node>
+                            {
+                                new CheckCanDoAction("atkLight"),
+                                new CheckEnemyDistance(meleeDist),
+                                new TaskFaceEnemy(),
+                                new TaskLightAtk(),
+                            }),
+                            new Sequence(new List<Node>
+                            {
+                                new CheckEnemyDistance(aggroDist),
+                                new Inverter(new CheckEnemyDistance(0.5f)),
+                                new TaskFaceEnemy(),
+                                new TaskMoveForward(),
                             })
-                        ),
+                        }),
                         new Sequence(new List<Node>
                         {
                             new TaskFaceEnemy(),
@@ -84,22 +82,22 @@ namespace Glaidiator.BehaviorTree.CustomBTs
                         // block when enemy in melee range
                         new Sequence(new List<Node>
                         {
-                            new ConditionEnemyDistance(meleeDist),
-                            new ConditionCanDoAction("block"),
+                            new CheckEnemyDistance(meleeDist),
+                            new CheckCanDoAction("block"),
                             new TaskFaceEnemy(),
                             new TaskBlock(),
                         }),
                         // dodge away if we can't block
                         new Sequence(new List<Node>
                         {
-                            new ConditionEnemyDistance(meleeDist),
-                            new ConditionCanDoAction("dodge"),
+                            new CheckEnemyDistance(meleeDist),
+                            new CheckCanDoAction("dodge"),
                             new TaskBackEnemy(),
                             new TaskDodge(),
                         }),
                         new Sequence(new List<Node>
                         {
-                            new Inverter(new ConditionEnemyDistance(4f)),
+                            new Inverter(new CheckEnemyDistance(4f)),
                             new TaskFaceEnemy(),
                             new TaskMoveForward(),
                             new TaskWait(),
@@ -108,31 +106,31 @@ namespace Glaidiator.BehaviorTree.CustomBTs
                         // run away until threshold distance
                         new Sequence(new List<Node>
                         {
-                            new ConditionEnemyDistance(4f),
+                            new CheckEnemyDistance(4f),
                             new TaskBackEnemy(),
                             new TaskMoveForward(),
                             new TaskStop(),
-                            new ConditionArenaBounds(1f),
+                            new CheckArenaBounds(1f),
                             new TaskMoveForward(),
                         }),
                         // turn if hitting wall
                         new Sequence(new List<Node>
                         {
-                            new ConditionEnemyDistance(3f),
-                            new Inverter(new ConditionArenaBounds(1f)),
+                            new CheckEnemyDistance(3f),
+                            new Inverter(new CheckArenaBounds(1f)),
                             new TaskStop(),
                             new TaskTurnRight(),
                             new TaskMoveForward(),
-                            new ConditionArenaBounds(1f),
+                            new CheckArenaBounds(1f),
                         }),
                         new Sequence(new List<Node>
                         {
-                            new ConditionEnemyDistance(3f),
-                            new Inverter(new ConditionArenaBounds(1f)),
+                            new CheckEnemyDistance(3f),
+                            new Inverter(new CheckArenaBounds(1f)),
                             new TaskStop(),
                             new TaskTurnLeft(),
                             new TaskMoveForward(),
-                            new ConditionArenaBounds(1f),
+                            new CheckArenaBounds(1f),
                         })
                     })
                 }),

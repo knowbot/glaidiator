@@ -40,7 +40,7 @@ namespace Glaidiator.BehaviorTree.Base
             tree = btree;
         }
 
-        public virtual NodeState Evaluate() => NodeState.FAILURE;
+        public abstract NodeState Evaluate();
 
         public abstract void Flatten(List<Node> nodes);
         public abstract void ReplaceChild(Node oldChild, Node newChild);
