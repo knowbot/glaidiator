@@ -63,7 +63,7 @@ namespace Glaidiator.BehaviorTree.Base
 
         public void SetParent(Node nParent)
         {
-            this.parent = nParent;
+            parent = nParent;
         }
 
         public BTree GetTree()
@@ -78,9 +78,9 @@ namespace Glaidiator.BehaviorTree.Base
         }
 
         // invoke on root to set owner for all nodes in tree
-        public virtual void SetOwner(Character owner)
+        public virtual void SetOwner(Character nOwner)
         {
-            this.owner = owner;
+            this.owner = nOwner;
         }
 
         public Character GetOwner()

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Glaidiator.BehaviorTree.CustomBTs;
 using Glaidiator.Model;
+using Glaidiator.Utils;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -71,18 +73,21 @@ namespace Glaidiator.BehaviorTree.Base
 
         public abstract BTree Clone();
 
-        public void Crossover(BTree mate, float chance)
+        public BTree Crossover(BTree mate)
         {
-            if (chance < Random.Range(0f, 1f)) return;
+            Debug.Log("Starting crossover!");
+            BTree child = new EvoBT();
 
             List<Node> nodes1 = new List<Node>();
             root.Flatten(nodes1);
-            Node swapNode1 = nodes1[Random.Range(0, nodes1.Count)];
+            Node swapNode1 = nodes1[Random.Range(0, nodes1.Count)].Clone();
+            Serializer.Serialize(swapNode1);
 
             List<Node> nodes2 = new List<Node>();
             mate.root.Flatten(nodes2);
-            Node swapNode2 = nodes2[Random.Range(0, nodes2.Count)];
-
+            Node swapNode2 = nodes2[Random.Range(0, nodes2.Count)].Clone();
+            Serializer.Serialize(swapNode2);
+            
             Node parent1 = swapNode1.GetParent();
             Node parent2 = swapNode2.GetParent();
             
@@ -92,9 +97,8 @@ namespace Glaidiator.BehaviorTree.Base
             }
             else
             {
-                root = parent2;
-                root.SetOwner(swapNode1.GetOwner());
-                root.SetParent(null); // a root node has no parent
+                child.SetRoot(swapNode2);
+                child.root.SetParent(null); // a root node has no parent
             }
 
             if (parent2 != null) 
@@ -103,12 +107,11 @@ namespace Glaidiator.BehaviorTree.Base
             }
             else
             {
-                mate.root = swapNode1;
-                mate.root.SetOwner(swapNode2.GetOwner());
-                mate.root.SetParent(null); 
+                child.SetRoot(swapNode1);
+                child.root.SetParent(null); 
             }
-            
-            // dirty flag?
+            Debug.Log("Crossed over!");
+            return child;
         }
 
         
@@ -167,6 +170,7 @@ namespace Glaidiator.BehaviorTree.Base
         public void SetRoot(Node newRoot)
         {
             root = newRoot;
+            root.SetTree(this);
         }
 
         public float GetFitness()

@@ -41,13 +41,10 @@ namespace Glaidiator.BehaviorTree.Base
         public override Node Clone()
         {
             var clone = new Selector();
-            clone.SetParent(parent);    // FIXME: Test for correct parent and tree refs
-            clone.SetTree(tree);
             foreach (Node child in Children)
             {
                 clone.Attach(child.Clone());
             }
-
             return clone;
         }
 

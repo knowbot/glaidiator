@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Glaidiator.BehaviorTree;
 using Glaidiator.BehaviorTree.Base;
 using Glaidiator.BehaviorTree.CustomBTs;
 using Glaidiator.BehaviorTree.CustomNodes;
@@ -8,9 +9,10 @@ using Glaidiator.BehaviorTree.CustomNodes.CheckNodes;
 using Glaidiator.BehaviorTree.CustomNodes.TaskNodes;
 using Glaidiator.BehaviorTree.LeafNodes.ConditionNodes;
 using Glaidiator.Utils;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Glaidiator.BehaviorTree
+namespace Glaidiator
 {
     public class EvoManager
     {
@@ -22,7 +24,7 @@ namespace Glaidiator.BehaviorTree
         }
         
         public int generation = 0;
-        public int populationCapacity = 50; // OBS: arbitrary test values
+        public int populationCapacity = 2; // OBS: arbitrary test values
         public float crossoverChance = 0.3f;
         public float mutationChance = 0.2f;
         public const int MaxChildren = 6;
@@ -99,13 +101,18 @@ namespace Glaidiator.BehaviorTree
         // and crossover if the two are not the same tree
         public void Crossover()
         {
+            
             foreach (BTree member in _population)
             {
-                BTree mate = _population[Random.Range(0, _population.Count)];
-                if (member != mate)
+                //todo: add chance here instead
+                BTree mate;
+                do
                 {
-                    member.Crossover(mate, crossoverChance);
-                }
+                     mate = _population[Random.Range(0, _population.Count)];
+                    if (member != mate)
+                       Serializer.Serialize(member.Crossover(mate));
+
+                } while (member == mate);
             }
         }
 
@@ -114,8 +121,11 @@ namespace Glaidiator.BehaviorTree
             _population = new List<BTree>();
             for (int i = 0; i < populationCapacity; i++)
             {
-                EvoBT tree = RandomTree();
                 _population.Add(RandomTree());
+            }
+            Crossover();
+            foreach (BTree tree in _population)
+            {
                 Serializer.Serialize(tree);
             }
         }
