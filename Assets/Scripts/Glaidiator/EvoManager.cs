@@ -23,10 +23,11 @@ namespace Glaidiator
             public float fitness;
         }
         
-        public int generation = 0;
-        public int populationCapacity = 2; // OBS: arbitrary test values
-        public float crossoverChance = 0.3f;
-        public float mutationChance = 0.2f;
+        public int Generation = 0;
+        public const int PopulationCapacity = 1; // OBS: arbitrary test values
+        public const int ElitismPct = 5;
+        public const float CrossoverFactor = 0.3f;
+        public const float MutationFactor = 0.2f;
         public const int MaxChildren = 6;
 
         private List<BTree> _population;
@@ -72,7 +73,7 @@ namespace Glaidiator
             candidates.Sort((a, b) => a.fitness.CompareTo(b.fitness));
 
             // add fit candidates to offsprings using random pruning
-            while (offsprings.Count < populationCapacity)
+            while (offsprings.Count < PopulationCapacity)
             {
                 float accProp = 0f;
                 float randVal = Random.value;
@@ -84,7 +85,7 @@ namespace Glaidiator
             }
 
             _population = offsprings;
-            generation++;
+            Generation++;
         }
 
 
@@ -93,33 +94,20 @@ namespace Glaidiator
         {
             foreach(BTree member in _population)
             {
-                member.Mutate(mutationChance);
+                member.Mutate(MutationFactor);
             }
         }
 
-        // for each member of population, select another random member
-        // and crossover if the two are not the same tree
-        public void Crossover()
+        // choose two random members in the population and generate a new candidate through crossing over
+        public BTree Crossover()
         {
             
-            foreach (BTree member in _population)
-            {
-                //todo: add chance here instead
-                BTree mate;
-                do
-                {
-                     mate = _population[Random.Range(0, _population.Count)];
-                    if (member != mate)
-                       Serializer.Serialize(member.Crossover(mate));
-
-                } while (member == mate);
-            }
         }
 
         public void InitPopulation()
         {
             _population = new List<BTree>();
-            for (int i = 0; i < populationCapacity; i++)
+            for (int i = 0; i < PopulationCapacity; i++)
             {
                 _population.Add(RandomTree());
             }
