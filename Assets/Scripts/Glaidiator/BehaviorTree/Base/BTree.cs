@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Glaidiator.BehaviorTree.CustomBTs;
 using Glaidiator.Model;
-using Glaidiator.Utils;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -10,11 +8,22 @@ namespace Glaidiator.BehaviorTree.Base
 {
     public abstract class BTree
     {
-        protected Transform transform;
-        protected Node root = null;
-        protected Character enemy;
-        protected Character owner;
-        protected float fitness = 0; // remove in favor of evo manager candidate class?
+        private Node _root = null;
+        private Transform _transform;
+
+        public Node Root
+        {
+            get => _root;
+            internal set
+            {
+                _root = value;
+                _root?.SetTree(this);
+            } 
+        }
+
+        public Character Owner { get; internal set; }
+        public Character Enemy { get; set; }
+        public float Fitness = 0; // remove in favor of evo manager candidate class?
         
         private readonly Dictionary<string, object> _dataContext = new Dictionary<string, object>();
 
@@ -30,20 +39,18 @@ namespace Glaidiator.BehaviorTree.Base
         // for editor debugging info
         public Node currentNode;
         public float enemyDistance;
-        
 
-        public BTree(Character owner)
+        protected BTree(Character owner)
         {
-            this.owner = owner ?? throw new NullReferenceException("BTree init with null owner");
+            Owner = owner ?? throw new NullReferenceException("BTree init with null owner");
         }
 
-        public BTree(Node root)
+        protected BTree(Node root)
         {
-            SetRoot(root);
+            Root = root;
         }
 
-        public BTree()
-        { }
+        protected BTree() {}
 
         public void Init()
         {
@@ -54,7 +61,7 @@ namespace Glaidiator.BehaviorTree.Base
             AttackRanged = false; 
             Block = false;
             Dodge = false;
-            root = SetupTree();
+            Root = SetupTree();
             //Debug.Log(this.GetType() + " init");
         }
 
@@ -66,7 +73,7 @@ namespace Glaidiator.BehaviorTree.Base
             AttackRanged = false; 
             Block = false;
             Dodge = false;
-            if (root != null) root.Evaluate();
+            Root?.Evaluate();
         }
 
         protected abstract Node SetupTree();
@@ -75,19 +82,15 @@ namespace Glaidiator.BehaviorTree.Base
 
         public BTree Crossover(BTree mate)
         {
-            Debug.Log("Starting crossover!");
-            BTree child = new EvoBT();
-
+            BTree child = Clone();
             List<Node> nodes1 = new List<Node>();
-            root.Flatten(nodes1);
-            Node swapNode1 = nodes1[Random.Range(0, nodes1.Count)].Clone();
-            Serializer.Serialize(swapNode1);
+            child.Root.Flatten(nodes1);
+            Node swapNode1 = nodes1[Random.Range(0, nodes1.Count)];
 
             List<Node> nodes2 = new List<Node>();
-            mate.root.Flatten(nodes2);
-            Node swapNode2 = nodes2[Random.Range(0, nodes2.Count)].Clone();
-            Serializer.Serialize(swapNode2);
-            
+            mate.Root.Flatten(nodes2);
+            Node swapNode2 = nodes2[Random.Range(0, nodes2.Count)];
+
             Node parent1 = swapNode1.GetParent();
             Node parent2 = swapNode2.GetParent();
             
@@ -97,8 +100,9 @@ namespace Glaidiator.BehaviorTree.Base
             }
             else
             {
-                child.SetRoot(swapNode2);
-                child.root.SetParent(null); // a root node has no parent
+                child.Root = parent2;
+                child.Root.SetOwner(swapNode1.GetOwner());
+                child.Root.SetParent(null); // a root node has no parent
             }
 
             if (parent2 != null) 
@@ -107,20 +111,20 @@ namespace Glaidiator.BehaviorTree.Base
             }
             else
             {
-                child.SetRoot(swapNode1);
-                child.root.SetParent(null); 
+                child.Root = swapNode1;
+                child.Root.SetOwner(swapNode2.GetOwner());
+                child.Root.SetParent(null); 
             }
-            Debug.Log("Crossed over!");
+
             return child;
         }
 
         
-        public void Mutate(float chance)
+        public BTree Mutate()
         {
-            if (chance < Random.Range(0f, 1f)) return;
-
-            List<Node> nodes = new List<Node>();
-            root.Flatten(nodes);
+            BTree child = Clone();
+            List<Node> nodes = new();
+            child.Root.Flatten(nodes);
 
             if (0.8f < Random.Range(0f, 1f)) // 80% chance of mutating a random child
             {
@@ -129,66 +133,16 @@ namespace Glaidiator.BehaviorTree.Base
             }
             else
             {
-                // sample node from EvolutionManager
-                // replace random existing node with the sample
+                // replace random node with sample prototype
                 int pSize = EvoManager.Instance.prototypes.Count;
                 Node newNode = EvoManager.Instance.prototypes[Random.Range(0, pSize)].Randomized();
                 Node oldNode = nodes[Random.Range(0, nodes.Count)];
                 Node parent = oldNode.GetParent();
                 parent?.ReplaceChild(oldNode, newNode);
             }
-            
-            // add dirty flag?
+            return child;
         }
 
-        public void SetEnemyChar(Character enemy)
-        {
-            this.enemy = enemy;
-        }
-
-        public Character GetEnemyChar()
-        {
-            return enemy;
-        }
-
-        public void SetOwnerChar(Character owner)
-        {
-            this.owner = owner;
-        }
-        
-        public Character GetOwnerChar()
-        {
-            if (owner == null) throw new NullReferenceException("tree has no owner character");
-            return owner;
-        }
-        
-        public Node GetRoot()
-        {
-            return root;
-        }
-
-        public void SetRoot(Node newRoot)
-        {
-            root = newRoot;
-            root.SetTree(this);
-        }
-
-        public float GetFitness()
-        {
-            // TODO: Implement fitness calculation
-            return fitness;
-        }
-
-        public void SetTransform(Transform newTransform)
-        {
-            transform = newTransform;
-        }
-
-        public Transform GetTransform()
-        {
-            return transform;
-        }
-        
         public void SetData(string key, object value)
         {
             _dataContext[key] = value;

@@ -40,7 +40,7 @@ namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 
         public override Node Clone()
         {
-            return new CheckArenaBounds(_distance);
+            throw new NotImplementedException();
         }
 
         public override void Mutate()

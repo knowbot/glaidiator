@@ -1,32 +1,29 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
-using System.Xml;
-using Glaidiator.BehaviorTree.Base;
 
 namespace Glaidiator.Utils
 {
-    public static class Serializer
+    public class Serializer
     {
-        public static void Serialize(BTree tree)
+        public static string Serialize(object obj)
         {
-            var doc = new XmlDocument();
-            var w = new XmlTextWriter($@"BTs/Test/tree_{Guid.NewGuid()}.xml", Encoding.UTF8);
-            w.Formatting = Formatting.Indented;
-            w.WriteStartElement(tree.GetType().Name);
-            tree.GetRoot().WriteXml(w);
-            w.WriteEndElement();
-            w.Close();
-            doc.Save(w);
-        }
-        
-        public static void Serialize(Node node)
-        {
-            var doc = new XmlDocument();
-            var w = new XmlTextWriter($@"BTs/Test/node_{Guid.NewGuid()}.xml", Encoding.UTF8);
-            w.Formatting = Formatting.Indented;
-            node.WriteXml(w);
-            w.Close();
-            doc.Save(w);
+            var sb = new StringBuilder();
+            sb.AppendLine();
+            sb.Append("<?");
+            Type myType = obj.GetType();
+            sb.Append(myType);
+            IList<PropertyInfo> props = new List<PropertyInfo>(myType.GetProperties());
+            foreach (PropertyInfo prop in props)
+            {
+                object propValue = prop.GetValue(obj, null);
+                sb.AppendLine();
+                sb.Append(@"    [" + prop.Name + "=" + propValue + "]");
+            }
+            sb.AppendLine();
+            sb.Append("?>");
+            return sb.ToString();
         }
     }
 }

@@ -140,9 +140,9 @@ namespace Glaidiator.BehaviorTree.CustomBTs
                 //new Sequence(),
             });
             
-            newRoot.SetOwner(owner);
+            newRoot.SetOwner(Owner);
             newRoot.SetTree(this);
-            SetData("enemy", enemy);
+            SetData("enemy", Enemy);
             return newRoot;
         }
 

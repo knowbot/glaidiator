@@ -14,9 +14,9 @@ namespace Glaidiator
     {
         #region Fields
 
-        public static float Step => 0.033f;
-        public static float MaxDuration => 30f;
-        public static readonly int SimCount = 5;
+        public float TimeStep = 0.033f;
+        public float MaxDuration = 30f;
+        public int SimCount = 5;
 
         private int _completed = 0;
         private readonly List<Sim> _sims;
@@ -51,40 +51,39 @@ namespace Glaidiator
         private struct Sim : IManagedJob<float>
         {    
             public int simID;
-            private float _duration;
-            private int _outcome;
             public World world;
-            public Character player;
+            public Character owner;
             public Character enemy;
-            public BTInputProvider PInputs;
+            public BTInputProvider OInputs;
             public BTInputProvider EInputs;
 
             private int Outcome()
             {
-                if (player.IsDead) return 1;
-                if (enemy.IsDead) return -1;
+                if (enemy.IsDead) return 1;
+                if (owner.IsDead) return -1;
                 return 0;
             }
             public float Execute()
             {
-                _outcome = 0;
-                _duration = 0f;
-                player.SetWorld(world);
+                int outcome = 0;
+                float duration = 0f;
+                float step = Instance.TimeStep;
+                owner.SetWorld(world);
                 enemy.SetWorld(world);
-                while (_duration < MaxDuration && _outcome == 0)
+                while (duration < Instance.MaxDuration && outcome == 0)
                 {
-                    player.SetInputs(PInputs.GetInputs());
+                    owner.SetInputs(OInputs.GetInputs());
                     enemy.SetInputs(EInputs.GetInputs());
-                    _duration += Step;
-                    player.Tick(Step);
-                    enemy.Tick(Step);
-                    world.Update(Step);
-                    _outcome = Outcome();
+                    duration += step;
+                    owner.Tick(step);
+                    enemy.Tick(step);
+                    world.Update(step);
+                    outcome = Outcome();
                 }
 
-                return _outcome * 10000f / _duration + player.Health.Current; // rewards fast wins, slow losses
-                // + player.DamageTaken*100f/enemy.DamageTaken - 100f // damage dealt vs damage taken ratio
-                 // reward keeping more health at the end
+                return outcome * 5000f / duration // reward fast wins/slow losses
+                    + owner.Health.Current / 10f // reward keeping more health
+                    + owner.DamageTaken * 100f / enemy.DamageTaken - 100f; // damage dealt vs damage taken ratio
             }
         }
 
@@ -112,14 +111,14 @@ namespace Glaidiator
                 _fitnessRef[i] = new NativeReference<float>(0f, Allocator.Persistent);
                 var world = new World();
                 var p = new Character(Arena.PlayerStartPos, Arena.PlayerStartRot);
-                var e = new Character(Arena.EnemyStartPos, Arena.EnemyStartRot);
+                var e = new Character(Arena.BossStartPos, Arena.BossStartRot);
                 var sim = new Sim
                 {
                     simID = i,
                     world = world,
-                    player = p,
+                    owner = p,
                     enemy = e,
-                    PInputs = new BTInputProvider(p, e),
+                    OInputs = new BTInputProvider(e, p),
                     EInputs = new BTInputProvider(e, p)
                 };
                 

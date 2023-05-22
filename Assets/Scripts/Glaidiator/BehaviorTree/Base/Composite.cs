@@ -50,7 +50,7 @@ namespace Glaidiator.BehaviorTree.Base
             newChild.SetOwner(owner);
             Children[i] = newChild;
         }
-
+        
         // return flat list representation of tree/subtree of this node
         public override void Flatten(List<Node> nodes)
         {

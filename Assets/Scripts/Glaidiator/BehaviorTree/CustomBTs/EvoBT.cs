@@ -13,13 +13,13 @@ namespace Glaidiator.BehaviorTree.CustomBTs
 
         protected override Node SetupTree()
         {
-            return root;
+            return Root;
         }
 
         public override BTree Clone()
         {
             BTree newTree = new EvoBT();
-            newTree.SetRoot(root.Clone());
+            newTree.Root = Root.Clone();
             return newTree;
         }
     }

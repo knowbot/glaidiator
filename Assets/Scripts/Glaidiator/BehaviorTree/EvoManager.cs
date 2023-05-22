@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Glaidiator.BehaviorTree;
 using Glaidiator.BehaviorTree.Base;
 using Glaidiator.BehaviorTree.CustomBTs;
 using Glaidiator.BehaviorTree.CustomNodes;
@@ -9,10 +8,9 @@ using Glaidiator.BehaviorTree.CustomNodes.CheckNodes;
 using Glaidiator.BehaviorTree.CustomNodes.TaskNodes;
 using Glaidiator.BehaviorTree.LeafNodes.ConditionNodes;
 using Glaidiator.Utils;
-using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Glaidiator
+namespace Glaidiator.BehaviorTree
 {
     public class EvoManager
     {
@@ -22,12 +20,17 @@ namespace Glaidiator
             public BTree tree;
             public float fitness;
         }
-        
-        public int Generation = 0;
-        public const int PopulationCapacity = 1; // OBS: arbitrary test values
-        public const int ElitismPct = 5;
-        public const float CrossoverFactor = 0.3f;
-        public const float MutationFactor = 0.2f;
+
+        public BTree Champion;
+        public int Era = 0; // # of population resets (to adapt to changing playstyle)
+        public int Generation = 0; // # of curr generation
+        public const int MaxGenerations = 1000; // # of generations before a reset
+        // ? Default values, can be changed in Matrix script
+        public int PopulationCapacity = 50;
+        public int ElitismPct = 10;
+        public float CrossoverFactor = 0.85f;
+        public float MutationFactor = 0.15f;
+
         public const int MaxChildren = 6;
 
         private List<BTree> _population;
@@ -46,62 +49,89 @@ namespace Glaidiator
         private static readonly Lazy<EvoManager> Lazy = new(() => new EvoManager());
         public static EvoManager Instance => Lazy.Value;
         #endregion
-        
-        
-        // selection of new generation
-        public void Select() // add statistics param?
-        {
-            List<BTree> offsprings = new List<BTree>();
-            List<Candidate> candidates = new List<Candidate>();
-            float fitnessNormal = 0f;
-            
-            foreach (BTree tree in _population)
-            {
-                fitnessNormal += tree.GetFitness(); //TODO: Implement fitness
-            }
 
-            foreach (BTree tree in _population)
-            {
-                Candidate c = new Candidate();
-                c.tree = tree;
-                c.fitness = tree.GetFitness() / fitnessNormal;
-                candidates.Add(c);
-                // anything domain specific?
-            }
+        public void Evaluate()
+        {
+            // SimManager.Instance.
+        }
+
+        public void Reproduce()
+        {
+            /*
+                # ELITISM
+                Take top X% of the population based on fitness
+                The best 50% elites get passed directly into offspring
+                The worst 50% elites have guaranteed slot in reproduction pool
+             */
+            int elite = (int)(PopulationCapacity * ElitismPct / 100f); // how many elites
+            int top = (elite + 1) / 2; // index to split top/bot 50% elites
+            BTree[] popArray = _population.OrderByDescending(t => t.Fitness).ToArray();
+            // get elite population
+            BTree[] elites = popArray[..elite];
+            List<BTree> offspring = new List<BTree>();
+            offspring.AddRange(elites[..top].Select(e => e.Clone()));
             
+            /*
+                # FITNESS PROPORTIONATE SELECTION
+                Stochastic selection method: the probability for selection of a tree is proportional to its fitness.
+             */
+            List<BTree> pool = new List<BTree>(); // reproduction pool
+            pool.AddRange(elites[top..].Select(e => e.Clone())); // add bot50% elites
+
+            // calc normalised fitness
+            float fitSum = popArray.Sum(tree => tree.Fitness);
+            List<Candidate> candidates = popArray.Select(tree => new Candidate
+                {
+                    tree = tree, 
+                    fitness = tree.Fitness / fitSum // normalized fitness
+                }).ToList();
+
             // sort candidates list for best fitness first
             candidates.Sort((a, b) => a.fitness.CompareTo(b.fitness));
 
-            // add fit candidates to offsprings using random pruning
-            while (offsprings.Count < PopulationCapacity)
+            // fill pool with roulette wheel selection
+            while (pool.Count < PopulationCapacity)
             {
                 float accProp = 0f;
                 float randVal = Random.value;
                 foreach (Candidate c in candidates)
                 {
-                    if ((c.fitness + accProp) < randVal) offsprings.Add(c.tree.Clone());
+                    if ((c.fitness + accProp) < randVal) pool.Add(c.tree.Clone());
                     accProp += c.fitness;
                 }
             }
+            
+            /*
+               # CROSSOVER AND MUTATION
+               Apply crossover and mutation operators to reproduction pool
+            */
+            while(offspring.Count < PopulationCapacity)
+            {
+                BTree p1 = pool[Random.Range(0, pool.Count)]; // pick parent 1
+                BTree p2 = pool[Random.Range(0, pool.Count)]; // pick parent 2
+                // Crossover chance
+                if (MathStuff.Rand.NextFloat() < CrossoverFactor)
+                    offspring.Add(p1.Crossover(p2));
+                else if (MathStuff.Rand.NextFloat() < MutationFactor)
+                    offspring.Add(p1.Mutate());
+                else
+                    offspring.Add(p1);
+            }
 
-            _population = offsprings;
+            // # INITIALIZE NEW GENERATION
+            offspring.AddRange(pool);
+            _population = offspring;
             Generation++;
         }
-
+        
 
         // Invoke Mutate on all members of population
-        public void Mutate()
+        private void Mutate(List<BTree> pool)
         {
-            foreach(BTree member in _population)
+            foreach (BTree tree in pool.Where(_ => MathStuff.Rand.NextFloat() < MutationFactor))
             {
-                member.Mutate(MutationFactor);
+                tree.Mutate();
             }
-        }
-
-        // choose two random members in the population and generate a new candidate through crossing over
-        public BTree Crossover()
-        {
-            
         }
 
         public void InitPopulation()
@@ -109,11 +139,8 @@ namespace Glaidiator
             _population = new List<BTree>();
             for (int i = 0; i < PopulationCapacity; i++)
             {
+                EvoBT tree = RandomTree();
                 _population.Add(RandomTree());
-            }
-            Crossover();
-            foreach (BTree tree in _population)
-            {
                 Serializer.Serialize(tree);
             }
         }

@@ -9,12 +9,13 @@ using Input = Glaidiator.Model.Input;
 
 namespace Glaidiator.BehaviorTree
 {
+    // TODO: change to integrate with SimManager
     public class BTInputProvider : IInputProvider
     {
         private BTree _btree;
         public String currentNode; // for debug info
         public float currentDistance;
-        public Character player;
+        public Character Player;
         private Input _inputs;
         public Input Inputs
         {
@@ -25,8 +26,8 @@ namespace Glaidiator.BehaviorTree
         public BTInputProvider(Character owner, Character player)
         {
             _btree = new CustomAshleyBT();
-            _btree.SetOwnerChar(owner);
-            _btree.SetEnemyChar(player);
+            _btree.Owner = owner;
+            _btree.Enemy = player;
             _btree.Init();
         }
 
@@ -55,8 +56,8 @@ namespace Glaidiator.BehaviorTree
         public void SetNewBTree(BTree tree, Character owner, Character player)
         {
             _btree = tree;
-            _btree.SetOwnerChar(owner);
-            _btree.SetEnemyChar(player);
+            _btree.Owner = owner;
+            _btree.Enemy = player;
         }
     }
 }
