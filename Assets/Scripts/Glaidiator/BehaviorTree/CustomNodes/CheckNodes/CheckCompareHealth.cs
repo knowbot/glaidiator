@@ -3,6 +3,7 @@ using System.Xml;
 using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Model;
 using Glaidiator.Utils;
+using UnityEngine;
 
 namespace Glaidiator.BehaviorTree.CustomNodes.CheckNodes
 {
@@ -37,7 +38,8 @@ namespace Glaidiator.BehaviorTree.CustomNodes.CheckNodes
 
         public override void Mutate()
         {
-            throw new NotImplementedException();
+            _ratio += MathStuff.Rand.NextFloat(10f) - 5f;
+            _ratio = Mathf.Clamp(_ratio, 0f, Arena.Diagonal);
         }
 
         public override Node Randomized()

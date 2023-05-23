@@ -29,7 +29,7 @@ namespace Glaidiator.BehaviorTree.CustomNodes.CheckNodes
 
         public override void Mutate()
         {
-            throw new NotImplementedException();
+            return;
         }
 
         public override Node Randomized()

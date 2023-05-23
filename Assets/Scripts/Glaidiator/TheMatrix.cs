@@ -17,9 +17,7 @@ namespace Glaidiator
         [SerializeField] public float timeStep = 0.033f;
         
         public static TheMatrix instance;
-        private SimManager _simManager;
-        private EvoManager _evoManager;
-    
+
         private void Awake(){
             if (instance == null){
                 instance = this;
@@ -29,40 +27,42 @@ namespace Glaidiator
             }
             SetEvolutionParameters();
             SetSimulationParameters();
-            _simManager.Schedule();
-            _evoManager.InitPopulation();
+            // SimManager.Instance.Schedule();
+            // EvoManager.Instance.InitPopulation();'
         }
 
         private void LateUpdate()
         {
-            _simManager.Complete();
+            SimManager.Instance.Complete();
+            if (SimManager.Instance.IsDone())
+            {
+                EvoManager.Instance.UpdateChampion();
+                EvoManager.Instance.Reproduce();   
+            }
         }
 
         private void Update()
         {
-            if(_simManager.CheckDone()) _simManager.Schedule();
+            
         }
 
         private void SetEvolutionParameters()
         {
-            _evoManager ??= EvoManager.Instance;
-            _evoManager.PopulationCapacity = populationCapacity;
-            _evoManager.ElitismPct = elitismPct;
-            _evoManager.CrossoverFactor = crossoverFactor;
-            _evoManager.MutationFactor = mutationFactor;
+            EvoManager.PopulationCapacity = populationCapacity;
+            EvoManager.ElitismPct = elitismPct;
+            EvoManager.CrossoverFactor = crossoverFactor;
+            EvoManager.MutationFactor = mutationFactor;
         }
         private void SetSimulationParameters()
         {
-            _simManager ??= SimManager.Instance;
-            _simManager.SimCount = populationCapacity;
-            _simManager.MaxDuration = maxDuration;
-            _simManager.TimeStep = timeStep;
+            SimManager.MaxDuration = maxDuration;
+            SimManager.TimeStep = timeStep;
         }
         
 
         private void OnDestroy()
         {
-            _simManager.ForceComplete();
+            SimManager.Instance.ForceComplete();
         }
     }
 }

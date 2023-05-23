@@ -46,7 +46,8 @@ namespace Glaidiator.BehaviorTree.CustomNodes.TaskNodes
 
         public override void Mutate()
         {
-            throw new NotImplementedException();
+            _turnSteps += MathStuff.Rand.NextInt(4) - 2;
+            _turnSteps = Mathf.Clamp(_turnSteps, 0, 8);
         }
 
         public override Node Randomized()

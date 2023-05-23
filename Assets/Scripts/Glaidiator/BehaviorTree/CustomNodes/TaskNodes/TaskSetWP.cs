@@ -33,7 +33,8 @@ namespace Glaidiator.BehaviorTree.CustomNodes.TaskNodes
 
         public override void Mutate()
         {
-            throw new NotImplementedException();
+            _distance += MathStuff.Rand.NextFloat(4f) - 2f;
+            _distance = Mathf.Clamp(_distance, 0f, Arena.Diagonal);
         }
 
         public override Node Randomized()

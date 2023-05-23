@@ -55,7 +55,7 @@ namespace Glaidiator.BehaviorTree.CustomNodes.CheckNodes
 
         public override void Mutate()
         {
-            _distance += MathStuff.Rand.NextFloat(2f) - 1f;
+            _distance += MathStuff.Rand.NextFloat(4f) - 2f;
             _distance = Mathf.Clamp(_distance, 0f, Arena.Diagonal);
         }
 

@@ -56,12 +56,13 @@ namespace Glaidiator.BehaviorTree.CustomNodes.CheckNodes
 
         public override void Mutate()
         {
-            throw new NotImplementedException();
+            _maxAngle += MathStuff.Rand.NextFloat(5f) - 2.5f;
+            _maxAngle = Mathf.Clamp(_maxAngle, 0f, 22.5f);
         }
 
         public override Node Randomized()
         {
-            return new CheckRangedDirection(MathStuff.Rand.NextFloat(20f));
+            return new CheckRangedDirection(MathStuff.Rand.NextFloat(22.5f));
         }
         
         public override void WriteXml(XmlWriter w)

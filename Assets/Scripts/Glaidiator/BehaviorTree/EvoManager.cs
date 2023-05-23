@@ -21,27 +21,28 @@ namespace Glaidiator.BehaviorTree
             public float fitness;
         }
 
-        public BTree Champion;
+        public BTree Champion; 
         public int Era = 0; // # of population resets (to adapt to changing playstyle)
         public int Generation = 0; // # of curr generation
         public const int MaxGenerations = 1000; // # of generations before a reset
         // ? Default values, can be changed in Matrix script
-        public int PopulationCapacity = 50;
-        public int ElitismPct = 10;
-        public float CrossoverFactor = 0.85f;
-        public float MutationFactor = 0.15f;
+        public static int PopulationCapacity = 50;
+        public static int ElitismPct = 10;
+        public static float CrossoverFactor = 0.85f;
+        public static float MutationFactor = 0.15f;
 
         public const int MaxChildren = 6;
 
-        private List<BTree> _population;
-        
-        public Dictionary<String, Node> prototypesMap;
+        public List<BTree> Population;
+
+        private Dictionary<string, Node> _prototypesMap;
         public List<Node> prototypes; // collection of behaviors to sample from
-        public List<Composite> roots;
+        private List<Composite> _roots;
         
         #region Singleton
         private EvoManager()
         {
+            Champion = new CustomAshleyBT();
             CreatePrototypes();
             CreateRoots();
         }
@@ -49,10 +50,10 @@ namespace Glaidiator.BehaviorTree
         private static readonly Lazy<EvoManager> Lazy = new(() => new EvoManager());
         public static EvoManager Instance => Lazy.Value;
         #endregion
-
+        
         public void Evaluate()
         {
-            // SimManager.Instance.
+            // run sims & update 
         }
 
         public void Reproduce()
@@ -65,7 +66,7 @@ namespace Glaidiator.BehaviorTree
              */
             int elite = (int)(PopulationCapacity * ElitismPct / 100f); // how many elites
             int top = (elite + 1) / 2; // index to split top/bot 50% elites
-            BTree[] popArray = _population.OrderByDescending(t => t.Fitness).ToArray();
+            BTree[] popArray = Population.OrderByDescending(t => t.Fitness).ToArray();
             // get elite population
             BTree[] elites = popArray[..elite];
             List<BTree> offspring = new List<BTree>();
@@ -74,6 +75,8 @@ namespace Glaidiator.BehaviorTree
             /*
                 # FITNESS PROPORTIONATE SELECTION
                 Stochastic selection method: the probability for selection of a tree is proportional to its fitness.
+                Selected trees are added to a pool which will produce the new generation via genetic operators.
+                With added elitism, the worst 50% elites are seeded directly into the pool.
              */
             List<BTree> pool = new List<BTree>(); // reproduction pool
             pool.AddRange(elites[top..].Select(e => e.Clone())); // add bot50% elites
@@ -109,38 +112,35 @@ namespace Glaidiator.BehaviorTree
             {
                 BTree p1 = pool[Random.Range(0, pool.Count)]; // pick parent 1
                 BTree p2 = pool[Random.Range(0, pool.Count)]; // pick parent 2
+                BTree[] children = { p1, p2 };
                 // Crossover chance
                 if (MathStuff.Rand.NextFloat() < CrossoverFactor)
-                    offspring.Add(p1.Crossover(p2));
-                else if (MathStuff.Rand.NextFloat() < MutationFactor)
-                    offspring.Add(p1.Mutate());
-                else
-                    offspring.Add(p1);
+                   children = BTree.Crossover(p1, p2);
+                if (MathStuff.Rand.NextFloat() < MutationFactor)
+                    children[0] = children[0].Mutate();      
+                if (MathStuff.Rand.NextFloat() < MutationFactor)
+                    children[1] = children[1].Mutate();
+                offspring.AddRange(children);
             }
 
             // # INITIALIZE NEW GENERATION
-            offspring.AddRange(pool);
-            _population = offspring;
+            Population.Clear();
+            Population = offspring;
             Generation++;
         }
-        
 
-        // Invoke Mutate on all members of population
-        private void Mutate(List<BTree> pool)
+        public void UpdateChampion()
         {
-            foreach (BTree tree in pool.Where(_ => MathStuff.Rand.NextFloat() < MutationFactor))
-            {
-                tree.Mutate();
-            }
+            Champion = Population.OrderByDescending(t => t.Fitness).ToArray()[0].Clone();
         }
 
         public void InitPopulation()
         {
-            _population = new List<BTree>();
+            Population = new List<BTree> { Champion };
             for (int i = 0; i < PopulationCapacity; i++)
             {
                 EvoBT tree = RandomTree();
-                _population.Add(RandomTree());
+                Population.Add(RandomTree());
                 Serializer.Serialize(tree);
             }
         }
@@ -152,7 +152,7 @@ namespace Glaidiator.BehaviorTree
         
         public Node GetRandomRoot()
         {
-            return roots[Random.Range(0, roots.Count)];
+            return _roots[Random.Range(0, _roots.Count)];
         }
 
 
@@ -167,14 +167,9 @@ namespace Glaidiator.BehaviorTree
             return prototypes[Random.Range(0, prototypes.Count)];
         }
 
-        public void TestRandomGeneration()
-        {
-            Serializer.Serialize(RandomTree());
-        }
-        
         private void CreateRoots()
         {
-            roots = new List<Composite>
+            _roots = new List<Composite>
             {
                 new Selector(),
                 new Sequence()
@@ -184,7 +179,7 @@ namespace Glaidiator.BehaviorTree
          // init prototype samples for random mutations
         private void CreatePrototypes() // whatever params needed to init nodes
         {
-            prototypesMap = new Dictionary<string, Node>();
+            _prototypesMap = new Dictionary<string, Node>();
             // prototypesMap.Add("TaskLightAtk", new TaskLightAtk());
             // prototypesMap.Add("TaskHeavyAtk", new TaskHeavyAtk());
             // prototypesMap.Add("TaskRangedAtk", new TaskRangedAtk());
@@ -196,31 +191,31 @@ namespace Glaidiator.BehaviorTree
             // prototypesMap.Add("CheckBlock", new CheckCanDoAction("block"));
             // prototypesMap.Add("CheckDodge", new CheckCanDoAction("dodge"));
             
-            prototypesMap.Add("TaskFaceEnemy", new TaskFaceEnemy());
-            prototypesMap.Add("TaskBackEnemy", new TaskBackEnemy());
-            prototypesMap.Add("TaskMoveForward", new TaskMoveForward());
-            prototypesMap.Add("TaskTurnLeft", new TaskTurnLeft());
-            prototypesMap.Add("TaskTurnRight", new TaskTurnRight());
-            prototypesMap.Add("CheckArenaBounds", new CheckArenaBounds(1f));
+            _prototypesMap.Add("TaskFaceEnemy", new TaskFaceEnemy());
+            _prototypesMap.Add("TaskBackEnemy", new TaskBackEnemy());
+            _prototypesMap.Add("TaskMoveForward", new TaskMoveForward());
+            _prototypesMap.Add("TaskTurnLeft", new TaskTurnLeft());
+            _prototypesMap.Add("TaskTurnRight", new TaskTurnRight());
+            _prototypesMap.Add("CheckArenaBounds", new CheckArenaBounds(1f));
             
-            prototypesMap.Add("CheckEnemyDistanceMelee", new CheckEnemyDistance(2f));
-            prototypesMap.Add("CheckEnemyDistanceRanged", new CheckEnemyDistance(6f));
-            prototypesMap.Add("CheckOwnHealth", new CheckOwnHealth(50f));
-            prototypesMap.Add("CheckOwnStamina", new CheckOwnStamina(50f));
-            prototypesMap.Add("CheckEnemyHealth", new CheckEnemyHealth(50f));
-            prototypesMap.Add("CheckEnemyStamina", new CheckEnemyStamina(50f));
+            _prototypesMap.Add("CheckEnemyDistanceMelee", new CheckEnemyDistance(2f));
+            _prototypesMap.Add("CheckEnemyDistanceRanged", new CheckEnemyDistance(6f));
+            _prototypesMap.Add("CheckOwnHealth", new CheckOwnHealth(50f));
+            _prototypesMap.Add("CheckOwnStamina", new CheckOwnStamina(50f));
+            _prototypesMap.Add("CheckEnemyHealth", new CheckEnemyHealth(50f));
+            _prototypesMap.Add("CheckEnemyStamina", new CheckEnemyStamina(50f));
             // prototypesMap.Add("TaskSetWP", new TaskSetWP(2f));
             // prototypesMap.Add("TaskClearWP", new TaskClearWP());
             // prototypesMap.Add("CheckHasWP", new CheckHasTarget("wp"));
             // prototypesMap.Add("CheckWPDistance", new CheckTargetDistance("wp", 0.01f));
-            prototypesMap.Add("TaskWait", new TaskWait());
+            _prototypesMap.Add("TaskWait", new TaskWait());
 
-            prototypesMap.Add("CheckEnemyLight", new CheckEnemyAction("atkLight"));
-            prototypesMap.Add("CheckEnemyHeavy", new CheckEnemyAction("atkHeavy"));
-            prototypesMap.Add("CheckEnemyRanged", new CheckEnemyAction("atkRanged"));
-            prototypesMap.Add("CheckEnemyBlock", new CheckEnemyAction("block"));
-            prototypesMap.Add("CheckEnemyDodge", new CheckEnemyAction("dodge"));
-            prototypesMap.Add("ModuleAtkLight", 
+            _prototypesMap.Add("CheckEnemyLight", new CheckEnemyAction("atkLight"));
+            _prototypesMap.Add("CheckEnemyHeavy", new CheckEnemyAction("atkHeavy"));
+            _prototypesMap.Add("CheckEnemyRanged", new CheckEnemyAction("atkRanged"));
+            _prototypesMap.Add("CheckEnemyBlock", new CheckEnemyAction("block"));
+            _prototypesMap.Add("CheckEnemyDodge", new CheckEnemyAction("dodge"));
+            _prototypesMap.Add("ModuleAtkLight", 
                 new Module(
                     "ModuleAtkLight", 
                     new Sequence(new List<Node> 
@@ -232,7 +227,7 @@ namespace Glaidiator.BehaviorTree
                 )
             );
             
-            prototypesMap.Add("ModuleAtkHeavy", 
+            _prototypesMap.Add("ModuleAtkHeavy", 
                 new Module(
                     "ModuleAtkHeavy", 
                     new Sequence(new List<Node> 
@@ -244,7 +239,7 @@ namespace Glaidiator.BehaviorTree
                 )
             );
             
-            prototypesMap.Add("ModuleAtkRanged",
+            _prototypesMap.Add("ModuleAtkRanged",
                 new Module(
                     "ModuleAtkRanged",
                     new Sequence(new List<Node>
@@ -259,7 +254,7 @@ namespace Glaidiator.BehaviorTree
                 )
             );
             
-            prototypesMap.Add("ModuleBlock", 
+            _prototypesMap.Add("ModuleBlock", 
                 new Module(
                     "ModuleBlock", 
                     new Sequence(new List<Node> 
@@ -271,7 +266,7 @@ namespace Glaidiator.BehaviorTree
                 )
             );
             
-            prototypesMap.Add("ModuleDodge", 
+            _prototypesMap.Add("ModuleDodge", 
                 new Module(
                     "ModuleDodge", 
                     new Sequence(new List<Node> 
@@ -283,7 +278,7 @@ namespace Glaidiator.BehaviorTree
             );
 
 
-            prototypes = prototypesMap.Values.ToList();
+            prototypes = _prototypesMap.Values.ToList();
         }
     }
 }

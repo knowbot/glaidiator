@@ -21,7 +21,7 @@ namespace Glaidiator.BehaviorTree.CustomNodes.TaskNodes
 
         public override void Mutate()
         {
-            throw new NotImplementedException();
+            return;
         }
 
         public override Node Randomized()

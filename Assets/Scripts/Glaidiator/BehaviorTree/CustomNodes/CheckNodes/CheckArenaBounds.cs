@@ -40,12 +40,13 @@ namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 
         public override Node Clone()
         {
-            throw new NotImplementedException();
+            return new CheckArenaBounds(_distance);
         }
 
         public override void Mutate()
         {
-            throw new NotImplementedException();
+            _distance += MathStuff.Rand.NextFloat(4f) - 2f;
+            _distance = Mathf.Clamp(_distance, 0f, Arena.Diagonal);
         }
 
         public override Node Randomized()

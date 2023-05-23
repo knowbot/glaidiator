@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Glaidiator.BehaviorTree;
+using Glaidiator.BehaviorTree.Base;
+using Glaidiator.BehaviorTree.CustomBTs;
 using Glaidiator.Model;
 using Glaidiator.Model.Collision;
 using Unity.Collections;
@@ -14,9 +16,8 @@ namespace Glaidiator
     {
         #region Fields
 
-        public float TimeStep = 0.033f;
-        public float MaxDuration = 30f;
-        public int SimCount = 5;
+        public static float TimeStep = 0.033f;
+        public static float MaxDuration = 30f;
 
         private int _completed = 0;
         private readonly List<Sim> _sims;
@@ -30,13 +31,13 @@ namespace Glaidiator
         #region Singleton
         private SimManager()
         {
-            _fitnessRef = new NativeReference<float>[SimCount];
-            Fitness = new float[SimCount];
+            _fitnessRef = new NativeReference<float>[EvoManager.PopulationCapacity];
+            Fitness = new float[EvoManager.PopulationCapacity];
             _sims = new List<Sim>();
             _simHandles = new List<GCHandle>();
             _simJobHandles = new List<JobHandle>();
         }
-        
+
         private static readonly Lazy<SimManager> Lazy = new(() => new SimManager());
         public static SimManager Instance => Lazy.Value;
         #endregion
@@ -57,20 +58,17 @@ namespace Glaidiator
             public BTInputProvider OInputs;
             public BTInputProvider EInputs;
 
-            private int Outcome()
+            private bool Finished()
             {
-                if (enemy.IsDead) return 1;
-                if (owner.IsDead) return -1;
-                return 0;
+                return owner.IsDead && enemy.IsDead;
             }
             public float Execute()
             {
-                int outcome = 0;
                 float duration = 0f;
-                float step = Instance.TimeStep;
+                float step = TimeStep;
                 owner.SetWorld(world);
                 enemy.SetWorld(world);
-                while (duration < Instance.MaxDuration && outcome == 0)
+                while (duration < MaxDuration && !Finished())
                 {
                     owner.SetInputs(OInputs.GetInputs());
                     enemy.SetInputs(EInputs.GetInputs());
@@ -78,12 +76,11 @@ namespace Glaidiator
                     owner.Tick(step);
                     enemy.Tick(step);
                     world.Update(step);
-                    outcome = Outcome();
                 }
 
-                return outcome * 5000f / duration // reward fast wins/slow losses
-                    + owner.Health.Current / 10f // reward keeping more health
-                    + owner.DamageTaken * 100f / enemy.DamageTaken - 100f; // damage dealt vs damage taken ratio
+                return (owner.IsDead ? 1 : 0) * 5000f / duration // reward fast wins
+                    + owner.Health.Current // reward keeping more health (draws > losses)
+                    + enemy.DamageTaken * 2.0f; // damage dealt to enemy, avoid just running around
             }
         }
 
@@ -100,12 +97,8 @@ namespace Glaidiator
         
         public void Schedule()
         {
-            // Debug.Log("Running new batch! Just to check, there are " +
-            //           _sims.Count + " sims and " +
-            //           _simHandles.Count  +" GCHandles and " +
-            //           _simJobHandles.Count + " job handles.");
             _completed = 0;
-            for(int i = 0; i < SimCount; i++)
+            for(int i = 0; i < EvoManager.PopulationCapacity; i++)
             {
                 Fitness[i] = 0f;
                 _fitnessRef[i] = new NativeReference<float>(0f, Allocator.Persistent);
@@ -118,8 +111,8 @@ namespace Glaidiator
                     world = world,
                     owner = p,
                     enemy = e,
-                    OInputs = new BTInputProvider(e, p),
-                    EInputs = new BTInputProvider(e, p)
+                    OInputs = new BTInputProvider(EvoManager.Instance.Population[i].Clone(),e, p),
+                    EInputs = new BTInputProvider(new CustomAshleyBT(),e, p)
                 };
                 
                 GCHandle simHandle = GCHandle.Alloc(sim);
@@ -148,13 +141,12 @@ namespace Glaidiator
                 _simHandles.RemoveAt(i);
                 _sims.RemoveAt(i);
             }
-            if (!CheckDone()) return;
+            if (!IsDone()) return;
             
-            for (int i = 0; i < SimCount; i++)
+            for (int i = 0; i < _fitnessRef.Length; i++)
                 if (_fitnessRef[i].IsCreated)
                 {
-                    Fitness[i] = _fitnessRef[i].Value;
-                    Debug.Log("sim ended with fitness " + Fitness[i]);
+                    EvoManager.Instance.Population[i].Fitness = _fitnessRef[i].Value;
                     _fitnessRef[i].Dispose();
                 }
         }
@@ -170,14 +162,19 @@ namespace Glaidiator
                 _simHandles.RemoveAt(i);
                 _sims.RemoveAt(i);
                 if (!_fitnessRef[i].IsCreated) continue;
-                Fitness[i] = _fitnessRef[i].Value;
+                EvoManager.Instance.Population[i].Fitness = _fitnessRef[i].Value;
                 _fitnessRef[i].Dispose();
             }
         }
 
-        public bool CheckDone()
+        public bool IsDone()
         {
-            return _completed == SimCount;
+            return _completed == _sims.Count;
+        }
+
+        public bool IsRunning()
+        {
+            return _simJobHandles.Count != 0 && !IsDone();
         }
     }
 }

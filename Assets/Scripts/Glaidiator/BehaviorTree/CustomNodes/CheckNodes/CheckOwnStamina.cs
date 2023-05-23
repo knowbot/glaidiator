@@ -2,6 +2,7 @@
 using System.Xml;
 using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Utils;
+using UnityEngine;
 
 namespace Glaidiator.BehaviorTree.CustomNodes.CheckNodes
 {
@@ -36,7 +37,8 @@ namespace Glaidiator.BehaviorTree.CustomNodes.CheckNodes
 
         public override void Mutate()
         {
-            throw new NotImplementedException();
+            _threshold += MathStuff.Rand.NextFloat(10f) - 5f;
+            _threshold = Mathf.Clamp(_threshold, 0f, 100f);
         }
 
         public override Node Randomized()

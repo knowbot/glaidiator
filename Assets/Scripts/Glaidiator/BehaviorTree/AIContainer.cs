@@ -48,7 +48,6 @@ namespace Glaidiator.BehaviorTree
             
             btree.Owner = GetComponent<CharacterPresenter>().GetCharacter();
             btree.Enemy = PlayerObject.GetComponent<CharacterPresenter>().GetCharacter();
-            btree.Init();
         }
 
         private void Update()
@@ -83,7 +82,6 @@ namespace Glaidiator.BehaviorTree
             btree = tree;
             btree.Owner = GetComponent<CharacterPresenter>().GetCharacter();
             btree.Enemy = PlayerObject.GetComponent<PlayerCharacterPresenter>().GetCharacter();
-            btree.Init();
         }
     }
     

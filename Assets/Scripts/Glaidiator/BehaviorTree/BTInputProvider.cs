@@ -23,12 +23,11 @@ namespace Glaidiator.BehaviorTree
             private set => _inputs = value;
         }
 
-        public BTInputProvider(Character owner, Character player)
+        public BTInputProvider(BTree tree, Character owner, Character player)
         {
-            _btree = new CustomAshleyBT();
+            _btree = tree;
             _btree.Owner = owner;
             _btree.Enemy = player;
-            _btree.Init();
         }
 
         public Input GetInputs()
