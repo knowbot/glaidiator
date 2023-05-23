@@ -34,7 +34,6 @@ namespace Glaidiator
         {
             SimManager.Instance.Complete();
             if (!SimManager.Instance.IsDone()) return;
-            
             EvoManager.Instance.Evaluate();
             EvoManager.Instance.Reproduce();
         }

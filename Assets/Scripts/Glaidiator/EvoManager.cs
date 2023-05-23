@@ -98,7 +98,6 @@ namespace Glaidiator
 
             // sort candidates list for best fitness first
             candidates.Sort((a, b) => a.fitness.CompareTo(b.fitness));
-
             // fill pool with roulette wheel selection
             while (pool.Count < PopulationCapacity)
             {
@@ -110,7 +109,6 @@ namespace Glaidiator
                     accProp += c.fitness;
                 }
             }
-            
             /*
                # CROSSOVER AND MUTATION
                Apply crossover and mutation operators to reproduction pool
@@ -129,9 +127,7 @@ namespace Glaidiator
                     children[1].Mutate();
                 offspring.AddRange(children);
             }
-
             // # INITIALIZE NEW GENERATION
-            Population.Clear();
             Population = offspring;
             Generation++;
         }
@@ -146,8 +142,6 @@ namespace Glaidiator
 
         public void InitPopulation()
         {
-            Era++;
-            Generation = 0;
             Population = new List<BTree> { Champion };
             for (int i = 0; i < PopulationCapacity; i++)
                 Population.Add(RandomTree());

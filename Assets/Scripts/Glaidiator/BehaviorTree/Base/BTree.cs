@@ -103,7 +103,7 @@ namespace Glaidiator.BehaviorTree.Base
         public static BTree[] Crossover(BTree parent1, BTree parent2)
         {
             BTree c1 = parent1.Clone();
-            BTree c2 = parent2.Clone(); 
+            BTree c2 = parent2.Clone();
             List<Node> nodes1 = new List<Node>();
             c1.Root.Flatten(nodes1);
             Node swapNode1 = nodes1[Random.Range(0, nodes1.Count)];
@@ -134,16 +134,16 @@ namespace Glaidiator.BehaviorTree.Base
                 c2.Root = swapNode1;
                 c2.Root.SetParent(null); 
             }
-
+            c1.Fitness = 0;
+            c2.Fitness = 0;
             return new[] {c1, c2};
         }
 
         
-        public BTree Mutate()
+        public void Mutate()
         {
-            BTree child = Clone();
             List<Node> nodes = new();
-            child.Root.Flatten(nodes);
+            Root.Flatten(nodes);
 
             if (0.8f < Random.Range(0f, 1f)) // 80% chance of mutating a random child
             {
@@ -159,7 +159,6 @@ namespace Glaidiator.BehaviorTree.Base
                 Node parent = oldNode.GetParent();
                 parent?.ReplaceChild(oldNode, newNode);
             }
-            return child;
         }
 
         public void SetData(string key, object value)
