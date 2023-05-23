@@ -35,12 +35,13 @@ namespace Glaidiator.Model
 			Position += CurrVelocity * deltaTime;
 			if (dir!= Vector3.zero) LastDir = dir;
 	    }
-	    
 
-	    public void Rotate(Vector3 dir, float deltaTime)
-		{
+
+	    private void Rotate(Vector3 dir, float deltaTime)
+	    {
+		    if (dir == Vector3.zero) return;
 			Rotation = Quaternion.Slerp(Rotation, Quaternion.LookRotation(dir), deltaTime * ROT_SPEED);
-		}
+	    }
 
 	    public void Face(Vector3 dir)
 	    {

@@ -47,7 +47,6 @@ namespace Glaidiator.BehaviorTree.Base
                 throw new Exception("Child not found");
             newChild.SetParent(this);
             newChild.SetTree(tree);
-            newChild.SetOwner(owner);
             Children[i] = newChild;
         }
         
@@ -74,14 +73,6 @@ namespace Glaidiator.BehaviorTree.Base
         }
 
         // invoke on root to set owner for all nodes in tree
-        public override void SetOwner(Character owner)
-        {
-            this.owner = owner;
-            foreach (Node child in Children)
-            {
-                child.SetOwner(owner);
-            }
-        }
         #endregion
 
         #region Genetic Programming

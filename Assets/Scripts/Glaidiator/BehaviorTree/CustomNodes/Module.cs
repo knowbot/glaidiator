@@ -3,6 +3,7 @@ using System.Linq;
 using System.Xml;
 using Glaidiator.BehaviorTree.Base;
 using Unity.VisualScripting;
+using UnityEngine;
 
 namespace Glaidiator.BehaviorTree.CustomNodes
 {
@@ -11,10 +12,11 @@ namespace Glaidiator.BehaviorTree.CustomNodes
         public readonly string Name;
         public readonly Composite Root;
 
-        public Module(string name, Composite composite)
+        public Module(string name, Composite composite) : base()
         {
             Name = name;
             Root = composite;
+            Root.SetTree(tree);
         }
 
         public override NodeState Evaluate()
@@ -32,6 +34,12 @@ namespace Glaidiator.BehaviorTree.CustomNodes
             return;
         }
 
+        public override void SetTree(BTree newTree)
+        {
+            base.SetTree(newTree);
+            Root.SetTree(tree);
+        }
+
         public override Node Clone()
         {
             return new Module(Name, Root.Clone() as Composite);
@@ -39,7 +47,7 @@ namespace Glaidiator.BehaviorTree.CustomNodes
 
         public override void Mutate()
         {
-            throw new System.NotImplementedException();
+            Root.Mutate();
         }
 
         public override Node Randomized()

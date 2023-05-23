@@ -29,7 +29,7 @@ namespace Glaidiator.BehaviorTree.CustomNodes.CheckNodes
             }
 
             // calculate angle difference and check for some maximum offset before success
-            Vector3 targetDirection = (target.Position - owner.Movement.Position).normalized;
+            Vector3 targetDirection = (target.Position - tree.Owner.Movement.Position).normalized;
             Vector3 currDirection = tree.Direction;
             //float angle = Vector3.Angle(currDirection, targetDirection);
             float angle = Vector3.SignedAngle(currDirection, targetDirection, Vector3.up);
@@ -37,12 +37,12 @@ namespace Glaidiator.BehaviorTree.CustomNodes.CheckNodes
             if (angle <= _maxAngle && angle >= (_maxAngle*-1f))
             {
                 ////Debug.Log("aim angle = " + angle);
-                //Debug.DrawLine(_ownerCharacter.Movement.Position, target.Position, Color.cyan, .1f);
+                //Debug.DrawLine(_tree.OwnerCharacter.Movement.Position, target.Position, Color.cyan, .1f);
                 state = NodeState.SUCCESS;
             }
             else
             {
-                //Debug.DrawLine(_ownerCharacter.Movement.Position, target.Position, Color.yellow, .1f);
+                //Debug.DrawLine(_tree.OwnerCharacter.Movement.Position, target.Position, Color.yellow, .1f);
                 state = NodeState.FAILURE;
             }
             

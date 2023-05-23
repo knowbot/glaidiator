@@ -78,9 +78,9 @@ namespace Glaidiator
                     world.Update(step);
                 }
 
-                return (owner.IsDead ? 1 : 0) * 5000f / duration // reward fast wins
-                    + owner.Health.Current // reward keeping more health (draws > losses)
-                    + enemy.DamageTaken * 2.0f; // damage dealt to enemy, avoid just running around
+                return (enemy.IsDead && !owner.IsDead ? 1 : 0) * 5000f / duration; // reward wins
+                //+ owner.Health.Current // reward keeping more health (draws > losses)
+                //+ enemy.DamageTaken * 2.0f; // damage dealt to enemy, avoid just running around
             }
         }
 
@@ -103,16 +103,16 @@ namespace Glaidiator
                 Fitness[i] = 0f;
                 _fitnessRef[i] = new NativeReference<float>(0f, Allocator.Persistent);
                 var world = new World();
-                var p = new Character(Arena.PlayerStartPos, Arena.PlayerStartRot);
-                var e = new Character(Arena.BossStartPos, Arena.BossStartRot);
+                var o = new Character(Arena.BossStartPos, Arena.BossStartRot);
+                var e = new Character(Arena.PlayerStartPos, Arena.PlayerStartRot);
                 var sim = new Sim
                 {
                     simID = i,
                     world = world,
-                    owner = p,
+                    owner = o,
                     enemy = e,
-                    OInputs = new BTInputProvider(EvoManager.Instance.Population[i].Clone(),e, p),
-                    EInputs = new BTInputProvider(new CustomAshleyBT(),e, p)
+                    OInputs = new BTInputProvider((EvoManager.Instance.Population[i]).Clone(),o, e),
+                    EInputs = new BTInputProvider(new CustomBobBT(),e, o)
                 };
                 
                 GCHandle simHandle = GCHandle.Alloc(sim);
@@ -162,14 +162,14 @@ namespace Glaidiator
                 _simHandles.RemoveAt(i);
                 _sims.RemoveAt(i);
                 if (!_fitnessRef[i].IsCreated) continue;
-                EvoManager.Instance.Population[i].Fitness = _fitnessRef[i].Value;
+                //EvoManager.Instance.Population[i].Fitness = _fitnessRef[i].Value;
                 _fitnessRef[i].Dispose();
             }
         }
 
         public bool IsDone()
         {
-            return _completed == _sims.Count;
+            return _completed == EvoManager.PopulationCapacity;
         }
 
         public bool IsRunning()

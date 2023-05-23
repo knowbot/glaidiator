@@ -25,15 +25,7 @@ namespace Glaidiator.BehaviorTree.Base
             } 
         }
 
-        public Character Owner
-        {
-            get => _owner;
-            internal set
-            {
-                _owner = value;
-                _root.SetOwner(_owner);
-            }
-        }
+        public Character Owner { get; internal set; }
 
         public Character Enemy
         {
@@ -61,7 +53,6 @@ namespace Glaidiator.BehaviorTree.Base
         // for editor debugging info
         public Node currentNode;
         public float enemyDistance;
-        private Character _owner;
         private Character _enemy;
 
         protected BTree(Character owner)
@@ -130,8 +121,7 @@ namespace Glaidiator.BehaviorTree.Base
             }
             else
             {
-                c1.Root = nodeP2;
-                c1.Root.SetOwner(swapNode1.GetOwner());
+                c1.Root = swapNode2;
                 c1.Root.SetParent(null); // a root node has no parent
             }
 
@@ -142,7 +132,6 @@ namespace Glaidiator.BehaviorTree.Base
             else
             {
                 c2.Root = swapNode1;
-                c2.Root.SetOwner(swapNode2.GetOwner());
                 c2.Root.SetParent(null); 
             }
 
@@ -181,23 +170,16 @@ namespace Glaidiator.BehaviorTree.Base
         
         public object GetData(string key)
         {
-            object value = null;
-            if (_dataContext.TryGetValue(key, out value)) 
-                return value;
-            
-            return null;
+            return _dataContext.TryGetValue(key, out object value) ? value : null;
         }
 
 
         public bool ClearData(string key)
         {
-            if (_dataContext.ContainsKey(key))
-            {
-                _dataContext.Remove(key);
-                return true;
-            }
-            
-            return false;
+            if (!_dataContext.ContainsKey(key)) return false;
+            _dataContext.Remove(key);
+            return true;
+
         }
 
         public XmlSchema GetSchema()
@@ -213,6 +195,7 @@ namespace Glaidiator.BehaviorTree.Base
         public void WriteXml(XmlWriter w)
         {
             w.WriteStartElement(GetType().Name);
+            w.WriteAttributeString("fitness", Fitness.ToString());
             Root.WriteXml(w);
             w.WriteEndElement();
         }

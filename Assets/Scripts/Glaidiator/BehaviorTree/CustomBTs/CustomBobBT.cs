@@ -155,8 +155,6 @@ namespace Glaidiator.BehaviorTree.CustomBTs
                 }),
             });
             
-            
-            root.SetOwner(Owner);
             root.SetTree(this);
             SetData("enemy", Enemy);
             return root;
@@ -164,7 +162,9 @@ namespace Glaidiator.BehaviorTree.CustomBTs
 
         public override BTree Clone()
         {
-            throw new NotImplementedException();
+            BTree newTree = new CustomBobBT();
+            newTree.Root = Root.Clone();
+            return newTree;
         }
     }
 }

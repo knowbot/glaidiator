@@ -18,7 +18,7 @@ namespace Glaidiator.BehaviorTree.CustomNodes.TaskNodes
                 return state;
             }
 
-            Vector3 myPos = owner.Movement.Position;
+            Vector3 myPos = tree.Owner.Movement.Position;
             tree.Direction = (myPos - target.Position).normalized;
 
             state = NodeState.SUCCESS;

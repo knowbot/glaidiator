@@ -43,7 +43,6 @@ namespace Glaidiator.BehaviorTree.Base
         public override Node Clone()
         {
             var clone = new Sequence();
-            clone.SetParent(parent); // redundant?
             clone.SetTree(tree);
             foreach (Node child in Children)
             {

@@ -29,19 +29,19 @@ namespace Glaidiator.BehaviorTree.CustomNodes.CheckNodes
                 return state;
             }
 
-            float dist = Vector3.Distance(owner.Movement.Position, target.Position);
+            float dist = Vector3.Distance(tree.Owner.Movement.Position, target.Position);
             tree.enemyDistance = dist;
 
             if (dist <= _distance)
             {
                 state = NodeState.SUCCESS;
-                //Debug.DrawLine(_ownerCharacter.Movement.Position, target.Position, Color.green, 0.1f);
+                //Debug.DrawLine(_tree.OwnerCharacter.Movement.Position, target.Position, Color.green, 0.1f);
                 ////Debug.Log("CheckEnemyDistance state = "+state);
             }
             else
             {
                 state = NodeState.FAILURE;
-                //Debug.DrawLine(_ownerCharacter.Movement.Position, target.Position, Color.red, 0.1f);
+                //Debug.DrawLine(_tree.OwnerCharacter.Movement.Position, target.Position, Color.red, 0.1f);
             }
             
             return state;

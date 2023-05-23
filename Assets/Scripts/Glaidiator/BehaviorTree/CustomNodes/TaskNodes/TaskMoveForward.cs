@@ -32,9 +32,9 @@ namespace Glaidiator.BehaviorTree.CustomNodes.TaskNodes
                 var target = GetData("wp");
                 if (target is not Vector3)
                 {
-                    tree.Direction = owner.Movement.Rotation * Vector3.forward;
+                    tree.Direction = tree.Owner.Movement.Rotation * Vector3.forward;
                     
-                    target = (tree.Direction * _distance) + owner.Movement.Position;
+                    target = (tree.Direction * _distance) + tree.Owner.Movement.Position;
                     SetData("wp", target);
                     //Debug.Log("MoveForwards new target =" + target);
                     //Debug.Log("dir: "+tree.Direction);
@@ -43,7 +43,7 @@ namespace Glaidiator.BehaviorTree.CustomNodes.TaskNodes
                 //tree.Move = true;
                 //state = NodeState.RUNNING;
                 
-                if (Vector3.Distance(owner.Movement.Position, (Vector3)target) <= 0.01f)
+                if (Vector3.Distance(tree.Owner.Movement.Position, (Vector3)target) <= 0.01f)
                 {
                     ClearData("wp");
                     state = NodeState.SUCCESS;

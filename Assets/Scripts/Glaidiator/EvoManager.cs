@@ -1,16 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Glaidiator.BehaviorTree;
 using Glaidiator.BehaviorTree.Base;
 using Glaidiator.BehaviorTree.CustomBTs;
 using Glaidiator.BehaviorTree.CustomNodes;
 using Glaidiator.BehaviorTree.CustomNodes.CheckNodes;
 using Glaidiator.BehaviorTree.CustomNodes.TaskNodes;
 using Glaidiator.BehaviorTree.LeafNodes.ConditionNodes;
+using Glaidiator.Model;
+using Glaidiator.Model.Collision;
 using Glaidiator.Utils;
+using UnityEngine;
 using Random = UnityEngine.Random;
+using Serializer = Glaidiator.Utils.Serializer;
 
-namespace Glaidiator.BehaviorTree
+namespace Glaidiator
 {
     public class EvoManager
     {
@@ -42,7 +47,7 @@ namespace Glaidiator.BehaviorTree
         #region Singleton
         private EvoManager()
         {
-            Champion = new CustomAshleyBT();
+            Champion = new CustomBobBT();
             CreatePrototypes();
             CreateRoots();
         }
@@ -50,10 +55,12 @@ namespace Glaidiator.BehaviorTree
         private static readonly Lazy<EvoManager> Lazy = new(() => new EvoManager());
         public static EvoManager Instance => Lazy.Value;
         #endregion
-        
+
         public void Evaluate()
         {
-            // run sims & update 
+            // run sims & update
+            Debug.Log($"era{Era}, generation {Generation}: best = " + Population.Max(t => t.Fitness) + " avg = " + Population.Average(t => t.Fitness));
+            UpdateChampion();
         }
 
         public void Reproduce()
@@ -117,9 +124,9 @@ namespace Glaidiator.BehaviorTree
                 if (MathStuff.Rand.NextFloat() < CrossoverFactor)
                    children = BTree.Crossover(p1, p2);
                 if (MathStuff.Rand.NextFloat() < MutationFactor)
-                    children[0] = children[0].Mutate();      
+                    children[0].Mutate();      
                 if (MathStuff.Rand.NextFloat() < MutationFactor)
-                    children[1] = children[1].Mutate();
+                    children[1].Mutate();
                 offspring.AddRange(children);
             }
 
@@ -131,18 +138,19 @@ namespace Glaidiator.BehaviorTree
 
         public void UpdateChampion()
         {
-            Champion = Population.OrderByDescending(t => t.Fitness).ToArray()[0].Clone();
+            BTree newChamp = Population.OrderByDescending(t => t.Fitness).ToArray()[0].Clone();
+            if (newChamp.Fitness <= Champion.Fitness) return;
+            Champion = newChamp;
+            Serializer.Serialize(Champion, "new_champ_era" + Era + "_gen" + Generation);
         }
 
         public void InitPopulation()
         {
+            Era++;
+            Generation = 0;
             Population = new List<BTree> { Champion };
             for (int i = 0; i < PopulationCapacity; i++)
-            {
-                EvoBT tree = RandomTree();
                 Population.Add(RandomTree());
-                Serializer.Serialize(tree);
-            }
         }
 
         public EvoBT RandomTree()
@@ -279,6 +287,14 @@ namespace Glaidiator.BehaviorTree
 
 
             prototypes = _prototypesMap.Values.ToList();
+        }
+
+        public void NewEra()
+        {
+            Era++;
+            Generation = 0;
+            Population.Clear();
+            InitPopulation();
         }
     }
 }

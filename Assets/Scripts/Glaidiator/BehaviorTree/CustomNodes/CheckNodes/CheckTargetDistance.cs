@@ -29,15 +29,15 @@ namespace Glaidiator.BehaviorTree.CustomNodes.CheckNodes
                 return state;
             }
             
-            //float signedDistance = MathStuff.GetSignedDistance(_ownerCharacter.Movement.Position, (Vector3)target, tree.Direction);
-            float distance = Vector3.Distance(owner.Movement.Position, (Vector3)target);
-            Vector3 nDir = ((Vector3)target - owner.Movement.Position).normalized;
+            //float signedDistance = MathStuff.GetSignedDistance(_tree.OwnerCharacter.Movement.Position, (Vector3)target, tree.Direction);
+            float distance = Vector3.Distance(tree.Owner.Movement.Position, (Vector3)target);
+            Vector3 nDir = ((Vector3)target - tree.Owner.Movement.Position).normalized;
             Vector3 nnDir = MathStuff.Get8DDirection(nDir.x, nDir.z);
             
             if (distance <= _distance || nnDir != tree.Direction)
             {
                 ////Debug.Log("successfully reached waypoint = " + target);
-                //Debug.Log(_ownerCharacter.Movement.Position);
+                //Debug.Log(_tree.OwnerCharacter.Movement.Position);
                 state = NodeState.SUCCESS;
             }
             else

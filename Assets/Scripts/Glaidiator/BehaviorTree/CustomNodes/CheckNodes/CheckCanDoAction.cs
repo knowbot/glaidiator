@@ -19,10 +19,10 @@ namespace Glaidiator.BehaviorTree.CustomNodes.CheckNodes
             tree.currentNode = this;
             if (tree == null) throw new NullReferenceException();
 
-            IAction action = owner.Actions[_actionName];
+            IAction action = tree.Owner.Actions[_actionName];
             float cost = action.Action.Cost;
             
-            if (owner.Cooldowns.Contains((ICooldown)action) || cost > owner.Stamina.Current)
+            if (tree.Owner.Cooldowns.Contains((ICooldown)action) || cost > tree.Owner.Stamina.Current)
             {
                 state = NodeState.FAILURE;
             }

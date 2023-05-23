@@ -36,7 +36,6 @@ namespace Glaidiator.BehaviorTree.Base
             if (oldChild as T != Child) throw new ConstraintException("Child replaced different from current child");
             newChild.SetParent(this);
             newChild.SetTree(tree);
-            newChild.SetOwner(owner);
             Child = newChild as T;
         }
 
@@ -46,12 +45,6 @@ namespace Glaidiator.BehaviorTree.Base
         {
             tree = newTree;
             Child.SetTree(newTree);
-        }
-        
-        public override void SetOwner(Character owner)
-        {
-            this.owner = owner;
-            Child.SetOwner(owner);
         }
         #endregion
         public override void ReadXml(XmlReader reader)

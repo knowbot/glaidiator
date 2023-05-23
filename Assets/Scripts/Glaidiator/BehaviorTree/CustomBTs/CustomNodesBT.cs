@@ -61,8 +61,6 @@ namespace Glaidiator.BehaviorTree.CustomBTs
                 
                 
             });
-            
-            root.SetOwner(Owner);
             root.SetTree(this);
             SetData("enemy", Enemy);
             return root;

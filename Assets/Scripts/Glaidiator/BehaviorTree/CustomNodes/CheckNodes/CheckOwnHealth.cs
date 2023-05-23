@@ -17,7 +17,7 @@ namespace Glaidiator.BehaviorTree.CustomNodes.CheckNodes
         {
             tree.currentNode = this;
 
-            if (owner.Health.Current >= _threshold)
+            if (tree.Owner.Health.Current >= _threshold)
             {
                 state = NodeState.SUCCESS;
                 return state;

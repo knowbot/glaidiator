@@ -27,7 +27,6 @@ namespace Glaidiator.BehaviorTree.Base
         // TODO: consider access levels
         internal NodeState state;
         internal BTree tree;
-        internal Character owner;
         internal Node parent;
 
         public Node()
@@ -75,17 +74,6 @@ namespace Glaidiator.BehaviorTree.Base
         public virtual void SetTree(BTree newTree)
         {
             tree = newTree;
-        }
-
-        // invoke on root to set owner for all nodes in tree
-        public virtual void SetOwner(Character owner)
-        {
-            this.owner = owner;
-        }
-
-        public Character GetOwner()
-        {
-            return owner;
         }
 
         public void SetData(string key, object value)

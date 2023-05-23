@@ -27,23 +27,22 @@ namespace Glaidiator
             }
             SetEvolutionParameters();
             SetSimulationParameters();
-            // SimManager.Instance.Schedule();
-            // EvoManager.Instance.InitPopulation();'
+            EvoManager.Instance.InitPopulation();
         }
 
         private void LateUpdate()
         {
             SimManager.Instance.Complete();
-            if (SimManager.Instance.IsDone())
-            {
-                EvoManager.Instance.UpdateChampion();
-                EvoManager.Instance.Reproduce();   
-            }
+            if (!SimManager.Instance.IsDone()) return;
+            
+            EvoManager.Instance.Evaluate();
+            EvoManager.Instance.Reproduce();
         }
 
         private void Update()
         {
-            
+            if (EvoManager.Instance.Generation == EvoManager.MaxGenerations) EvoManager.Instance.NewEra();
+            if(!SimManager.Instance.IsRunning()) SimManager.Instance.Schedule();
         }
 
         private void SetEvolutionParameters()

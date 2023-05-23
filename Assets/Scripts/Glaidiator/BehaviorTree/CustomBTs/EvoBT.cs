@@ -20,6 +20,7 @@ namespace Glaidiator.BehaviorTree.CustomBTs
         {
             BTree newTree = new EvoBT();
             newTree.Root = Root.Clone();
+            newTree.Fitness = Fitness;
             return newTree;
         }
     }

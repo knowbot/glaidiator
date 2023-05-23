@@ -18,7 +18,7 @@ namespace Glaidiator.BehaviorTree.CustomNodes.TaskNodes
         public override NodeState Evaluate()
         {
             tree.currentNode = this;// for debug info
-            Vector3 wp = owner.Movement.Position + (tree.Direction * _distance);
+            Vector3 wp = tree.Owner.Movement.Position + (tree.Direction * _distance);
             SetData("wp", wp);
             ////Debug.Log("set waypoint: " + wp);
             state = NodeState.SUCCESS;

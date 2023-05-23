@@ -23,7 +23,7 @@ namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
         {
             tree.currentNode = this;
 
-            Vector3 target = owner.Movement.Position + (tree.Direction * _distance);
+            Vector3 target = tree.Owner.Movement.Position + (tree.Direction * _distance);
             if (target.x < 0f || target.x > Arena.MaxSize ||
                 target.z < 0f || target.z > Arena.MaxSize)
             {

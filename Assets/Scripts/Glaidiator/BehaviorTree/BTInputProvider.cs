@@ -23,11 +23,11 @@ namespace Glaidiator.BehaviorTree
             private set => _inputs = value;
         }
 
-        public BTInputProvider(BTree tree, Character owner, Character player)
+        public BTInputProvider(BTree tree, Character owner, Character enemy)
         {
             _btree = tree;
             _btree.Owner = owner;
-            _btree.Enemy = player;
+            _btree.Enemy = enemy;
         }
 
         public Input GetInputs()
