@@ -1,9 +1,7 @@
-﻿using System;
-using System.Xml;
+﻿using System.Xml;
 using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Model;
 using Glaidiator.Utils;
-using Micosmo.SensorToolkit.Example;
 using UnityEngine;
 
 namespace Glaidiator.BehaviorTree.CustomNodes.CheckNodes

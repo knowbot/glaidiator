@@ -1,5 +1,4 @@
-﻿using System;
-using System.Xml;
+﻿using System.Xml;
 using Glaidiator.BehaviorTree.Base;
 
 namespace Glaidiator.BehaviorTree.CustomNodes.CheckNodes

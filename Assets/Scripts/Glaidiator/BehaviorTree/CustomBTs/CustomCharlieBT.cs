@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Glaidiator.BehaviorTree.Base;
-using Glaidiator.BehaviorTree.LeafNodes.CheckNodes;
-using Glaidiator.BehaviorTree.LeafNodes.TaskNodes.CheckNodes;
-using Glaidiator.BehaviorTree.LeafNodes.TaskNodes.TaskNodes;
+using Glaidiator.BehaviorTree.CustomNodes;
+using Glaidiator.BehaviorTree.CustomNodes.CheckNodes;
+using Glaidiator.BehaviorTree.CustomNodes.TaskNodes;
+using Glaidiator.BehaviorTree.LeafNodes.ConditionNodes;
 
 namespace Glaidiator.BehaviorTree.CustomBTs
 {
@@ -140,7 +141,7 @@ namespace Glaidiator.BehaviorTree.CustomBTs
                     // evade sequence
                     new Sequence(new List<Node> // evade if less hp than enemy
                     {
-                        new Inverter(new CheckCompareHealth()), 
+                        new Inverter(new CheckCompareHealth(0f)), 
                         new CheckEnemyDistance(rangedDist),
                         new Sequence(new List<Node>// run away until threshold distance
                         {
@@ -190,9 +191,8 @@ namespace Glaidiator.BehaviorTree.CustomBTs
                 }),
             });
             
-            root.SetOwner(owner);
             root.SetTree(this);
-            SetData("enemy", enemy);
+            SetData("enemy", Enemy);
             return root;
         }
 

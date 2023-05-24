@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Xml;
 using Glaidiator.BehaviorTree.Base;
+using Glaidiator.BehaviorTree.CustomNodes;
 using Glaidiator.BehaviorTree.CustomNodes.CheckNodes;
 using Glaidiator.Model;
 using Glaidiator.Utils;
