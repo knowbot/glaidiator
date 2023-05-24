@@ -5,7 +5,7 @@ using Glaidiator.BehaviorTree.LeafNodes.CheckNodes;
 using Glaidiator.BehaviorTree.LeafNodes.TaskNodes.CheckNodes;
 using Glaidiator.BehaviorTree.LeafNodes.TaskNodes.TaskNodes;
 
-namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
+namespace Glaidiator.BehaviorTree.CustomBTs
 {
     public class CustomCharlieBT : BTree
     {

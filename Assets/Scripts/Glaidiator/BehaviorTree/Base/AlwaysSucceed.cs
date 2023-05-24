@@ -1,15 +1,10 @@
-using System.Collections.Generic;
-using Glaidiator.BehaviorTree.Base;
-
 namespace Glaidiator.BehaviorTree.Base
 {
 
-    public class AlwaysSucceed : Decorator
+    public class AlwaysSucceed : Decorator<Node>
     {
 
         public AlwaysSucceed() : base() { }
-        
-        public AlwaysSucceed(List<Node> children) : base(children) {}
 
         public AlwaysSucceed(Node child)
         {
@@ -54,15 +49,15 @@ namespace Glaidiator.BehaviorTree.Base
 
         public override void Mutate()
         {
-            if (Child == null)
-            {
-                Child = EvolutionManager.GetNewRandomNode().Clone();
-            }
+            Child ??= EvoManager.Instance.GetRandomNode().Randomized();
         }
 
         public override Node Randomized()
         {
-            return new AlwaysSucceed(EvolutionManager.GetNewRandomNode().Randomized());
+            if (Child == null) return new UntilFail(EvoManager.Instance.GetRandomNode().Randomized());
+            var newNode = Clone() as UntilFail;
+            newNode?.ReplaceChild(newNode.Child, newNode.Child.Randomized());
+            return newNode;
         }
     }
     

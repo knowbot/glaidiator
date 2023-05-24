@@ -1,7 +1,7 @@
 ﻿using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Model;
 
-namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
+namespace Glaidiator.BehaviorTree.CustomBTs
 {
     public class EvoBT : BTree
     {
@@ -13,13 +13,14 @@ namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
 
         protected override Node SetupTree()
         {
-            return root;
+            return Root;
         }
 
         public override BTree Clone()
         {
             BTree newTree = new EvoBT();
-            newTree.SetRoot(root.Clone());
+            newTree.Root = Root.Clone();
+            newTree.Fitness = Fitness;
             return newTree;
         }
     }

@@ -1,17 +1,18 @@
-﻿using Glaidiator.BehaviorTree.Base;
+﻿using System;
+using Glaidiator.BehaviorTree.Base;
 
-namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
+namespace Glaidiator.BehaviorTree.CustomBTs
 {
     public class CustomMaximusDecimusMeridiusBT : BTree
     {
         protected override Node SetupTree()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override BTree Clone()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }
