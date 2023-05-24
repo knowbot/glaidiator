@@ -1,16 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using Glaidiator.BehaviorTree;
 using Glaidiator.BehaviorTree.Base;
 using Glaidiator.BehaviorTree.CustomBTs;
 using Glaidiator.BehaviorTree.CustomNodes;
 using Glaidiator.BehaviorTree.CustomNodes.CheckNodes;
 using Glaidiator.BehaviorTree.CustomNodes.TaskNodes;
 using Glaidiator.BehaviorTree.LeafNodes.ConditionNodes;
-using Glaidiator.Model;
-using Glaidiator.Model.Collision;
 using Glaidiator.Utils;
+using Micosmo.SensorToolkit;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using Serializer = Glaidiator.Utils.Serializer;
@@ -44,12 +43,19 @@ namespace Glaidiator
         public List<Node> prototypes; // collection of behaviors to sample from
         private List<Composite> _roots;
         
+        private readonly string _runPrefix = Guid.NewGuid().ToString();
+        private CsvWriter _logger;
+        
         #region Singleton
         private EvoManager()
         {
             Champion = new CustomBobBT();
             CreatePrototypes();
             CreateRoots();
+            _logger = new CsvWriter($"Test/{_runPrefix}", 
+                "fitness", 
+                new []{"era","generation","avg","best","worst"},
+                ';');
         }
         
         private static readonly Lazy<EvoManager> Lazy = new(() => new EvoManager());
@@ -58,13 +64,28 @@ namespace Glaidiator
 
         public void Evaluate()
         {
-            // run sims & update
-            Debug.Log($"era{Era}, generation {Generation}: best = " + Population.Max(t => t.Fitness) + " avg = " + Population.Average(t => t.Fitness));
+            var avg = Population.Average(t => t.Fitness);
+            var best = Population.Max(t => t.Fitness);
+            var worst = Population.Min(t => t.Fitness);
+            Debug.Log($"era{Era}, generation {Generation}: avg = {avg} best = {best} worst = {worst}");
+            _logger.Write(new[]{Era, Generation, avg, best, worst}.Select(v => v.ToString()).ToArray());
             UpdateChampion();
         }
+        
+        public void UpdateChampion()
+        {
+            BTree newChamp = Population.OrderByDescending(t => t.Fitness).ToArray()[0].Clone();
+            if (newChamp.Fitness <= Champion.Fitness) return;
+            Champion = newChamp;
+            Serializer.Serialize(Champion, "new_champ_era" + Era + "_gen" + Generation, $"Test/{_runPrefix}/Champions/");
+        }
+
 
         public void Reproduce()
         {
+            BTree[] popArray = Population.OrderByDescending(t => t.Fitness).ToArray();
+            List<BTree> offspring = new List<BTree>();
+            List<BTree> pool = new List<BTree>(); // reproduction pool
             /*
                 # ELITISM
                 Take top X% of the population based on fitness
@@ -72,24 +93,22 @@ namespace Glaidiator
                 The worst 50% elites have guaranteed slot in reproduction pool
              */
             int elite = (int)(PopulationCapacity * ElitismPct / 100f); // how many elites
-            int top = (elite + 1) / 2; // index to split top/bot 50% elites
-            BTree[] popArray = Population.OrderByDescending(t => t.Fitness).ToArray();
-            // get elite population
-            BTree[] elites = popArray[..elite];
-            List<BTree> offspring = new List<BTree>();
-            offspring.AddRange(elites[..top].Select(e => e.Clone()));
-            
+            if (elite > 0)
+            {
+                int top = (elite + 1) / 2; // index to split top/bot 50% elites
+                // get elite population
+                BTree[] elites = popArray[..elite];
+                offspring.AddRange(elites[..top].Select(e => e.Clone()));
+                pool.AddRange(elites[top..].Select(e => e.Clone())); // add bot50% elites
+            }
             /*
                 # FITNESS PROPORTIONATE SELECTION
                 Stochastic selection method: the probability for selection of a tree is proportional to its fitness.
                 Selected trees are added to a pool which will produce the new generation via genetic operators.
                 With added elitism, the worst 50% elites are seeded directly into the pool.
              */
-            List<BTree> pool = new List<BTree>(); // reproduction pool
-            pool.AddRange(elites[top..].Select(e => e.Clone())); // add bot50% elites
-
             // calc normalised fitness
-            float fitSum = popArray.Sum(tree => tree.Fitness);
+            float fitSum = popArray.Sum(tree => tree.Fitness) + 0.0001f; // to avoid division by 0
             List<Candidate> candidates = popArray.Select(tree => new Candidate
                 {
                     tree = tree, 
@@ -131,15 +150,7 @@ namespace Glaidiator
             Population = offspring;
             Generation++;
         }
-
-        public void UpdateChampion()
-        {
-            BTree newChamp = Population.OrderByDescending(t => t.Fitness).ToArray()[0].Clone();
-            if (newChamp.Fitness <= Champion.Fitness) return;
-            Champion = newChamp;
-            Serializer.Serialize(Champion, "new_champ_era" + Era + "_gen" + Generation);
-        }
-
+        
         public void InitPopulation()
         {
             Population = new List<BTree> { Champion };

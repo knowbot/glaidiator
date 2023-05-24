@@ -60,7 +60,7 @@ namespace Glaidiator
 
             private bool Finished()
             {
-                return owner.IsDead && enemy.IsDead;
+                return owner.IsDead || enemy.IsDead;
             }
             public float Execute()
             {
@@ -78,9 +78,10 @@ namespace Glaidiator
                     world.Update(step);
                 }
 
-                return (enemy.IsDead ? 1 : 0) * 5000f / duration // reward wins
-                       // + owner.Health.Current // reward keeping more health (draws > losses)
-                       + enemy.DamageTaken * 2.0f; // damage dealt to enemy, avoid just running around
+                return (((enemy.IsDead && !owner.IsDead) ? 1 : 0) * 1000f // reward wins
+                       + owner.Health.Current // reward keeping health
+                       + enemy.DamageTaken * 10.0f)  // reward dealing more damage
+                       / duration;
             }
         }
 
@@ -111,8 +112,8 @@ namespace Glaidiator
                     world = world,
                     owner = o,
                     enemy = e,
-                    OInputs = new BTInputProvider((EvoManager.Instance.Population[i]).Clone(),o, e),
-                    EInputs = new BTInputProvider(new CustomBobBT(),e, o)
+                    OInputs = new BTInputProvider(EvoManager.Instance.Population[i].Clone(),o, e),
+                    EInputs = new BTInputProvider(new CustomAshleyBT(), e, o)
                 };
                 
                 GCHandle simHandle = GCHandle.Alloc(sim);

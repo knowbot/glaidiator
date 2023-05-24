@@ -104,7 +104,7 @@ namespace Glaidiator.Model
 					10f, 1.2f, 0.2f));
 		    Actions.Add("atkHeavy", 
 			    new Attack(
-				    new ActionInfo((int)ActionLookup.AttackHeavy, "atkHeavy",20f, false, false, 1.8f), 
+				    new ActionInfo((int)ActionLookup.AttackHeavy, "atkHeavy",30f, false, false, 1.8f), 
 				    new Hitbox<Attack>(
 					    new BoxCollider(Vector2.zero, new Vector2(3,3),new Vector2(0, 1.5f), true),
 					    this,

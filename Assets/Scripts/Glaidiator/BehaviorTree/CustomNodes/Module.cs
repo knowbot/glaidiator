@@ -47,7 +47,10 @@ namespace Glaidiator.BehaviorTree.CustomNodes
 
         public override void Mutate()
         {
-            Root.Mutate();
+            foreach (Node child in Root.Children)
+            {
+                child.Mutate();
+            }
         }
 
         public override Node Randomized()

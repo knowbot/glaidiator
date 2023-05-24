@@ -35,7 +35,13 @@ namespace Glaidiator
             SimManager.Instance.Complete();
             if (!SimManager.Instance.IsDone()) return;
             EvoManager.Instance.Evaluate();
+            Plot();
             EvoManager.Instance.Reproduce();
+        }
+
+        private void Plot()
+        {
+            
         }
 
         private void Update()

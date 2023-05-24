@@ -26,7 +26,7 @@ namespace Glaidiator.BehaviorTree.CustomNodes.CheckNodes
                 return state;
             }
 
-            float percentRatio = 100f * (tree.Owner.Health.Current - enemy.Health.Current) / ((tree.Owner.Health.Current + enemy.Health.Current) / 2); 
+            float percentRatio = MathStuff.GetPercentDifference(tree.Owner.Health.Current, enemy.Health.Current); 
             state = percentRatio > _ratio ? NodeState.SUCCESS : NodeState.FAILURE;
             return state;
         }
