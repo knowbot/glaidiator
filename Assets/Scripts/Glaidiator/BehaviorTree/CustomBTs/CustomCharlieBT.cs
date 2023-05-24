@@ -1,7 +1,7 @@
 ﻿using System;
 using Glaidiator.BehaviorTree.Base;
 
-namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
+namespace Glaidiator.BehaviorTree.CustomBTs
 {
     public class CustomCharlieBT : BTree
     {

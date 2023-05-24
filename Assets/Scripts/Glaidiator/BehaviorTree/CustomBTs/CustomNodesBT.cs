@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using Glaidiator.BehaviorTree.Base;
+using Glaidiator.BehaviorTree.CustomNodes.CheckNodes;
+using Glaidiator.BehaviorTree.CustomNodes.TaskNodes;
+using Glaidiator.BehaviorTree.LeafNodes.ConditionNodes;
 
-namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
+namespace Glaidiator.BehaviorTree.CustomBTs
 {
     public class CustomNodesBT : BTree
     {
@@ -39,13 +42,13 @@ namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
                 new Selector(new List<Node>
                 {
                     new Sequence(new List<Node> {
-                        new Inverter(new CheckHasWP()),
+                        new Inverter(new CheckHasTarget("wp")),
                         new TaskSetWP(4f)
                     }),
                     new Sequence(new List<Node>
                     {
-                        new CheckHasWP(),
-                        new CheckWPDistance(0.01f),
+                        new CheckHasTarget("wp"),
+                        new CheckTargetDistance("wp", 0.01f),
                         new TaskClearWP(),
                         new TaskTurnRight(),
                         new TaskSetWP(4f)
@@ -58,10 +61,8 @@ namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
                 
                 
             });
-            
-            root.SetOwner(owner);
             root.SetTree(this);
-            SetData("enemy", enemy);
+            SetData("enemy", Enemy);
             return root;
         }
 

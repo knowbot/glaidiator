@@ -1,13 +1,9 @@
-using System.Collections.Generic;
-using Glaidiator.BehaviorTree.Base;
-
 namespace Glaidiator.BehaviorTree.Base
 {
-    public class UntilFail : Decorator
+    public class UntilFail : Decorator<Node>
     {
 
         public UntilFail() : base() { }
-        public UntilFail(List<Node> children) : base(children) {}
         public UntilFail(Node child) : base(child)
         {
             Child = child;
@@ -57,13 +53,16 @@ namespace Glaidiator.BehaviorTree.Base
         {
             if (Child == null)
             {
-                Child = EvolutionManager.GetNewRandomNode().Clone();
+                Child = EvoManager.Instance.GetRandomNode().Clone();
             }
         }
 
         public override Node Randomized()
         {
-            return new UntilFail(EvolutionManager.GetNewRandomNode().Randomized());
+            if (Child == null) return new UntilFail(EvoManager.Instance.GetRandomNode().Randomized());
+            var newNode = Clone() as AlwaysSucceed;
+            newNode?.ReplaceChild(newNode.Child, newNode.Child.Randomized());
+            return newNode;
         }
     }
 }

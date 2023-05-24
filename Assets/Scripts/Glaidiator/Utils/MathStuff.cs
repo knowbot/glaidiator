@@ -80,5 +80,10 @@ namespace Glaidiator.Utils
             
             return dist;
         }
+
+        public static float GetPercentDifference(float a, float b)
+        {
+            return 100f * (a - b) / ((a + b) / 2);
+        }
     }
 }

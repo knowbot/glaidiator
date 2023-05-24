@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Glaidiator.BehaviorTree.Base;
-using Glaidiator.BehaviorTree.LeafNodes.CheckNodes;
-using Glaidiator.BehaviorTree.LeafNodes.TaskNodes.CheckNodes;
-using Glaidiator.BehaviorTree.LeafNodes.TaskNodes.TaskNodes;
+using Glaidiator.BehaviorTree.CustomNodes.CheckNodes;
+using Glaidiator.BehaviorTree.CustomNodes.TaskNodes;
+using Glaidiator.BehaviorTree.LeafNodes.ConditionNodes;
 
-namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
+namespace Glaidiator.BehaviorTree.CustomBTs
 {
     public class CustomBobBT : BTree
     {
@@ -27,8 +28,8 @@ namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
                         new CheckEnemyDistance(meleeDist),
                         new Selector(new List<Node> // if enemy melee
                         {
-                            new CheckEnemyAction("Light Attack"),
-                            new CheckEnemyAction("Heavy Attack"),
+                            new CheckEnemyAction("atkLight"),
+                            new CheckEnemyAction("atkHeavy"),
                         }),
                         
                         new Selector(new List<Node>
@@ -52,7 +53,7 @@ namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
                     // defend ranged sequence
                     new Sequence(new List<Node>
                     {
-                        new CheckEnemyAction("Ranged Attack"), // if enemy ranged
+                        new CheckEnemyAction("atkRanged"), // if enemy ranged
                         new Selector(new List<Node>
                         {
                             new Sequence(new List<Node> // try block or
@@ -104,7 +105,7 @@ namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
                     // evade sequence
                     new Sequence(new List<Node> // evade if less hp than enemy
                     {
-                        new Inverter(new CheckCompareHealth()), 
+                        new Inverter(new CheckCompareHealth(0f)), 
                         new CheckEnemyDistance(rangedDist),
                         new Sequence(new List<Node>// run away until threshold distance
                         {
@@ -154,16 +155,16 @@ namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
                 }),
             });
             
-            
-            root.SetOwner(owner);
             root.SetTree(this);
-            SetData("enemy", enemy);
+            SetData("enemy", Enemy);
             return root;
         }
 
         public override BTree Clone()
         {
-            throw new System.NotImplementedException();
+            BTree newTree = new CustomBobBT();
+            newTree.Root = Root.Clone();
+            return newTree;
         }
     }
 }

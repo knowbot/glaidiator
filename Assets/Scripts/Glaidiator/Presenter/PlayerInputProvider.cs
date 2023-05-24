@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
+using Input = Glaidiator.Model.Input;
 
-namespace Glaidiator
+namespace Glaidiator.Presenter
 {
     public class PlayerInputProvider : MonoBehaviour, IInputProvider
     {

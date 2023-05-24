@@ -1,11 +1,10 @@
 using System;
-using System.ComponentModel;
-using Glaidiator.BehaviorTree.LeafNodes.TaskNodes;
 using Glaidiator.BehaviorTree.Base;
+using Glaidiator.BehaviorTree.CustomBTs;
 using Glaidiator.Presenter;
 using Glaidiator.Utils;
-using Unity.VisualScripting;
 using UnityEngine;
+using Input = Glaidiator.Model.Input;
 
 namespace Glaidiator.BehaviorTree
 {
@@ -47,10 +46,8 @@ namespace Glaidiator.BehaviorTree
                     break;
             }
             
-            btree.SetOwnerChar(GetComponent<CharacterPresenter>().GetCharacter());
-            btree.SetEnemyChar(PlayerObject.GetComponent<CharacterPresenter>().GetCharacter());
-            btree.Init();
-            TreeSerializer.Serialize(btree);
+            btree.Owner = GetComponent<CharacterPresenter>().GetCharacter();
+            btree.Enemy = PlayerObject.GetComponent<CharacterPresenter>().GetCharacter();
         }
 
         private void Update()
@@ -83,9 +80,8 @@ namespace Glaidiator.BehaviorTree
         public void SetCurrentBTree(BTree tree)
         {
             btree = tree;
-            btree.SetOwnerChar(GetComponent<CharacterPresenter>().GetCharacter());
-            btree.SetEnemyChar(PlayerObject.GetComponent<PlayerCharacterPresenter>().GetCharacter());
-            btree.Init();
+            btree.Owner = GetComponent<CharacterPresenter>().GetCharacter();
+            btree.Enemy = PlayerObject.GetComponent<PlayerCharacterPresenter>().GetCharacter();
         }
     }
     

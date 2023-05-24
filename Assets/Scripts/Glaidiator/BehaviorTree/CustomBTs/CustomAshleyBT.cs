@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Xml;
 using Glaidiator.BehaviorTree.Base;
-using Glaidiator.BehaviorTree.LeafNodes.TaskNodes.CheckNodes;
-using Glaidiator.BehaviorTree.LeafNodes.TaskNodes.TaskNodes;
+using Glaidiator.BehaviorTree.CustomNodes.CheckNodes;
+using Glaidiator.BehaviorTree.CustomNodes.TaskNodes;
+using Glaidiator.BehaviorTree.LeafNodes.ConditionNodes;
 
-namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
+namespace Glaidiator.BehaviorTree.CustomBTs
 {
     public class CustomAshleyBT : BTree
     {
@@ -40,33 +39,30 @@ namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
                             new CheckRangedDirection(30f), // aim good?
                             new TaskRangedAtk(),
                         }),
-                        
-                        new Randomizer(
-                            new Selector(new List<Node>
+                        new Selector(new List<Node>
+                        {
+                            new Sequence(new List<Node>
                             {
-                                new Sequence(new List<Node>
-                                {
-                                    new CheckCanDoAction("atkHeavy"),
-                                    new CheckEnemyDistance(meleeDist),
-                                    new TaskFaceEnemy(),
-                                    new TaskHeavyAtk(),
-                                }),
-                                new Sequence(new List<Node>
-                                {
-                                    new CheckCanDoAction("atkLight"),
-                                    new CheckEnemyDistance(meleeDist),
-                                    new TaskFaceEnemy(),
-                                    new TaskLightAtk(),
-                                }),
-                                new Sequence(new List<Node>
-                                {
-                                    new CheckEnemyDistance(aggroDist),
-                                    new Inverter(new CheckEnemyDistance(0.5f)),
-                                    new TaskFaceEnemy(),
-                                    new TaskMoveForward(),
-                                })
+                                new CheckCanDoAction("atkHeavy"),
+                                new CheckEnemyDistance(meleeDist),
+                                new TaskFaceEnemy(),
+                                new TaskHeavyAtk(),
+                            }),
+                            new Sequence(new List<Node>
+                            {
+                                new CheckCanDoAction("atkLight"),
+                                new CheckEnemyDistance(meleeDist),
+                                new TaskFaceEnemy(),
+                                new TaskLightAtk(),
+                            }),
+                            new Sequence(new List<Node>
+                            {
+                                new CheckEnemyDistance(aggroDist),
+                                new Inverter(new CheckEnemyDistance(0.5f)),
+                                new TaskFaceEnemy(),
+                                new TaskMoveForward(),
                             })
-                        ),
+                        }),
                         new Sequence(new List<Node>
                         {
                             new TaskFaceEnemy(),
@@ -143,10 +139,8 @@ namespace Glaidiator.BehaviorTree.LeafNodes.TaskNodes
                 
                 //new Sequence(),
             });
-            
-            newRoot.SetOwner(owner);
             newRoot.SetTree(this);
-            SetData("enemy", enemy);
+            SetData("enemy", Enemy);
             return newRoot;
         }
 

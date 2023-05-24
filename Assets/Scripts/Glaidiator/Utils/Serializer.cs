@@ -1,29 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
+using System.IO;
+using System.Linq;
 using System.Text;
+using System.Xml;
+using System.Xml.Serialization;
+using UnityEngine;
 
 namespace Glaidiator.Utils
 {
-    public class Serializer
+    public static class Serializer
     {
-        public static string Serialize(object obj)
+        public static void Serialize(IXmlSerializable obj, string prefix = "", string path = "Test/")
         {
-            var sb = new StringBuilder();
-            sb.AppendLine();
-            sb.Append("<?");
-            Type myType = obj.GetType();
-            sb.Append(myType);
-            IList<PropertyInfo> props = new List<PropertyInfo>(myType.GetProperties());
-            foreach (PropertyInfo prop in props)
+            var doc = new XmlDocument();
+            string dir = Path.Join(Application.dataPath, path);
+            if (!dir.EndsWith('/')) dir += '/';
+            if (!Directory.Exists(dir))
             {
-                object propValue = prop.GetValue(obj, null);
-                sb.AppendLine();
-                sb.Append(@"    [" + prop.Name + "=" + propValue + "]");
+                Directory.CreateDirectory(dir);
             }
-            sb.AppendLine();
-            sb.Append("?>");
-            return sb.ToString();
+            string[] fnParts = {prefix, obj.GetType().Name};
+            string filename = string.Join("_", fnParts.Where(s => !string.IsNullOrEmpty(s)));
+            var w = new XmlTextWriter($@"{dir}{filename}.xml", Encoding.UTF8);
+            w.Formatting = Formatting.Indented;
+            obj.WriteXml(w);
+            w.Close();
+            doc.Save(w);
         }
     }
 }

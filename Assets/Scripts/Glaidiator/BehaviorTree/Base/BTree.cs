@@ -1,19 +1,43 @@
 using System;
 using System.Collections.Generic;
-using Glaidiator.BehaviorTree.Base;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
 using Glaidiator.Model;
+using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Glaidiator.BehaviorTree.Base
 {
-    public abstract class BTree
+    public abstract class BTree : IXmlSerializable
     {
-        protected Transform transform;
-        protected Node root = null;
-        protected Character enemy;
-        protected Character owner;
-        protected float fitness = 0; // remove in favor of evo manager candidate class?
+        private Node _root = null;
+        private Transform _transform;
+
+        public Node Root
+        {
+            get => _root;
+            internal set
+            {
+                _root = value;
+                _root?.SetTree(this);
+            } 
+        }
+
+        public Character Owner { get; internal set; }
+
+        public Character Enemy
+        {
+            get => _enemy;
+            internal set
+            {
+                _enemy = value;
+                SetData("enemy", _enemy);
+            }
+        }
+
+        public float Fitness = 0; // remove in favor of evo manager candidate class?
         
         private readonly Dictionary<string, object> _dataContext = new Dictionary<string, object>();
 
@@ -29,22 +53,26 @@ namespace Glaidiator.BehaviorTree.Base
         // for editor debugging info
         public Node currentNode;
         public float enemyDistance;
-        
+        private Character _enemy;
 
-        public BTree(Character owner)
+        protected BTree(Character owner)
         {
-            this.owner = owner ?? throw new NullReferenceException("BTree init with null owner");
+            Owner = owner ?? throw new NullReferenceException("BTree init with null owner");
+            Init();
         }
 
-        public BTree(Node root)
+        protected BTree(Node root)
         {
-            SetRoot(root);
+            Root = root;
+            Init();
         }
 
-        public BTree()
-        { }
+        protected BTree()
+        {
+            Init();
+        }
 
-        public void Init()
+        private void Init()
         {
             Direction = Vector3.forward;
             Move = false;
@@ -53,7 +81,7 @@ namespace Glaidiator.BehaviorTree.Base
             AttackRanged = false; 
             Block = false;
             Dodge = false;
-            root = SetupTree();
+            Root = SetupTree();
             //Debug.Log(this.GetType() + " init");
         }
 
@@ -65,60 +93,57 @@ namespace Glaidiator.BehaviorTree.Base
             AttackRanged = false; 
             Block = false;
             Dodge = false;
-            if (root != null) root.Evaluate();
+            Root?.Evaluate();
         }
 
         protected abstract Node SetupTree();
 
         public abstract BTree Clone();
 
-        public void Crossover(BTree mate, float chance)
+        public static BTree[] Crossover(BTree parent1, BTree parent2)
         {
-            if (chance < Random.Range(0f, 1f)) return;
-
+            BTree c1 = parent1.Clone();
+            BTree c2 = parent2.Clone();
             List<Node> nodes1 = new List<Node>();
-            root.Flatten(nodes1);
+            c1.Root.Flatten(nodes1);
             Node swapNode1 = nodes1[Random.Range(0, nodes1.Count)];
 
             List<Node> nodes2 = new List<Node>();
-            mate.root.Flatten(nodes2);
+            c2.Root.Flatten(nodes2);
             Node swapNode2 = nodes2[Random.Range(0, nodes2.Count)];
 
-            Node parent1 = swapNode1.GetParent();
-            Node parent2 = swapNode2.GetParent();
+            Node nodeP1 = swapNode1.GetParent();
+            Node nodeP2 = swapNode2.GetParent();
             
-            if (parent1 != null) // check if not root
+            if (nodeP1 != null) // check if not root
             {
-                parent1.ReplaceChild(swapNode1, swapNode2);
+                nodeP1.ReplaceChild(swapNode1, swapNode2);
             }
             else
             {
-                root = parent2;
-                root.SetOwner(swapNode1.GetOwner());
-                root.SetParent(null); // a root node has no parent
+                c1.Root = swapNode2;
+                c1.Root.SetParent(null); // a root node has no parent
             }
 
-            if (parent2 != null) 
+            if (nodeP2 != null) 
             {
-                parent2.ReplaceChild(swapNode2, swapNode1);
+                nodeP2.ReplaceChild(swapNode2, swapNode1);
             }
             else
             {
-                mate.root = swapNode1;
-                mate.root.SetOwner(swapNode2.GetOwner());
-                mate.root.SetParent(null); 
+                c2.Root = swapNode1;
+                c2.Root.SetParent(null); 
             }
-            
-            // dirty flag?
+            c1.Fitness = 0;
+            c2.Fitness = 0;
+            return new[] {c1, c2};
         }
 
         
-        public void Mutate(float chance)
+        public void Mutate()
         {
-            if (chance < Random.Range(0f, 1f)) return;
-
-            List<Node> nodes = new List<Node>();
-            root.Flatten(nodes);
+            List<Node> nodes = new();
+            Root.Flatten(nodes);
 
             if (0.8f < Random.Range(0f, 1f)) // 80% chance of mutating a random child
             {
@@ -127,65 +152,15 @@ namespace Glaidiator.BehaviorTree.Base
             }
             else
             {
-                // sample node from EvolutionManager
-                // replace random existing node with the sample
-                int pSize = EvolutionManager.prototypes.Count;
-                Node newNode = EvolutionManager.prototypes[Random.Range(0, pSize)].Randomized();
+                // replace random node with sample prototype
+                int pSize = EvoManager.Instance.prototypes.Count;
+                Node newNode = EvoManager.Instance.prototypes[Random.Range(0, pSize)].Randomized();
                 Node oldNode = nodes[Random.Range(0, nodes.Count)];
                 Node parent = oldNode.GetParent();
-                if (parent != null) parent.ReplaceChild(oldNode, newNode);
+                parent?.ReplaceChild(oldNode, newNode);
             }
-            
-            // add dirty flag?
         }
 
-        public void SetEnemyChar(Character enemy)
-        {
-            this.enemy = enemy;
-        }
-
-        public Character GetEnemyChar()
-        {
-            return enemy;
-        }
-
-        public void SetOwnerChar(Character owner)
-        {
-            this.owner = owner;
-        }
-        
-        public Character GetOwnerChar()
-        {
-            if (owner == null) throw new NullReferenceException("tree has no owner character");
-            return owner;
-        }
-        
-        public Node GetRoot()
-        {
-            return root;
-        }
-
-        public void SetRoot(Node newRoot)
-        {
-            root = newRoot;
-        }
-
-        public float GetFitness()
-        {
-            // TODO: Implement fitness calculation
-            return fitness;
-        }
-
-        public void SetTransform(Transform newTransform)
-        {
-            transform = newTransform;
-        }
-
-        public Transform GetTransform()
-        {
-            return transform;
-        }
-        
         public void SetData(string key, object value)
         {
             _dataContext[key] = value;
@@ -194,23 +169,34 @@ namespace Glaidiator.BehaviorTree.Base
         
         public object GetData(string key)
         {
-            object value = null;
-            if (_dataContext.TryGetValue(key, out value)) 
-                return value;
-            
-            return null;
+            return _dataContext.TryGetValue(key, out object value) ? value : null;
         }
 
 
         public bool ClearData(string key)
         {
-            if (_dataContext.ContainsKey(key))
-            {
-                _dataContext.Remove(key);
-                return true;
-            }
-            
-            return false;
+            if (!_dataContext.ContainsKey(key)) return false;
+            _dataContext.Remove(key);
+            return true;
+
+        }
+
+        public XmlSchema GetSchema()
+        {
+            return null;
+        }
+
+        public void ReadXml(XmlReader reader)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteXml(XmlWriter w)
+        {
+            w.WriteStartElement(GetType().Name);
+            w.WriteAttributeString("fitness", Fitness.ToString());
+            Root.WriteXml(w);
+            w.WriteEndElement();
         }
     }
     

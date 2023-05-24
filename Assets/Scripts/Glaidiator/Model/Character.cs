@@ -96,7 +96,7 @@ namespace Glaidiator.Model
 		    // init actions
 		    Actions.Add("atkLight", 
 			    new Attack(
-					new ActionInfo((int)ActionLookup.AttackLight, "Light Attack", 10f, false, false, 0.9f), 
+					new ActionInfo((int)ActionLookup.AttackLight, "atkLight", 10f, false, false, 0.9f), 
 					new Hitbox<Attack>(
 						new BoxCollider(Vector2.zero, new Vector2(2, 2), new Vector2(0, 1), true), 
 						this,
@@ -104,7 +104,7 @@ namespace Glaidiator.Model
 					10f, 1.2f, 0.2f));
 		    Actions.Add("atkHeavy", 
 			    new Attack(
-				    new ActionInfo((int)ActionLookup.AttackHeavy, "Heavy Attack",20f, false, false, 1.8f), 
+				    new ActionInfo((int)ActionLookup.AttackHeavy, "atkHeavy",30f, false, false, 1.8f), 
 				    new Hitbox<Attack>(
 					    new BoxCollider(Vector2.zero, new Vector2(3,3),new Vector2(0, 1.5f), true),
 					    this,
@@ -112,7 +112,7 @@ namespace Glaidiator.Model
 				    25f, 3.3f, 0.4f));
 		    Actions.Add("atkRanged",
 			    new AttackRanged(
-				    new ActionInfo((int)ActionLookup.AttackRanged, "Ranged Attack",15f, false, false, 1.5f), 
+				    new ActionInfo((int)ActionLookup.AttackRanged, "atkRanged",15f, false, false, 1.5f), 
 				    new ProjectileHitbox(
 					    new CircleCollider(Vector2.zero, 1.0f,Vector2.zero, true),
 					    this,
@@ -120,8 +120,8 @@ namespace Glaidiator.Model
 					    20f
 				    ), 
 				    10f, 5.5f));
-		    Actions.Add("block", new Block(new ActionInfo((int)ActionLookup.Block, "Block",10f, false, false,1.0f), 3.0f));
-		    Actions.Add("dodge", new Dodge(new ActionInfo((int)ActionLookup.Dodge, "Dodge",25f,false, false,0.5f), 0.8f));
+		    Actions.Add("block", new Block(new ActionInfo((int)ActionLookup.Block, "block",10f, false, false,1.0f), 3.0f));
+		    Actions.Add("dodge", new Dodge(new ActionInfo((int)ActionLookup.Dodge, "dodge",25f,false, false,0.5f), 0.8f));
 	    }
 	    
 	    #endregion
