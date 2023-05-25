@@ -37,24 +37,12 @@ namespace Glaidiator.BehaviorTree.Base
 
         public override Node Clone()
         {
-            Node clone;
-            if (Child != null)
-            {
-                clone = new UntilFail(Child.Clone());
-            }
-            else
-            {
-                clone = new UntilFail();
-            }
-            return clone;
+            return Child != null ? new UntilFail(Child.Clone()) : new UntilFail();
         }
 
         public override void Mutate()
         {
-            if (Child == null)
-            {
-                Child = BTreeFactory.GetRandomNode().Clone();
-            }
+            Child?.Mutate();
         }
 
         public override Node Randomized()

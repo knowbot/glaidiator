@@ -107,7 +107,7 @@ namespace Glaidiator
                     world = world,
                     owner = o,
                     enemy = e,
-                    // OInputs = new BTInputProvider(new CustomBobBT(),o, e),
+                    //OInputs = new BTInputProvider(BTreeFactory.CreateLovecraft(),o, e),
                     OInputs = new BTInputProvider(EvoManager.Instance.Population[i].Clone(),o, e),
                     EInputs = new BTInputProvider(BTreeFactory.CreateBob(), e, o)
                 };

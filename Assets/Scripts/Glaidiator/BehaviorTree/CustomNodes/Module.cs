@@ -9,19 +9,19 @@ namespace Glaidiator.BehaviorTree.CustomNodes
 {
     public class Module : Node
     {
-        public readonly string Name;
-        public readonly Composite Root;
+        private readonly string _name;
+        private readonly Composite _root;
 
         public Module(string name, Composite composite) : base()
         {
-            Name = name;
-            Root = composite;
-            Root.SetTree(tree);
+            _name = name;
+            _root = composite;
+            _root.SetTree(tree);
         }
 
         public override NodeState Evaluate()
         {
-            return Root.Evaluate();
+            return _root.Evaluate();
         }
 
         public override void Flatten(List<Node> nodes)
@@ -37,17 +37,17 @@ namespace Glaidiator.BehaviorTree.CustomNodes
         public override void SetTree(BTree newTree)
         {
             base.SetTree(newTree);
-            Root.SetTree(tree);
+            _root.SetTree(tree);
         }
 
         public override Node Clone()
         {
-            return new Module(Name, Root.Clone() as Composite);
+            return new Module(_name, _root.Clone() as Composite);
         }
 
         public override void Mutate()
         {
-            foreach (Node child in Root.Children)
+            foreach (Node child in _root.Children)
             {
                 child.Mutate();
             }
@@ -55,14 +55,9 @@ namespace Glaidiator.BehaviorTree.CustomNodes
 
         public override Node Randomized()
         {
-            var newModule = Clone() as Module;
-            var newChildren = Root.Children.Select(c => c.Randomized());
-            for (int i = 0; i < newModule.Root.Children.Count; i++)
-            {
-                var c = newModule.Root.Children[i];
-                newModule.Root.ReplaceChild(c, c.Randomized());
-            }
-            return newModule;
+            Node clone = Clone();
+            clone.Mutate();
+            return clone;
         }
 
         public override void ReadXml(XmlReader reader)
@@ -72,9 +67,9 @@ namespace Glaidiator.BehaviorTree.CustomNodes
 
         public override void WriteXml(XmlWriter w)
         {
-            w.WriteStartElement(Name);
-            w.WriteAttributeString("root", Root.GetType().Name);
-            foreach (Node child in Root.Children)
+            w.WriteStartElement(_name);
+            w.WriteAttributeString("root", _root.GetType().Name);
+            foreach (Node child in _root.Children)
             {
                 child.WriteXml(w);
             }

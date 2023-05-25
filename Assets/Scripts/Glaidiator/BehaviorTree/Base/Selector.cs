@@ -50,29 +50,7 @@ namespace Glaidiator.BehaviorTree.Base
             return clone;
         }
 
-        
-        public override void Mutate()
-        {
-            int choice = Random.Range(0, 3);
-            switch (choice)
-            {
-                // remove random child
-                case 0:
-                    Children.RemoveAt(Random.Range(0, Children.Count)); // use detach?
-                    //Detach(children[Random.Range(0, children.Count)]);
-                    break;
-                // add new random child
-                case 1:
-                    Attach(BTreeFactory.GetRandomNode().Clone());
-                    break;
-                // shuffle order of children
-                case 2:
-                    Children.Shuffle();
-                    break;
-            }
-        }
-
-        // returns a new selector-node with 1-5 new random children
+        // returns a new selector-node with new random children
         public override Node Randomized()
         {
             int newCount = Random.Range(2, EvoManager.MaxChildren);

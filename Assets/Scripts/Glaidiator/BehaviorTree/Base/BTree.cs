@@ -134,20 +134,8 @@ namespace Glaidiator.BehaviorTree.Base
         {
             List<Node> nodes = new();
             Root.Flatten(nodes);
-
-            if (0.8f < Random.Range(0f, 1f)) // 80% chance of mutating a random child
-            {
-                // select random element in nodes and invoke mutate on it
-                nodes[Random.Range(0, nodes.Count)].Mutate();
-            }
-            else
-            {
-                // replace random node with sample prototype
-                Node newNode = BTreeFactory.GetRandomNode();
-                Node oldNode = nodes[Random.Range(0, nodes.Count)];
-                Node parent = oldNode.GetParent();
-                parent?.ReplaceChild(oldNode, newNode);
-            }
+            // select random element in nodes and invoke mutate on it
+            nodes[Random.Range(0, nodes.Count)].Mutate();
         }
         
         public void SetData(string key, object value)

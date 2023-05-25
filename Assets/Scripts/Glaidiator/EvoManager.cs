@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Glaidiator.BehaviorTree;
 using Glaidiator.BehaviorTree.Base;
@@ -24,6 +25,8 @@ namespace Glaidiator
         public int Generation = 0; // # of curr generation
         public const int MaxGenerations = 1000; // # of generations before a reset
         // ? Default values, can be changed in Matrix script
+        public static float VariantRatio = 0.5f;
+        public static float VariantChance = 0.5f;
         public static int PopulationCapacity = 50;
         public static int ElitismPct = 10;
         public static float CrossoverFactor = 0.85f;
@@ -34,13 +37,13 @@ namespace Glaidiator
         public List<BTree> Population;
         
         private readonly string _runPrefix = Guid.NewGuid().ToString();
-        private CsvWriter _logger;
+        private readonly CsvWriter _logger;
         
         #region Singleton
         private EvoManager()
         {
             Champion = BTreeFactory.CreateBob();
-            _logger = new CsvWriter($"Test/{_runPrefix}", 
+            _logger = new CsvWriter($"Test~/{_runPrefix}", 
                 "fitness", 
                 new []{"era","generation","avg","best","worst"},
                 ';');
@@ -56,31 +59,23 @@ namespace Glaidiator
             var best = Population.Max(t => t.Fitness);
             var worst = Population.Min(t => t.Fitness);
             Debug.Log($"era{Era}, generation {Generation}: avg = {avg} best = {best} worst = {worst}");
-            _logger.Write(new[]{Era, Generation, avg, best, worst}.Select(v => v.ToString()).ToArray());
+            Debug.Log("zeroIndex " + Population.FindIndex(t=> t.Fitness == 0));
+            _logger.Write(new[]{Era, Generation, avg, best, worst}.Select(v => v.ToString(CultureInfo.InvariantCulture)).ToArray());
             UpdateChampion();
         }
 
-        public void CrossoverTest()
-        {
-            var p1 = BTreeFactory.CreateRandom();
-            var p2 = BTreeFactory.CreateRandom();
-            var c = BTree.Crossover(p1, p2);
-            Serializer.Serialize(p1, "parent1");
-            Serializer.Serialize(p2, "parent2");
-            Serializer.Serialize(c,"child");
-        }
-        
         public void UpdateChampion()
         {
-            BTree newChamp = Population.OrderByDescending(t => t.Fitness).ToArray()[0].Clone();
+            BTree newChamp = Population.OrderByDescending(t => t.Fitness).ToArray()[0];
             if (newChamp.Fitness <= Champion.Fitness) return;
-            Champion = newChamp;
-            Serializer.Serialize(Champion, "new_champ_era" + Era + "_gen" + Generation, $"Test/{_runPrefix}/Champions/");
+            Champion = newChamp.Clone();
+            Serializer.Serialize(Champion, $"era{Era}_gen{Generation}_tree_{Population.IndexOf(newChamp)}", $"Test~/{_runPrefix}/Champions/");
         }
 
 
         public void Reproduce()
         {
+            if(Generation == 0) SaveGeneration();
             BTree[] popArray = Population.OrderByDescending(t => t.Fitness).ToArray();
             List<BTree> offspring = new List<BTree>();
             List<BTree> pool = new List<BTree>(); // reproduction pool
@@ -146,17 +141,19 @@ namespace Glaidiator
             Population = offspring;
             Generation++;
         }
-        
-        public void InitPopulation()
+
+        // Mixed r
+        public void GenPopulation()
         {
             Population = new List<BTree> { Champion };
             int i = 0;
             while (Population.Count < PopulationCapacity)
             {
                 i++;
-                var tree = BTreeFactory.CreateRandom();
+                BTree tree = (float)i / PopulationCapacity < VariantRatio 
+                    ? BTreeFactory.CreateVariant(Champion, VariantChance) 
+                    : BTreeFactory.CreateRandom();
                 Population.Add(tree);
-                Serializer.Serialize(tree, $"tree_{i}", "Test/Population");
             }
         }
 
@@ -165,7 +162,13 @@ namespace Glaidiator
             Era++;
             Generation = 0;
             Population.Clear();
-            InitPopulation();
+            GenPopulation();
+        }
+
+        private void SaveGeneration()
+        {
+            for (int i = 0; i < PopulationCapacity; i++)
+                Serializer.Serialize(Population[i], $"tree_{i}", $"Test~/{_runPrefix}/Generation{Generation}");
         }
     }
 }

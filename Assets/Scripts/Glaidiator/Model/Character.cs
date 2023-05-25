@@ -89,24 +89,24 @@ namespace Glaidiator.Model
 		    Movement = new Movement(position, rotation);
 		    Hitbox = new CharacterHitbox(new CircleCollider(Movement.Position.xz(), 0.75f,Vector2.zero,  false), this);
 		    Health = new Health(100.0f, 0.01f);
-		    Stamina = new Stamina(100.0f, 0.05f);
+		    Stamina = new Stamina(100.0f, 0.075f);
 		    CurrentState = CharacterState.Idling;
 		    IsDead = false; 
 
 		    // init actions
 		    Actions.Add("atkLight", 
 			    new Attack(
-					new ActionInfo((int)ActionLookup.AttackLight, "atkLight", 10f, false, false, 0.9f), 
+					new ActionInfo((int)ActionLookup.AttackLight, "atkLight", 15f, false, false, 0.9f), 
 					new Hitbox<Attack>(
 						new BoxCollider(Vector2.zero, new Vector2(2, 2), new Vector2(0, 1), true), 
 						this,
 						0.6f),
-					10f, 1.2f, 0.2f));
+					12.5f, 1.2f, 0.2f));
 		    Actions.Add("atkHeavy", 
 			    new Attack(
-				    new ActionInfo((int)ActionLookup.AttackHeavy, "atkHeavy",30f, false, false, 1.8f), 
+				    new ActionInfo((int)ActionLookup.AttackHeavy, "atkHeavy",35f, false, false, 1.8f), 
 				    new Hitbox<Attack>(
-					    new BoxCollider(Vector2.zero, new Vector2(3,3),new Vector2(0, 1.5f), true),
+					    new BoxCollider(Vector2.zero, new Vector2(3.5f,3.5f),new Vector2(0, 1.5f), true),
 					    this,
 					    1.2f),
 				    25f, 3.3f, 0.4f));
@@ -426,7 +426,7 @@ namespace Glaidiator.Model
 	        switch ((CharacterState)CurrentState)
 	        {
 		        case CharacterState.Blocking:
-			        Health.Add(10f);
+			        Health.Add(attack.Damage/2f);
 			        return;
 		        case CharacterState.Dodging:
 			        return;

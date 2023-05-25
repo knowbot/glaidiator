@@ -6,9 +6,8 @@ namespace Glaidiator.BehaviorTree.CustomNodes.TaskNodes
 {
     public class TaskMoveForward : Task
     {
-        private float _distance;
-        private bool _hasDistance;
-        private bool _moving = false;
+        private readonly float _distance;
+        private readonly bool _hasDistance;
         private Vector3 _origin;
         
         public TaskMoveForward()

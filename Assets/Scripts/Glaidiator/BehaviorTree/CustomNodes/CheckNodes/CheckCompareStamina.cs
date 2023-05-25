@@ -38,7 +38,7 @@ namespace Glaidiator.BehaviorTree.CustomNodes.CheckNodes
         public override void Mutate()
         {
             _ratio += MathStuff.Rand.NextFloat(10f) - 5f;
-            _ratio = Mathf.Clamp(_ratio, 0f, Arena.Diagonal);
+            _ratio = Mathf.Clamp(_ratio, -200f, 200f);
         }
 
         public override Node Randomized()

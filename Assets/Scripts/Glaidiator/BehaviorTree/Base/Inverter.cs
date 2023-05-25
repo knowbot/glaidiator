@@ -28,7 +28,7 @@ namespace Glaidiator.BehaviorTree.Base
 
         public override void Mutate()
         {
-            Child ??= BTreeFactory.GetRandomNode().Clone();
+            Child?.Mutate();
         }
 
         public override Node Randomized()

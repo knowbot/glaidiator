@@ -24,16 +24,27 @@ namespace Glaidiator.BehaviorTree
 
         #region Tree Creation
 
-         public static BTree CreateRandom()
+        public static BTree CreateRandom()
         {
             return new BTree(GetRandomRoot().Randomized());
         }
+        
+        public static BTree CreateVariant(BTree tree, float variantChance)
+        {
+            BTree variant = tree.Clone();
+                variant.Mutate();
+                List<Node> nodes = new();
+                variant.Root.Flatten(nodes);
+                foreach (Node node in nodes.Where(node => MathStuff.Rand.NextFloat() < variantChance)) node.Mutate();
+                return variant;
+        }
+        
         public static BTree CreateAshley()
         {
             const float aggroDist = 45f;
             const float rangedDist = 6f;
             const float meleeDist = 2f;
-            Node root = new Selector(new List<Node>
+            return new BTree(new Selector(new List<Node>
             {
                 // attack sequence
                 new Sequence(new List<Node>{ 
@@ -147,8 +158,7 @@ namespace Glaidiator.BehaviorTree
                         })
                     })
                 }),
-            });
-            return new BTree(root);
+            }));
         }
         public static BTree CreateBob()
         {
@@ -156,7 +166,7 @@ namespace Glaidiator.BehaviorTree
             const float meleeDist = 2f;
             const float evadeThresholdHealth = 30f;
             const float evadeThresholdStamina = 20f;
-            Node root = new Selector(new List<Node>
+            return new BTree(new Selector(new List<Node>
             {
                 // select defense branch
                 new Selector(new List<Node>
@@ -292,18 +302,16 @@ namespace Glaidiator.BehaviorTree
                         new TaskMoveForward(),
                     }),
                 }),
-            });
-            return new BTree(root);
+            }));
         }
         public static BTree CreateCharlie()
         {
-            const float aggroDist = 10f;
             const float rangedDist = 8f;
             const float meleeDist = 2f;
             const float evadeThresholdHealth = 30f;
             const float evadeThresholdStamina = 20f;
             
-            Node root = new Selector(new List<Node>
+            return new BTree(new Selector(new List<Node>
             {
                 // select defense branch
                 new Selector(new List<Node>
@@ -474,8 +482,7 @@ namespace Glaidiator.BehaviorTree
                         new TaskMoveForward(),
                     }),
                 }),
-            });
-            return new BTree(root);
+            }));
         }
 
         #endregion
@@ -485,18 +492,18 @@ namespace Glaidiator.BehaviorTree
 
          private static Node GetRandomRoot()
         {
-            return _roots[Random.Range(0, _roots.Count)];
+            return _roots[Random.Range(0, _roots.Count)].Clone();
+        }
+         
+        private static Node GetRandomPrototype()
+        { 
+            return _prototypes[Random.Range(0, _prototypes.Count)].Clone();
         }
 
         public static Node GetRandomNode()
         {
             float p = MathStuff.Rand.NextFloat();
-            return p > 0.15 ? GetRandomPrototype() : GetRandomRoot();
-        }
-
-        private static Node GetRandomPrototype()
-        {
-            return _prototypes[Random.Range(0, _prototypes.Count)];
+            return p > 0.25 ? GetRandomPrototype() : GetRandomRoot();
         }
 
         private static void InitRoots()

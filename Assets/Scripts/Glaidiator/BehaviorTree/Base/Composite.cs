@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Xml;
 using Glaidiator.Model;
+using Glaidiator.Utils;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Glaidiator.BehaviorTree.Base
 {
@@ -83,7 +85,21 @@ namespace Glaidiator.BehaviorTree.Base
 
         public override void Mutate()
         {
-            throw new NotImplementedException();
+            switch (Random.Range(0, 3))
+            {
+                // remove random child
+                case 0 when Children.Count > 0:
+                    Detach(Children[Random.Range(0, Children.Count)]);
+                    break;
+                // add new random child
+                case 1:
+                    Attach(BTreeFactory.GetRandomNode().Randomized());
+                    break;
+                // shuffle order of children
+                case 2:
+                    Children.Shuffle();
+                    break;
+            }
         }
 
         public override Node Randomized()

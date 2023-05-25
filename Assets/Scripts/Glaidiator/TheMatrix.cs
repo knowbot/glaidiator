@@ -7,10 +7,12 @@ namespace Glaidiator
     public class TheMatrix : MonoBehaviour
     { 
         [Header("Evolution Params")]
-        [SerializeField] public int populationCapacity = 60;
-        [SerializeField] public int elitismPct = 10;
-        [SerializeField] public float crossoverFactor = 0.85f;
-        [SerializeField]public float mutationFactor = 0.15f;
+        [SerializeField] public int populationCapacity = 50;
+        [SerializeField][Range(0, 1)] public float variantRatio = 0.5f;
+        [SerializeField][Range(0, 1)] public float variantChance = 0.5f;
+        [SerializeField][Range(0, 100)] public int elitismPct = 10;
+        [SerializeField][Range(0, 1)] public float crossoverFactor = 0.75f;
+        [SerializeField][Range(0, 1)] public float mutationFactor = 0.05f;
 
         [Header("Simulation Params")]
         [SerializeField] public float maxDuration = 30f;
@@ -27,7 +29,7 @@ namespace Glaidiator
             }
             SetEvolutionParameters();
             SetSimulationParameters();
-            EvoManager.Instance.InitPopulation();
+            EvoManager.Instance.GenPopulation();
         }
 
         private void LateUpdate()
@@ -53,6 +55,8 @@ namespace Glaidiator
         private void SetEvolutionParameters()
         {
             EvoManager.PopulationCapacity = populationCapacity;
+            EvoManager.VariantRatio = variantRatio;
+            EvoManager.VariantChance = variantChance;
             EvoManager.ElitismPct = elitismPct;
             EvoManager.CrossoverFactor = crossoverFactor;
             EvoManager.MutationFactor = mutationFactor;

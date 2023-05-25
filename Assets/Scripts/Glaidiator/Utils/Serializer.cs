@@ -10,7 +10,7 @@ namespace Glaidiator.Utils
 {
     public static class Serializer
     {
-        public static void Serialize(IXmlSerializable obj, string prefix = "", string path = "Test/")
+        public static void Serialize(IXmlSerializable obj, string prefix = "", string path = "Test~/")
         {
             var doc = new XmlDocument();
             string dir = Path.Join(Application.dataPath, path);

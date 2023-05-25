@@ -36,7 +36,7 @@ namespace Glaidiator.BehaviorTree.CustomNodes.CheckNodes
         
         public override Node Clone()
         {
-            return new CheckEnemyAction(_actionName);
+            return new CheckCanDoAction(_actionName);
         }
 
         public override void Mutate()
