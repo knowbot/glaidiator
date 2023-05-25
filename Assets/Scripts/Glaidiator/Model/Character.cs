@@ -25,9 +25,9 @@ namespace Glaidiator.Model
 	    }
 
 	    #region Flags
-	    
-	    public bool CanMove = true;
-	    public bool CanAction = true;
+
+	    private bool _canMove = true;
+	    private bool _canAction = true;
 
 	    #endregion
 
@@ -128,12 +128,12 @@ namespace Glaidiator.Model
 
 	    #region Checks
 
-	    private bool HasEnoughStamina(IAction action)
+	    public bool HasEnoughStamina(IAction action)
 	    {
 		    return action.Action.Cost <= Stamina.Current;
 	    }
 
-	    private bool IsOnCooldown(string name)
+	    public bool IsOnCooldown(string name)
 	    {
 		    return Cooldowns.Exists(c => c.Name == name);
 	    }
@@ -156,8 +156,8 @@ namespace Glaidiator.Model
 
 	    private void SetCanFlags(bool movement, bool action)
 	    {
-		    CanMove = movement;
-		    CanAction = action;
+		    _canMove = movement;
+		    _canAction = action;
 	    }
 
 	    private void SetActiveAction(IAction action)
@@ -222,10 +222,10 @@ namespace Glaidiator.Model
 			    Stamina.Regen(deltaTime);
 			    Idling();// if not doing anything and not moving
 			    // if can move
-			    if (CanMove) Moving();
+			    if (_canMove) Moving();
 
 			    // if can action
-			    if(CanAction)
+			    if(_canAction)
 			    {
 				    if (_inputs.attackLight || _inputs.attackHeavy || _inputs.attackRanged)
 					    Attacking();
