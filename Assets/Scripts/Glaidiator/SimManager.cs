@@ -24,7 +24,6 @@ namespace Glaidiator
         private readonly List<GCHandle> _simHandles;
         private readonly List<JobHandle> _simJobHandles;
         private readonly NativeReference<float>[] _fitnessRef;
-        public float[] Fitness { get; private set; }
 
         #endregion
         
@@ -32,7 +31,6 @@ namespace Glaidiator
         private SimManager()
         {
             _fitnessRef = new NativeReference<float>[EvoManager.PopulationCapacity];
-            Fitness = new float[EvoManager.PopulationCapacity];
             _sims = new List<Sim>();
             _simHandles = new List<GCHandle>();
             _simJobHandles = new List<JobHandle>();
@@ -80,7 +78,7 @@ namespace Glaidiator
 
                 return (((enemy.IsDead && !owner.IsDead) ? 1 : 0) * 1000f // reward wins
                        + owner.Health.Current // reward keeping health
-                       + enemy.DamageTaken * 10.0f)  // reward dealing more damage
+                       + enemy.DamageTaken * 5.0f)  // reward dealing more damage
                        / duration;
             }
         }
@@ -101,8 +99,8 @@ namespace Glaidiator
             _completed = 0;
             for(int i = 0; i < EvoManager.PopulationCapacity; i++)
             {
-                Fitness[i] = 0f;
                 _fitnessRef[i] = new NativeReference<float>(0f, Allocator.Persistent);
+                _fitnessRef[i].Value = 69f;
                 var world = new World();
                 var o = new Character(Arena.BossStartPos, Arena.BossStartRot);
                 var e = new Character(Arena.PlayerStartPos, Arena.PlayerStartRot);
@@ -112,8 +110,9 @@ namespace Glaidiator
                     world = world,
                     owner = o,
                     enemy = e,
+                    // OInputs = new BTInputProvider(new CustomBobBT(),o, e),
                     OInputs = new BTInputProvider(EvoManager.Instance.Population[i].Clone(),o, e),
-                    EInputs = new BTInputProvider(new CustomAshleyBT(), e, o)
+                    EInputs = new BTInputProvider(new CustomBobBT(), e, o)
                 };
                 
                 GCHandle simHandle = GCHandle.Alloc(sim);
@@ -143,13 +142,12 @@ namespace Glaidiator
                 _sims.RemoveAt(i);
             }
             if (!IsDone()) return;
-            
+
             for (int i = 0; i < _fitnessRef.Length; i++)
-                if (_fitnessRef[i].IsCreated)
-                {
-                    EvoManager.Instance.Population[i].Fitness = _fitnessRef[i].Value;
-                    _fitnessRef[i].Dispose();
-                }
+            {
+                EvoManager.Instance.Population[i].Fitness = _fitnessRef[i].Value;
+                _fitnessRef[i].Dispose();
+            }
         }
 
         public void ForceComplete()

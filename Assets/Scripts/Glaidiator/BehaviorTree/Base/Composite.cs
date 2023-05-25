@@ -8,7 +8,7 @@ namespace Glaidiator.BehaviorTree.Base
 {
     public abstract class Composite : Node
     {
-        public List<Node> Children = new List<Node>();
+        public readonly List<Node> Children = new List<Node>();
 
         protected Composite() {}
 

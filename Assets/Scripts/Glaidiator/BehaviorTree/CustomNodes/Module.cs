@@ -26,7 +26,7 @@ namespace Glaidiator.BehaviorTree.CustomNodes
 
         public override void Flatten(List<Node> nodes)
         {
-            Root.Flatten(nodes);
+            nodes.Add(this);
         }
 
         public override void ReplaceChild(Node oldChild, Node newChild)

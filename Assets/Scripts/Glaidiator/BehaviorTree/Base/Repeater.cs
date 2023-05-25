@@ -15,7 +15,6 @@ namespace Glaidiator.BehaviorTree.Base
 
         public Repeater(Node child, int count) : base(child)
         {
-            Child = child;
             _count = count;
         }
 

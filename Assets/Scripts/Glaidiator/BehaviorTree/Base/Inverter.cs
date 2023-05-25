@@ -5,10 +5,7 @@ namespace Glaidiator.BehaviorTree.Base
     {
         public Inverter() {}
         
-        public Inverter(Node child)
-        {
-            Child = child;
-        }
+        public Inverter(Node child) : base(child) { }
         
         public override NodeState Evaluate()
         {

@@ -71,6 +71,16 @@ namespace Glaidiator
             _logger.Write(new[]{Era, Generation, avg, best, worst}.Select(v => v.ToString()).ToArray());
             UpdateChampion();
         }
+
+        public void CrossoverTest()
+        {
+            var p1 = RandomTree();
+            var p2 = RandomTree();
+            var c = BTree.Crossover(p1, p2);
+            Serializer.Serialize(p1, "parent1");
+            Serializer.Serialize(p2, "parent2");
+            Serializer.Serialize(c,"child");
+        }
         
         public void UpdateChampion()
         {
@@ -136,15 +146,13 @@ namespace Glaidiator
             {
                 BTree p1 = pool[Random.Range(0, pool.Count)]; // pick parent 1
                 BTree p2 = pool[Random.Range(0, pool.Count)]; // pick parent 2
-                BTree[] children = { p1, p2 };
+                BTree child = p1;
                 // Crossover chance
                 if (MathStuff.Rand.NextFloat() < CrossoverFactor)
-                   children = BTree.Crossover(p1, p2);
+                   child = BTree.Crossover(p1, p2);
                 if (MathStuff.Rand.NextFloat() < MutationFactor)
-                    children[0].Mutate();      
-                if (MathStuff.Rand.NextFloat() < MutationFactor)
-                    children[1].Mutate();
-                offspring.AddRange(children);
+                   child.Mutate();
+                offspring.Add(child);
             }
             // # INITIALIZE NEW GENERATION
             Population = offspring;
@@ -154,8 +162,9 @@ namespace Glaidiator
         public void InitPopulation()
         {
             Population = new List<BTree> { Champion };
-            for (int i = 0; i < PopulationCapacity; i++)
+            while(Population.Count < PopulationCapacity)
                 Population.Add(RandomTree());
+            Debug.Log(Population.Count);
         }
 
         public EvoBT RandomTree()

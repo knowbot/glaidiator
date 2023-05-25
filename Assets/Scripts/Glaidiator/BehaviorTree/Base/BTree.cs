@@ -4,6 +4,7 @@ using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using Glaidiator.Model;
+using Glaidiator.Utils;
 using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -100,43 +101,26 @@ namespace Glaidiator.BehaviorTree.Base
 
         public abstract BTree Clone();
 
-        public static BTree[] Crossover(BTree parent1, BTree parent2)
+        public static BTree Crossover(BTree parent1, BTree parent2)
         {
-            BTree c1 = parent1.Clone();
-            BTree c2 = parent2.Clone();
-            List<Node> nodes1 = new List<Node>();
-            c1.Root.Flatten(nodes1);
-            Node swapNode1 = nodes1[Random.Range(0, nodes1.Count)];
-
-            List<Node> nodes2 = new List<Node>();
-            c2.Root.Flatten(nodes2);
+            BTree p1 = parent1.Clone();
+            BTree p2 = parent2.Clone();
+            List<Node> nodes1 = new();
+            p1.Root.Flatten(nodes1);
+            Node swapNode1 = nodes1[Random.Range(0, nodes1.Count)]; // any node except root
+            List<Node> nodes2 = new();
+            p2.Root.Flatten(nodes2);
             Node swapNode2 = nodes2[Random.Range(0, nodes2.Count)];
-
             Node nodeP1 = swapNode1.GetParent();
-            Node nodeP2 = swapNode2.GetParent();
-            
-            if (nodeP1 != null) // check if not root
-            {
+            if(nodeP1 != null) // is not root
                 nodeP1.ReplaceChild(swapNode1, swapNode2);
-            }
             else
             {
-                c1.Root = swapNode2;
-                c1.Root.SetParent(null); // a root node has no parent
+                p1.Root = swapNode2;
+                p1.Root.SetParent(null);
             }
-
-            if (nodeP2 != null) 
-            {
-                nodeP2.ReplaceChild(swapNode2, swapNode1);
-            }
-            else
-            {
-                c2.Root = swapNode1;
-                c2.Root.SetParent(null); 
-            }
-            c1.Fitness = 0;
-            c2.Fitness = 0;
-            return new[] {c1, c2};
+            p1.Fitness = 0;
+            return p1;
         }
 
         

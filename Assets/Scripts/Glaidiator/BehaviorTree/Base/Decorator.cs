@@ -8,21 +8,34 @@ namespace Glaidiator.BehaviorTree.Base
 {
     public abstract class Decorator<T> : Node where T : Node
     {
-        public T Child { get; protected set; }
+        private T _child;
+
+        public T Child
+        {
+            get => _child;
+            protected set
+            {
+                _child = value;
+                _child.SetParent(this);
+            }
+        }
 
         public Decorator() : base()
         {
+            
         }
 
         public Decorator(T child)
         {
             Child = child;
+            child.SetParent(this);
         }
 
-        public Decorator(BTree btree, T child)
+        protected Decorator(BTree btree, T child)
         {
             tree = btree;
             Child = child;
+            child.SetParent(this);
         }
 
         public override void Flatten(List<Node> nodes)
