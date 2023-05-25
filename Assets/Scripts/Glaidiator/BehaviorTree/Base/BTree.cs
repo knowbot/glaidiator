@@ -11,7 +11,7 @@ using Random = UnityEngine.Random;
 
 namespace Glaidiator.BehaviorTree.Base
 {
-    public abstract class BTree : IXmlSerializable
+    public class BTree : IXmlSerializable
     {
         private Node _root = null;
         private Transform _transform;
@@ -56,19 +56,21 @@ namespace Glaidiator.BehaviorTree.Base
         public float enemyDistance;
         private Character _enemy;
 
-        protected BTree(Character owner)
+        public BTree(Character owner)
         {
             Owner = owner ?? throw new NullReferenceException("BTree init with null owner");
             Init();
         }
 
-        protected BTree(Node root)
+        public BTree(Node root)
         {
             Root = root;
+            root.SetTree(this);
+            SetData("enemy", Enemy);
             Init();
         }
 
-        protected BTree()
+        public BTree()
         {
             Init();
         }
@@ -82,7 +84,6 @@ namespace Glaidiator.BehaviorTree.Base
             AttackRanged = false; 
             Block = false;
             Dodge = false;
-            Root = SetupTree();
             //Debug.Log(this.GetType() + " init");
         }
 
@@ -97,9 +98,14 @@ namespace Glaidiator.BehaviorTree.Base
             Root?.Evaluate();
         }
 
-        protected abstract Node SetupTree();
-
-        public abstract BTree Clone();
+        public BTree Clone()
+        {
+           return new BTree
+            {
+                Root = Root.Clone(),
+                Fitness = Fitness
+            };
+        }
 
         public static BTree Crossover(BTree parent1, BTree parent2)
         {
@@ -137,14 +143,13 @@ namespace Glaidiator.BehaviorTree.Base
             else
             {
                 // replace random node with sample prototype
-                int pSize = EvoManager.Instance.prototypes.Count;
-                Node newNode = EvoManager.Instance.prototypes[Random.Range(0, pSize)].Randomized();
+                Node newNode = BTreeFactory.GetRandomNode();
                 Node oldNode = nodes[Random.Range(0, nodes.Count)];
                 Node parent = oldNode.GetParent();
                 parent?.ReplaceChild(oldNode, newNode);
             }
         }
-
+        
         public void SetData(string key, object value)
         {
             _dataContext[key] = value;

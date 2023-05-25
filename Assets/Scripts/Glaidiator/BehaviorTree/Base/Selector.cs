@@ -63,7 +63,7 @@ namespace Glaidiator.BehaviorTree.Base
                     break;
                 // add new random child
                 case 1:
-                    Attach(EvoManager.Instance.GetRandomNode().Clone());
+                    Attach(BTreeFactory.GetRandomNode().Clone());
                     break;
                 // shuffle order of children
                 case 2:
@@ -80,7 +80,7 @@ namespace Glaidiator.BehaviorTree.Base
             
             for (int i = 0; i < newCount; i++)
             {
-                newChildren.Add(EvoManager.Instance.GetRandomNode().Randomized());
+                newChildren.Add(BTreeFactory.GetRandomNode().Randomized());
             }
 
             return new Selector(newChildren);

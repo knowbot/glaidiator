@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Glaidiator.BehaviorTree;
-using Glaidiator.BehaviorTree.Base;
-using Glaidiator.BehaviorTree.CustomBTs;
 using Glaidiator.Model;
 using Glaidiator.Model.Collision;
 using Unity.Collections;
 using Unity.Jobs;
-using UnityEngine;
 
 namespace Glaidiator
 {
@@ -112,7 +109,7 @@ namespace Glaidiator
                     enemy = e,
                     // OInputs = new BTInputProvider(new CustomBobBT(),o, e),
                     OInputs = new BTInputProvider(EvoManager.Instance.Population[i].Clone(),o, e),
-                    EInputs = new BTInputProvider(new CustomBobBT(), e, o)
+                    EInputs = new BTInputProvider(BTreeFactory.CreateBob(), e, o)
                 };
                 
                 GCHandle simHandle = GCHandle.Alloc(sim);

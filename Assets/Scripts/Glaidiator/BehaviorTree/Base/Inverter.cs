@@ -1,3 +1,5 @@
+using System;
+
 namespace Glaidiator.BehaviorTree.Base
 {
 
@@ -9,21 +11,13 @@ namespace Glaidiator.BehaviorTree.Base
         
         public override NodeState Evaluate()
         {
-
-            switch (Child.Evaluate())
+            state = Child.Evaluate() switch
             {
-                case NodeState.FAILURE:
-                    state = NodeState.SUCCESS;
-                    return state;
-                case NodeState.SUCCESS:
-                    state = NodeState.FAILURE;
-                    return state;
-                case NodeState.RUNNING:
-                    state = NodeState.RUNNING;
-                    return state;
-            }
-
-            state = NodeState.SUCCESS;
+                NodeState.FAILURE => NodeState.SUCCESS,
+                NodeState.SUCCESS => NodeState.FAILURE,
+                NodeState.RUNNING => NodeState.RUNNING,
+                _ => NodeState.FAILURE
+            };
             return state;
         }
 
@@ -34,12 +28,12 @@ namespace Glaidiator.BehaviorTree.Base
 
         public override void Mutate()
         {
-            Child ??= EvoManager.Instance.GetRandomNode().Clone();
+            Child ??= BTreeFactory.GetRandomNode().Clone();
         }
 
         public override Node Randomized()
         {
-            if (Child == null) return new Inverter(EvoManager.Instance.GetRandomNode().Randomized());
+            if (Child == null) return new Inverter(BTreeFactory.GetRandomNode().Randomized());
             var newNode = Clone() as Inverter;
             newNode?.ReplaceChild(newNode.Child, newNode.Child.Randomized());
             return newNode;

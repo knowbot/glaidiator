@@ -1,15 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
+using Glaidiator.BehaviorTree;
 using Glaidiator.BehaviorTree.Base;
-using Glaidiator.BehaviorTree.CustomBTs;
-using Glaidiator.BehaviorTree.CustomNodes;
-using Glaidiator.BehaviorTree.CustomNodes.CheckNodes;
-using Glaidiator.BehaviorTree.CustomNodes.TaskNodes;
-using Glaidiator.BehaviorTree.LeafNodes.ConditionNodes;
 using Glaidiator.Utils;
-using Micosmo.SensorToolkit;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using Serializer = Glaidiator.Utils.Serializer;
@@ -38,10 +32,6 @@ namespace Glaidiator
         public const int MaxChildren = 6;
 
         public List<BTree> Population;
-
-        private Dictionary<string, Node> _prototypesMap;
-        public List<Node> prototypes; // collection of behaviors to sample from
-        private List<Composite> _roots;
         
         private readonly string _runPrefix = Guid.NewGuid().ToString();
         private CsvWriter _logger;
@@ -49,9 +39,7 @@ namespace Glaidiator
         #region Singleton
         private EvoManager()
         {
-            Champion = new CustomBobBT();
-            CreatePrototypes();
-            CreateRoots();
+            Champion = BTreeFactory.CreateBob();
             _logger = new CsvWriter($"Test/{_runPrefix}", 
                 "fitness", 
                 new []{"era","generation","avg","best","worst"},
@@ -74,8 +62,8 @@ namespace Glaidiator
 
         public void CrossoverTest()
         {
-            var p1 = RandomTree();
-            var p2 = RandomTree();
+            var p1 = BTreeFactory.CreateRandom();
+            var p2 = BTreeFactory.CreateRandom();
             var c = BTree.Crossover(p1, p2);
             Serializer.Serialize(p1, "parent1");
             Serializer.Serialize(p2, "parent2");
@@ -162,145 +150,14 @@ namespace Glaidiator
         public void InitPopulation()
         {
             Population = new List<BTree> { Champion };
-            while(Population.Count < PopulationCapacity)
-                Population.Add(RandomTree());
-            Debug.Log(Population.Count);
-        }
-
-        public EvoBT RandomTree()
-        {
-            return new EvoBT(GetRandomRoot().Randomized());
-        }
-        
-        public Node GetRandomRoot()
-        {
-            return _roots[Random.Range(0, _roots.Count)];
-        }
-
-
-        public Node GetRandomNode()
-        {
-            float p = MathStuff.Rand.NextFloat();
-            return p > 0.15 ? GetRandomPrototype() : GetRandomRoot();
-        }
-
-        public Node GetRandomPrototype()
-        {
-            return prototypes[Random.Range(0, prototypes.Count)];
-        }
-
-        private void CreateRoots()
-        {
-            _roots = new List<Composite>
+            int i = 0;
+            while (Population.Count < PopulationCapacity)
             {
-                new Selector(),
-                new Sequence()
-            };
-        }
-        
-         // init prototype samples for random mutations
-        private void CreatePrototypes() // whatever params needed to init nodes
-        {
-            _prototypesMap = new Dictionary<string, Node>();
-            // prototypesMap.Add("TaskLightAtk", new TaskLightAtk());
-            // prototypesMap.Add("TaskHeavyAtk", new TaskHeavyAtk());
-            // prototypesMap.Add("TaskRangedAtk", new TaskRangedAtk());
-            // prototypesMap.Add("TaskBlock", new TaskBlock());
-            // prototypesMap.Add("TaskDodge", new TaskDodge());
-            // prototypesMap.Add("CheckLightAtk", new CheckCanDoAction("atkLight"));
-            // prototypesMap.Add("CheckHeavyAtk", new CheckCanDoAction("atkHeavy"));
-            // prototypesMap.Add("CheckRangedAtk", new CheckCanDoAction("atkRanged"));
-            // prototypesMap.Add("CheckBlock", new CheckCanDoAction("block"));
-            // prototypesMap.Add("CheckDodge", new CheckCanDoAction("dodge"));
-            
-            _prototypesMap.Add("TaskFaceEnemy", new TaskFaceEnemy());
-            _prototypesMap.Add("TaskBackEnemy", new TaskBackEnemy());
-            _prototypesMap.Add("TaskMoveForward", new TaskMoveForward());
-            _prototypesMap.Add("TaskTurnLeft", new TaskTurnLeft());
-            _prototypesMap.Add("TaskTurnRight", new TaskTurnRight());
-            _prototypesMap.Add("CheckArenaBounds", new CheckArenaBounds(1f));
-            
-            _prototypesMap.Add("CheckEnemyDistanceMelee", new CheckEnemyDistance(2f));
-            _prototypesMap.Add("CheckEnemyDistanceRanged", new CheckEnemyDistance(6f));
-            _prototypesMap.Add("CheckOwnHealth", new CheckOwnHealth(50f));
-            _prototypesMap.Add("CheckOwnStamina", new CheckOwnStamina(50f));
-            _prototypesMap.Add("CheckEnemyHealth", new CheckEnemyHealth(50f));
-            _prototypesMap.Add("CheckEnemyStamina", new CheckEnemyStamina(50f));
-            // prototypesMap.Add("TaskSetWP", new TaskSetWP(2f));
-            // prototypesMap.Add("TaskClearWP", new TaskClearWP());
-            // prototypesMap.Add("CheckHasWP", new CheckHasTarget("wp"));
-            // prototypesMap.Add("CheckWPDistance", new CheckTargetDistance("wp", 0.01f));
-            _prototypesMap.Add("TaskWait", new TaskWait());
-
-            _prototypesMap.Add("CheckEnemyLight", new CheckEnemyAction("atkLight"));
-            _prototypesMap.Add("CheckEnemyHeavy", new CheckEnemyAction("atkHeavy"));
-            _prototypesMap.Add("CheckEnemyRanged", new CheckEnemyAction("atkRanged"));
-            _prototypesMap.Add("CheckEnemyBlock", new CheckEnemyAction("block"));
-            _prototypesMap.Add("CheckEnemyDodge", new CheckEnemyAction("dodge"));
-            _prototypesMap.Add("ModuleAtkLight", 
-                new Module(
-                    "ModuleAtkLight", 
-                    new Sequence(new List<Node> 
-                    {
-                        new CheckCanDoAction("atkLight"),
-                        new TaskFaceEnemy(),
-                        new TaskLightAtk(),
-                    })
-                )
-            );
-            
-            _prototypesMap.Add("ModuleAtkHeavy", 
-                new Module(
-                    "ModuleAtkHeavy", 
-                    new Sequence(new List<Node> 
-                    {
-                        new CheckCanDoAction("atkHeavy"),
-                        new TaskFaceEnemy(),
-                        new TaskHeavyAtk(),
-                    })
-                )
-            );
-            
-            _prototypesMap.Add("ModuleAtkRanged",
-                new Module(
-                    "ModuleAtkRanged",
-                    new Sequence(new List<Node>
-                    {
-                        new Inverter(new CheckEnemyDistance(3f)),
-                        new CheckCanDoAction("atkRanged"),
-                        new CheckEnemyDistance(6f),
-                        new TaskFaceEnemy(),
-                        new CheckRangedDirection(30f),
-                        new TaskRangedAtk(),
-                    })
-                )
-            );
-            
-            _prototypesMap.Add("ModuleBlock", 
-                new Module(
-                    "ModuleBlock", 
-                    new Sequence(new List<Node> 
-                    {
-                        new CheckCanDoAction("block"),
-                        new TaskFaceEnemy(),
-                        new TaskBlock(),
-                    })
-                )
-            );
-            
-            _prototypesMap.Add("ModuleDodge", 
-                new Module(
-                    "ModuleDodge", 
-                    new Sequence(new List<Node> 
-                    {
-                        new CheckCanDoAction("dodge"),
-                        new TaskDodge(),
-                    })
-                )
-            );
-
-
-            prototypes = _prototypesMap.Values.ToList();
+                i++;
+                var tree = BTreeFactory.CreateRandom();
+                Population.Add(tree);
+                Serializer.Serialize(tree, $"tree_{i}", "Test/Population");
+            }
         }
 
         public void NewEra()

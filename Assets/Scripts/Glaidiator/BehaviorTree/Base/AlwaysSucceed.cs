@@ -49,12 +49,12 @@ namespace Glaidiator.BehaviorTree.Base
 
         public override void Mutate()
         {
-            Child ??= EvoManager.Instance.GetRandomNode().Randomized();
+            Child ??= BTreeFactory.GetRandomNode().Randomized();
         }
 
         public override Node Randomized()
         {
-            if (Child == null) return new UntilFail(EvoManager.Instance.GetRandomNode().Randomized());
+            if (Child == null) return new UntilFail(BTreeFactory.GetRandomNode().Randomized());
             var newNode = Clone() as UntilFail;
             newNode?.ReplaceChild(newNode.Child, newNode.Child.Randomized());
             return newNode;

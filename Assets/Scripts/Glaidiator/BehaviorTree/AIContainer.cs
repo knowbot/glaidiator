@@ -1,6 +1,5 @@
 using System;
 using Glaidiator.BehaviorTree.Base;
-using Glaidiator.BehaviorTree.CustomBTs;
 using Glaidiator.Presenter;
 using Glaidiator.Utils;
 using UnityEngine;
@@ -27,22 +26,16 @@ namespace Glaidiator.BehaviorTree
             switch (selectTree) //ugly hack to allow tree selection in editor
             {
                 case 'a':
-                    btree = new CustomAshleyBT();
+                    btree = BTreeFactory.CreateAshley();
                     break;
                 case 'b':
-                    btree = new CustomBobBT();
+                    btree = BTreeFactory.CreateBob();
                     break;
                 case 'c':
-                    btree = new CustomCharlieBT();
-                    break;
-                case 'd':
-                    btree = new CustomMaximusDecimusMeridiusBT();
-                    break;
-                case 'e':
-                    btree = new EvoBT();
+                    btree = BTreeFactory.CreateCharlie();
                     break;
                 default:
-                    btree = new CustomAshleyBT();
+                    btree = BTreeFactory.CreateAshley();
                     break;
             }
             

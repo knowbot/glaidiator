@@ -53,13 +53,13 @@ namespace Glaidiator.BehaviorTree.Base
         {
             if (Child == null)
             {
-                Child = EvoManager.Instance.GetRandomNode().Clone();
+                Child = BTreeFactory.GetRandomNode().Clone();
             }
         }
 
         public override Node Randomized()
         {
-            if (Child == null) return new UntilFail(EvoManager.Instance.GetRandomNode().Randomized());
+            if (Child == null) return new UntilFail(BTreeFactory.GetRandomNode().Randomized());
             var newNode = Clone() as AlwaysSucceed;
             newNode?.ReplaceChild(newNode.Child, newNode.Child.Randomized());
             return newNode;
