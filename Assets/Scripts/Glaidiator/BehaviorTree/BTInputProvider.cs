@@ -37,7 +37,8 @@ namespace Glaidiator.BehaviorTree
             //Inputs.move = btree.Move ? MathUtils.Get8DDirection(dir.x, dir.z) : Vector3.zero;
 
             Vector3 dir = MathStuff.Get8DDirection(_btree.Direction.x, _btree.Direction.z);
-            _inputs.facing = _btree.Direction;
+            //_inputs.facing = _btree.Direction;
+            _inputs.facing = dir;
             _inputs.move = _btree.Move ? dir : Vector3.zero;
             _inputs.attackLight = _btree.AttackLight;
             _inputs.attackHeavy = _btree.AttackHeavy;

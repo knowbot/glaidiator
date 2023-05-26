@@ -516,7 +516,7 @@ namespace Glaidiator.BehaviorTree
         }
         
          // init prototype samples for random mutations
-        private static void InitPrototypes() // whatever params needed to init nodes
+        private static void InitPrototypes() // TODO: Include decorator nodes, especially prototypes with Inverter node
         {
             _prototypesMap = new Dictionary<string, Node>();
             // prototypesMap.Add("TaskLightAtk", new TaskLightAtk());

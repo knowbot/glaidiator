@@ -89,6 +89,7 @@ namespace Glaidiator.BehaviorTree.Base
 
         public void Tick()
         {
+            //Direction = MathStuff.Get8DDirection(Direction.x, Direction.z); // FIXME: where to discretize?
             Move = false;
             AttackLight = false;
             AttackHeavy = false;
