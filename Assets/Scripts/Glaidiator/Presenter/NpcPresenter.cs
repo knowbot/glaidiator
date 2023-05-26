@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 namespace Glaidiator.Presenter
 {
-    public class NpcCharacterPresenter : CharacterPresenter
+    public class NpcPresenter : CharacterPresenter
     {
         // UI
         public TextMeshProUGUI displayState;
