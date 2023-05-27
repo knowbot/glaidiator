@@ -529,7 +529,10 @@ namespace Glaidiator.BehaviorTree
             // prototypesMap.Add("CheckRangedAtk", new CheckCanDoAction("atkRanged"));
             // prototypesMap.Add("CheckBlock", new CheckCanDoAction("block"));
             // prototypesMap.Add("CheckDodge", new CheckCanDoAction("dodge"));
-            
+            _prototypesMap.Add("Inverter", new Inverter());
+            _prototypesMap.Add("Repeater", new Repeater());
+            _prototypesMap.Add("AlwaysSucceed", new AlwaysSucceed());
+            _prototypesMap.Add("UntilFail", new UntilFail());
             _prototypesMap.Add("TaskFaceEnemy", new TaskFaceEnemy());
             _prototypesMap.Add("TaskBackEnemy", new TaskBackEnemy());
             _prototypesMap.Add("TaskMoveForward", new TaskMoveForward());
