@@ -3,17 +3,18 @@
     public class Block : ICooldown, IAction
     {
         public ActionInfo Action { get; }
+
         public void End()
         {
         }
-        
-        public string Name { get; }
+
+        public string DisplayName { get; }
         public Timer Cooldown { get; }
 
         public Block(ActionInfo action,float cooldownDuration = 0f)
         {
             Action = action;
-            Name = action.Name;
+            DisplayName = action.Name;
             Cooldown = new Timer(cooldownDuration);
         }
         public ICooldown SetOnCooldown()

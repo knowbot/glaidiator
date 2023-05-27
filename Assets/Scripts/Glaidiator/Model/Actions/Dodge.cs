@@ -9,14 +9,14 @@ namespace Glaidiator.Model.Actions
         {
         }
 
-        public string Name { get; }
+        public string DisplayName { get; }
         public Timer Cooldown { get; }
         public Vector3 Direction { get; set; }
         
         public Dodge(ActionInfo action, float cooldownDuration = 0f)
         {
             Action = action;
-            Name = action.Name;
+            DisplayName = action.Name;
             Cooldown = new Timer(cooldownDuration);
         }
 
