@@ -23,7 +23,7 @@ namespace Glaidiator.BehaviorTree
 
         private void Start()
         {
-            switch (selectTree) //ugly hack to allow tree selection in editor
+            switch (selectTree) //editor tree selection
             {
                 case 'a':
                     btree = BTreeFactory.CreateAshley();
@@ -33,6 +33,15 @@ namespace Glaidiator.BehaviorTree
                     break;
                 case 'c':
                     btree = BTreeFactory.CreateCharlie();
+                    break;
+                case 'd':
+                    break;    
+                case 'e':
+                    btree = BTreeFactory.CreateBaselineEvo();
+                    break;
+                case 'f':
+                    break;
+                case 'g': // g is for groot
                     break;
                 default:
                     btree = BTreeFactory.CreateAshley();

@@ -38,7 +38,7 @@ namespace Glaidiator.BehaviorTree.Base
             }
         }
 
-        public float Fitness = 0; // remove in favor of evo manager candidate class?
+        public float Fitness = 0;
         
         private readonly Dictionary<string, object> _dataContext = new Dictionary<string, object>();
 

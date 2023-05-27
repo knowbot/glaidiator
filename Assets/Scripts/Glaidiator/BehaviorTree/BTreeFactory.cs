@@ -9,9 +9,9 @@ using Glaidiator.Utils;
 using UnityEngine;
 
 namespace Glaidiator.BehaviorTree
-{ 
+{
     public static class BTreeFactory
-    { 
+    {
         private static List<Node> _prototypes; // collection of behaviors to sample from
         private static Dictionary<string, Node> _prototypesMap;
         private static List<Composite> _roots;
@@ -22,21 +22,310 @@ namespace Glaidiator.BehaviorTree
             InitRoots();
         }
 
-        #region Tree Creation
 
         public static BTree CreateRandom()
         {
             return new BTree(GetRandomRoot().Randomized());
         }
-        
+
         public static BTree CreateVariant(BTree tree, float variantChance)
         {
             BTree variant = tree.Clone();
-                variant.Mutate();
-                List<Node> nodes = new();
-                variant.Root.Flatten(nodes);
-                foreach (Node node in nodes.Where(node => MathStuff.Rand.NextFloat() < variantChance)) node.Mutate();
-                return variant;
+            variant.Mutate();
+            List<Node> nodes = new();
+            variant.Root.Flatten(nodes);
+            foreach (Node node in nodes.Where(node => MathStuff.Rand.NextFloat() < variantChance)) node.Mutate();
+            return variant;
+        }
+
+
+        #region Node Methods & Initializers
+
+        private static Node GetRandomRoot()
+        {
+            return _roots[Random.Range(0, _roots.Count)].Clone();
+        }
+
+        private static Node GetRandomPrototype()
+        {
+            return _prototypes[Random.Range(0, _prototypes.Count)].Clone();
+        }
+
+        public static Node GetRandomNode()
+        {
+            float p = MathStuff.Rand.NextFloat();
+            return p > 0.25 ? GetRandomPrototype() : GetRandomRoot();
+        }
+
+        private static void InitRoots()
+        {
+            _roots = new List<Composite>
+            {
+                new Selector(),
+                new Sequence()
+            };
+        }
+
+        // init prototype samples for random mutations
+        private static void InitPrototypes() // TODO: Include decorator nodes, especially prototypes with Inverter node
+        {
+            const float rangedMinDist = 3f;
+            const float rangedMaxDist = 8f;
+            const float meleeDist = 2f;
+            const float evadeThresholdHealth = 30f;
+            const float evadeThresholdStamina = 20f;
+            _prototypesMap = new Dictionary<string, Node>();
+            
+            // prototypesMap.Add("TaskLightAtk", new TaskLightAtk());
+            // prototypesMap.Add("TaskHeavyAtk", new TaskHeavyAtk());
+            // prototypesMap.Add("TaskRangedAtk", new TaskRangedAtk());
+            // prototypesMap.Add("TaskBlock", new TaskBlock());
+            // prototypesMap.Add("TaskDodge", new TaskDodge());
+            // prototypesMap.Add("CheckLightAtk", new CheckCanDoAction("atkLight"));
+            // prototypesMap.Add("CheckHeavyAtk", new CheckCanDoAction("atkHeavy"));
+            // prototypesMap.Add("CheckRangedAtk", new CheckCanDoAction("atkRanged"));
+            // prototypesMap.Add("CheckBlock", new CheckCanDoAction("block"));
+            // prototypesMap.Add("CheckDodge", new CheckCanDoAction("dodge"));
+
+            _prototypesMap.Add("TaskFaceEnemy", new TaskFaceEnemy());
+            _prototypesMap.Add("TaskBackEnemy", new TaskBackEnemy());
+            _prototypesMap.Add("TaskMoveForward", new TaskMoveForward());
+            _prototypesMap.Add("TaskTurnLeft", new TaskTurnLeft());
+            _prototypesMap.Add("TaskTurnRight", new TaskTurnRight());
+            _prototypesMap.Add("CheckArenaBounds", new CheckArenaBounds(1f));
+
+            _prototypesMap.Add("CheckEnemyDistanceMelee", new CheckEnemyDistance(2f));
+            _prototypesMap.Add("CheckEnemyDistanceRanged", new CheckEnemyDistance(6f));
+            _prototypesMap.Add("CheckOwnHealth", new CheckOwnHealth(50f));
+            _prototypesMap.Add("CheckOwnStamina", new CheckOwnStamina(50f));
+            _prototypesMap.Add("CheckEnemyHealth", new CheckEnemyHealth(50f));
+            _prototypesMap.Add("CheckEnemyStamina", new CheckEnemyStamina(50f));
+            // prototypesMap.Add("TaskSetWP", new TaskSetWP(2f));
+            // prototypesMap.Add("TaskClearWP", new TaskClearWP());
+            // prototypesMap.Add("CheckHasWP", new CheckHasTarget("wp"));
+            // prototypesMap.Add("CheckWPDistance", new CheckTargetDistance("wp", 0.01f));
+            _prototypesMap.Add("TaskWait", new TaskWait());
+
+            _prototypesMap.Add("CheckEnemyLight", new CheckEnemyAction("atkLight"));
+            _prototypesMap.Add("CheckEnemyHeavy", new CheckEnemyAction("atkHeavy"));
+            _prototypesMap.Add("CheckEnemyRanged", new CheckEnemyAction("atkRanged"));
+            _prototypesMap.Add("CheckEnemyBlock", new CheckEnemyAction("block"));
+            _prototypesMap.Add("CheckEnemyDodge", new CheckEnemyAction("dodge"));
+            _prototypesMap.Add("ModuleAtkLight",
+                new Module(
+                    "ModuleAtkLight",
+                    new Sequence(new List<Node>
+                    {
+                        new CheckCanDoAction("atkLight"),
+                        new CheckEnemyDistance(meleeDist),
+                        new TaskFaceEnemy(),
+                        new TaskLightAtk(),
+                    })
+                )
+            );
+
+            _prototypesMap.Add("ModuleAtkHeavy",
+                new Module(
+                    "ModuleAtkHeavy",
+                    new Sequence(new List<Node>
+                    {
+                        new CheckCanDoAction("atkHeavy"),
+                        new CheckEnemyDistance(meleeDist),
+                        new TaskFaceEnemy(),
+                        new TaskHeavyAtk(),
+                    })
+                )
+            );
+
+            _prototypesMap.Add("ModuleAtkRanged",
+                new Module(
+                    "ModuleAtkRanged",
+                    new Sequence(new List<Node>
+                    {
+                        
+                        new CheckCanDoAction("atkRanged"),
+                        new Inverter(new CheckEnemyDistance(rangedMinDist)),
+                        new CheckEnemyDistance(rangedMaxDist),
+                        new TaskFaceEnemy(),
+                        new CheckRangedDirection(30f),
+                        new TaskRangedAtk(),
+                    })
+                )
+            );
+
+            _prototypesMap.Add("ModuleBlock",
+                new Module(
+                    "ModuleBlock",
+                    new Sequence(new List<Node>
+                    {
+                        new CheckCanDoAction("block"),
+                        new TaskFaceEnemy(),
+                        new TaskBlock(),
+                    })
+                )
+            );
+
+            _prototypesMap.Add("ModuleDodge",
+                new Module(
+                    "ModuleDodge",
+                    new Sequence(new List<Node>
+                    {
+                        new CheckCanDoAction("dodge"),
+                        new TaskDodge(),
+                    })
+                )
+            );
+
+
+            _prototypes = _prototypesMap.Values.ToList();
+        }
+
+        #endregion
+
+
+        #region Custom Tree Declarations
+
+        public static BTree CreateBaselineEvo()
+        {
+            const float rangedMinDist = 3f;
+            const float rangedMaxDist = 8f;
+            const float meleeDist = 2f;
+            const float wallDist = 1f;
+            const float dodgeThresholdStamina = 40f;
+            const float defenseHealthThreshold = 30f;
+
+            return new BTree(new Selector(new List<Node>
+            {
+                new CheckEnemyState("Dead"), // success if enemy is dead
+                
+                // defense branch
+                new Sequence(new List<Node>
+                {
+                    // only defend when low hp
+                    new Inverter(new CheckOwnHealth(defenseHealthThreshold)),
+                    new Selector(new List<Node> // if enemy melee
+                    {
+                        new CheckEnemyAction("atkLight"),
+                        new CheckEnemyAction("atkHeavy"),
+                    }),
+                    
+                    new Selector(new List<Node>
+                    {
+                        new Sequence(new List<Node> // try block or
+                        {
+                            new CheckEnemyDistance(meleeDist),
+                            new CheckCanDoAction("block"),
+                            new TaskFaceEnemy(),
+                            new TaskBlock(),
+                        }),
+                        new Sequence(new List<Node> // try dodge or
+                        {
+                            new CheckEnemyDistance(meleeDist),
+                            new CheckCanDoAction("dodge"),
+                            new CheckOwnStamina(dodgeThresholdStamina),
+                            new TaskBackEnemy(),
+                            new TaskMoveForward(),
+                            new TaskDodge(),
+                        }),
+                        /*
+                        new Sequence(new List<Node> // try move away
+                        {
+                            new CheckEnemyDistance(meleeDist*2f),
+                            new Selector(new List<Node>
+                            {
+                                new Sequence(new List<Node>
+                                {
+                                    new TaskBackEnemy(),
+                                    new CheckArenaBounds(wallDist),
+                                    new TaskMoveForward(),
+                                }),
+                                new Sequence(new List<Node>
+                                { // move through enemy if wall blocks back
+                                    new Inverter(new CheckArenaBounds(wallDist)),
+                                    new TaskFaceEnemy(),
+                                    new TaskMoveForward(),
+                                }),
+                            }),
+                        }),
+                        */
+                    }),
+                }),
+                
+                // attack branch
+                new Selector(new List<Node>
+                {
+                    new Sequence(new List<Node>
+                    {
+                        new CheckCanDoAction("atkLight"),
+                        new CheckEnemyDistance(meleeDist),
+                        new TaskFaceEnemy(),
+                        new TaskLightAtk(),
+                    }),
+                    new Sequence(new List<Node>
+                    {
+                        new CheckCanDoAction("atkHeavy"),
+                        new CheckEnemyDistance(meleeDist),
+                        new TaskFaceEnemy(),
+                        new TaskHeavyAtk(),
+                    }),
+                    new Sequence(new List<Node>
+                    {
+                        new CheckCanDoAction("atkRanged"),
+                        new CheckEnemyDistance(rangedMaxDist),
+                        new Inverter(new CheckEnemyDistance(rangedMinDist)),
+                        new TaskFaceEnemy(),
+                        new CheckRangedDirection(),
+                        new TaskRangedAtk(),
+                    }),
+                }),
+                
+                // navigation branch offensive
+                new Sequence(new List<Node> // move to melee dist
+                {
+                    new CheckCompareHealth(-10f),
+                    //new CheckCompareStamina(-10f),
+                    new Inverter(new CheckEnemyDistance(meleeDist)),
+                    new TaskFaceEnemy(),
+                    new TaskMoveForward(),
+                }),
+                new Sequence(new List<Node> // stop when melee dist
+                {
+                    new CheckCompareHealth(-10f),
+                    //new CheckCompareStamina(-10f),
+                    new CheckEnemyDistance(meleeDist),
+                    new TaskFaceEnemy(),
+                    new TaskStop(),
+                }),
+                
+                // navigation branch defensive
+                new Sequence(new List<Node>
+                {
+                    new Inverter(new CheckCompareHealth(0f)),
+                    new CheckEnemyDistance(meleeDist * 2f),
+                    new Selector(new List<Node>
+                    {
+                        new Sequence(new List<Node>
+                        {
+                            new TaskBackEnemy(),
+                            new CheckArenaBounds(wallDist),
+                            new TaskMoveForward(),
+                        }),
+                        new Sequence(new List<Node>
+                        {
+                            new TaskTurnLeft(),
+                            new CheckArenaBounds(wallDist),
+                            new TaskMoveForward(),
+                        }),
+                        new Sequence(new List<Node>
+                        {
+                            new TaskTurnLeft(),
+                            new CheckArenaBounds(wallDist),
+                            new TaskMoveForward(),
+                        }),
+                    }),
+                }),
+                
+            }));
         }
         
         public static BTree CreateAshley()
@@ -46,14 +335,16 @@ namespace Glaidiator.BehaviorTree
             const float meleeDist = 2f;
             return new BTree(new Selector(new List<Node>
             {
+                new CheckEnemyState("Dead"), // success if enemy is dead
                 // attack sequence
-                new Sequence(new List<Node>{ 
+                new Sequence(new List<Node>
+                {
                     // conditions for aggression
                     new CheckEnemyDistance(aggroDist),
                     // new CheckOwnHealth(50f), 
                     // new CheckOwnStamina(15f),
-                    new Selector(new List<Node> 
-                    { 
+                    new Selector(new List<Node>
+                    {
                         new Sequence(new List<Node>
                         {
                             new Inverter(new CheckEnemyDistance(3f)), // min range
@@ -96,7 +387,7 @@ namespace Glaidiator.BehaviorTree
                         }),
                     }),
                 }),
-                
+
                 // defense sequence
                 new Sequence(new List<Node>
                 {
@@ -160,6 +451,7 @@ namespace Glaidiator.BehaviorTree
                 }),
             }));
         }
+        
         public static BTree CreateBob()
         {
             const float rangedDist = 6f;
@@ -168,6 +460,8 @@ namespace Glaidiator.BehaviorTree
             const float evadeThresholdStamina = 20f;
             return new BTree(new Selector(new List<Node>
             {
+                new CheckEnemyState("Dead"), // success if enemy is dead
+                
                 // select defense branch
                 new Selector(new List<Node>
                 {
@@ -180,7 +474,7 @@ namespace Glaidiator.BehaviorTree
                             new CheckEnemyAction("atkLight"),
                             new CheckEnemyAction("atkHeavy"),
                         }),
-                        
+
                         new Selector(new List<Node>
                         {
                             new Sequence(new List<Node> // try block or
@@ -198,7 +492,7 @@ namespace Glaidiator.BehaviorTree
                             })
                         }),
                     }),
-                    
+
                     // defend ranged sequence
                     new Sequence(new List<Node>
                     {
@@ -223,13 +517,13 @@ namespace Glaidiator.BehaviorTree
                         }),
                     }),
                 }),
-                
+
                 // select offense branch
                 new Selector(new List<Node>
                 {
                     new Sequence(new List<Node> // try melee lightAtk
-                    { 
-                        new CheckEnemyDistance(meleeDist), 
+                    {
+                        new CheckEnemyDistance(meleeDist),
                         new CheckCanDoAction("atkLight"),
                         new TaskFaceEnemy(),
                         new TaskLightAtk(),
@@ -247,16 +541,16 @@ namespace Glaidiator.BehaviorTree
                         new TaskHeavyAtk(),
                     }),
                 }),
-                
+
                 // select movement branch
                 new Selector(new List<Node>
                 {
                     // evade sequence
                     new Sequence(new List<Node> // evade if less hp than enemy
                     {
-                        new Inverter(new CheckCompareHealth(0f)), 
+                        new Inverter(new CheckCompareHealth(0f)),
                         new CheckEnemyDistance(rangedDist),
-                        new Sequence(new List<Node>// run away until threshold distance
+                        new Sequence(new List<Node> // run away until threshold distance
                         {
                             new TaskBackEnemy(),
                             new TaskMoveForward(),
@@ -264,7 +558,7 @@ namespace Glaidiator.BehaviorTree
                             new CheckArenaBounds(1f),
                             new TaskMoveForward(),
                         }),
-                        
+
                         new Inverter(new CheckArenaBounds(1f)),
                         new Selector(new List<Node> // turn if hitting wall
                         {
@@ -286,7 +580,7 @@ namespace Glaidiator.BehaviorTree
                     }),
                     // move to melee sequence
                     new Sequence(new List<Node> // stop when melee dist
-                    { 
+                    {
                         new CheckEnemyDistance(meleeDist), // if less
                         new CheckOwnHealth(evadeThresholdHealth),
                         new CheckOwnStamina(evadeThresholdStamina),
@@ -304,15 +598,18 @@ namespace Glaidiator.BehaviorTree
                 }),
             }));
         }
+
         public static BTree CreateCharlie()
         {
             const float rangedDist = 8f;
             const float meleeDist = 2f;
             const float evadeThresholdHealth = 30f;
             const float evadeThresholdStamina = 20f;
-            
+
             return new BTree(new Selector(new List<Node>
             {
+                new CheckEnemyState("Dead"), // success if enemy is dead
+                
                 // select defense branch
                 new Selector(new List<Node>
                 {
@@ -325,7 +622,7 @@ namespace Glaidiator.BehaviorTree
                             new CheckEnemyAction("Light Attack"),
                             new CheckEnemyAction("Heavy Attack"),
                         }),
-                        
+
                         new Selector(new List<Node>
                         {
                             new Sequence(new List<Node> // try block or
@@ -346,7 +643,7 @@ namespace Glaidiator.BehaviorTree
                             }),
                             new Sequence(new List<Node> // try move away
                             {
-                                new CheckEnemyDistance(meleeDist*2),
+                                new CheckEnemyDistance(meleeDist * 2),
                                 new TaskBackEnemy(),
                                 new Selector(new List<Node>
                                 {
@@ -356,7 +653,6 @@ namespace Glaidiator.BehaviorTree
                                     {
                                         new TaskTurnLeft(),
                                         new CheckArenaBounds(1f),
-                                        
                                     }),
                                     new Sequence(new List<Node> // if wall try turn right
                                     {
@@ -368,7 +664,7 @@ namespace Glaidiator.BehaviorTree
                             }),
                         }),
                     }),
-                    
+
                     // defend ranged sequence
                     new Sequence(new List<Node>
                     {
@@ -394,13 +690,13 @@ namespace Glaidiator.BehaviorTree
                         }),
                     }),
                 }),
-                
+
                 // select offense branch
                 new Selector(new List<Node>
                 {
                     new Sequence(new List<Node> // try melee lightAtk
-                    { 
-                        new CheckEnemyDistance(meleeDist), 
+                    {
+                        new CheckEnemyDistance(meleeDist),
                         new CheckCanDoAction("atkLight"),
                         new TaskFaceEnemy(),
                         new TaskLightAtk(),
@@ -434,9 +730,9 @@ namespace Glaidiator.BehaviorTree
                     // evade sequence
                     new Sequence(new List<Node> // evade if less hp than enemy
                     {
-                        new Inverter(new CheckCompareHealth(0f)), 
+                        new Inverter(new CheckCompareHealth(0f)),
                         new CheckEnemyDistance(rangedDist),
-                        new Sequence(new List<Node>// run away until threshold distance
+                        new Sequence(new List<Node> // run away until threshold distance
                         {
                             new TaskBackEnemy(),
                             new TaskMoveForward(),
@@ -444,7 +740,7 @@ namespace Glaidiator.BehaviorTree
                             new CheckArenaBounds(1f),
                             new TaskMoveForward(),
                         }),
-                        
+
                         new Inverter(new CheckArenaBounds(1f)),
                         new Selector(new List<Node> // turn if hitting wall
                         {
@@ -466,7 +762,7 @@ namespace Glaidiator.BehaviorTree
                     }),
                     // move to melee sequence
                     new Sequence(new List<Node> // stop when melee dist
-                    { 
+                    {
                         new CheckEnemyDistance(meleeDist), // if less
                         new CheckOwnHealth(evadeThresholdHealth),
                         new CheckOwnStamina(evadeThresholdStamina),
@@ -483,141 +779,6 @@ namespace Glaidiator.BehaviorTree
                     }),
                 }),
             }));
-        }
-
-        #endregion
-       
-
-        #region Node Methods & Initializers
-
-         private static Node GetRandomRoot()
-        {
-            return _roots[Random.Range(0, _roots.Count)].Clone();
-        }
-         
-        private static Node GetRandomPrototype()
-        { 
-            return _prototypes[Random.Range(0, _prototypes.Count)].Clone();
-        }
-
-        public static Node GetRandomNode()
-        {
-            float p = MathStuff.Rand.NextFloat();
-            return p > 0.25 ? GetRandomPrototype() : GetRandomRoot();
-        }
-
-        private static void InitRoots()
-        {
-            _roots = new List<Composite>
-            {
-                new Selector(),
-                new Sequence()
-            };
-        }
-        
-         // init prototype samples for random mutations
-        private static void InitPrototypes() // TODO: Include decorator nodes, especially prototypes with Inverter node
-        {
-            _prototypesMap = new Dictionary<string, Node>();
-            // prototypesMap.Add("TaskLightAtk", new TaskLightAtk());
-            // prototypesMap.Add("TaskHeavyAtk", new TaskHeavyAtk());
-            // prototypesMap.Add("TaskRangedAtk", new TaskRangedAtk());
-            // prototypesMap.Add("TaskBlock", new TaskBlock());
-            // prototypesMap.Add("TaskDodge", new TaskDodge());
-            // prototypesMap.Add("CheckLightAtk", new CheckCanDoAction("atkLight"));
-            // prototypesMap.Add("CheckHeavyAtk", new CheckCanDoAction("atkHeavy"));
-            // prototypesMap.Add("CheckRangedAtk", new CheckCanDoAction("atkRanged"));
-            // prototypesMap.Add("CheckBlock", new CheckCanDoAction("block"));
-            // prototypesMap.Add("CheckDodge", new CheckCanDoAction("dodge"));
-            
-            _prototypesMap.Add("TaskFaceEnemy", new TaskFaceEnemy());
-            _prototypesMap.Add("TaskBackEnemy", new TaskBackEnemy());
-            _prototypesMap.Add("TaskMoveForward", new TaskMoveForward());
-            _prototypesMap.Add("TaskTurnLeft", new TaskTurnLeft());
-            _prototypesMap.Add("TaskTurnRight", new TaskTurnRight());
-            _prototypesMap.Add("CheckArenaBounds", new CheckArenaBounds(1f));
-            
-            _prototypesMap.Add("CheckEnemyDistanceMelee", new CheckEnemyDistance(2f));
-            _prototypesMap.Add("CheckEnemyDistanceRanged", new CheckEnemyDistance(6f));
-            _prototypesMap.Add("CheckOwnHealth", new CheckOwnHealth(50f));
-            _prototypesMap.Add("CheckOwnStamina", new CheckOwnStamina(50f));
-            _prototypesMap.Add("CheckEnemyHealth", new CheckEnemyHealth(50f));
-            _prototypesMap.Add("CheckEnemyStamina", new CheckEnemyStamina(50f));
-            // prototypesMap.Add("TaskSetWP", new TaskSetWP(2f));
-            // prototypesMap.Add("TaskClearWP", new TaskClearWP());
-            // prototypesMap.Add("CheckHasWP", new CheckHasTarget("wp"));
-            // prototypesMap.Add("CheckWPDistance", new CheckTargetDistance("wp", 0.01f));
-            _prototypesMap.Add("TaskWait", new TaskWait());
-
-            _prototypesMap.Add("CheckEnemyLight", new CheckEnemyAction("atkLight"));
-            _prototypesMap.Add("CheckEnemyHeavy", new CheckEnemyAction("atkHeavy"));
-            _prototypesMap.Add("CheckEnemyRanged", new CheckEnemyAction("atkRanged"));
-            _prototypesMap.Add("CheckEnemyBlock", new CheckEnemyAction("block"));
-            _prototypesMap.Add("CheckEnemyDodge", new CheckEnemyAction("dodge"));
-            _prototypesMap.Add("ModuleAtkLight", 
-                new Module(
-                    "ModuleAtkLight", 
-                    new Sequence(new List<Node> 
-                    {
-                        new CheckCanDoAction("atkLight"),
-                        new TaskFaceEnemy(),
-                        new TaskLightAtk(),
-                    })
-                )
-            );
-            
-            _prototypesMap.Add("ModuleAtkHeavy", 
-                new Module(
-                    "ModuleAtkHeavy", 
-                    new Sequence(new List<Node> 
-                    {
-                        new CheckCanDoAction("atkHeavy"),
-                        new TaskFaceEnemy(),
-                        new TaskHeavyAtk(),
-                    })
-                )
-            );
-            
-            _prototypesMap.Add("ModuleAtkRanged",
-                new Module(
-                    "ModuleAtkRanged",
-                    new Sequence(new List<Node>
-                    {
-                        new Inverter(new CheckEnemyDistance(3f)),
-                        new CheckCanDoAction("atkRanged"),
-                        new CheckEnemyDistance(6f),
-                        new TaskFaceEnemy(),
-                        new CheckRangedDirection(30f),
-                        new TaskRangedAtk(),
-                    })
-                )
-            );
-            
-            _prototypesMap.Add("ModuleBlock", 
-                new Module(
-                    "ModuleBlock", 
-                    new Sequence(new List<Node> 
-                    {
-                        new CheckCanDoAction("block"),
-                        new TaskFaceEnemy(),
-                        new TaskBlock(),
-                    })
-                )
-            );
-            
-            _prototypesMap.Add("ModuleDodge", 
-                new Module(
-                    "ModuleDodge", 
-                    new Sequence(new List<Node> 
-                    {
-                        new CheckCanDoAction("dodge"),
-                        new TaskDodge(),
-                    })
-                )
-            );
-
-
-            _prototypes = _prototypesMap.Values.ToList();
         }
 
         #endregion
