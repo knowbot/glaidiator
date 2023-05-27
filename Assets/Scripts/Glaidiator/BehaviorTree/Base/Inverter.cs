@@ -33,10 +33,7 @@ namespace Glaidiator.BehaviorTree.Base
 
         public override Node Randomized()
         {
-            if (Child == null) return new Inverter(BTreeFactory.GetRandomNode().Randomized());
-            var newNode = Clone() as Inverter;
-            newNode?.ReplaceChild(newNode.Child, newNode.Child.Randomized());
-            return newNode;
+            return new Inverter(BTreeFactory.GetRandomNode().Randomized());
         }
     }
 }

@@ -7,6 +7,8 @@ using Glaidiator.BehaviorTree.CustomNodes.CheckNodes;
 using Glaidiator.Model;
 using Glaidiator.Utils;
 using UnityEngine;
+using Random = UnityEngine.Random;
+
 // ReSharper disable All
 
 namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
@@ -52,7 +54,8 @@ namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
 
         public override Node Randomized()
         {
-            return new CheckArenaBounds(MathStuff.Rand.NextFloat(Arena.Diagonal));
+            var newNode = new CheckArenaBounds(MathStuff.Rand.NextFloat(Arena.Diagonal));
+            return MathStuff.Rand.NextFloat() > 0.5 ? new Inverter(newNode) : newNode;
         }
         public override void WriteXml(XmlWriter w)
         {

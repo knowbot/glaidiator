@@ -2,7 +2,7 @@
 {
     public interface ICooldown
     {
-        public string Name { get; }
+        public string DisplayName { get; }
         public Timer Cooldown { get; }
         public ICooldown SetOnCooldown();
     }

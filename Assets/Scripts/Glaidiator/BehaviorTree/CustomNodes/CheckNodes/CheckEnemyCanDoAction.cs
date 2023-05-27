@@ -6,12 +6,11 @@ using Glaidiator.Model.Actions;
 
 namespace Glaidiator.BehaviorTree.CustomNodes.CheckNodes
 {
-    public class CheckEnemyAction: Check
+    public class CheckEnemyCanDoAction: Check
     {
-
         private readonly string _actionName;
 
-        public CheckEnemyAction(string actionName)
+        public CheckEnemyCanDoAction(string actionName)
         {
             _actionName = actionName;
         }
@@ -20,15 +19,18 @@ namespace Glaidiator.BehaviorTree.CustomNodes.CheckNodes
         {
             tree.currentNode = this;
             if (tree == null) throw new NullReferenceException();
-        
-            IAction action = ((Character)GetData("enemy"))?.ActiveAction;
-            if (action == null)
+
+            var enemy = ((Character)GetData("enemy"));
+            IAction action = enemy.Actions[_actionName];
+
+            if (enemy.IsOnCooldown(action.Action.Name) || !enemy.HasEnoughStamina(action))
             {
                 state = NodeState.FAILURE;
-                return state;
             }
-
-            state = _actionName == action.Action.Name ? NodeState.SUCCESS : NodeState.FAILURE;
+            else
+            {
+                state = NodeState.SUCCESS;
+            }
             
             return state;
         }
@@ -36,7 +38,7 @@ namespace Glaidiator.BehaviorTree.CustomNodes.CheckNodes
         
         public override Node Clone()
         {
-            return new CheckEnemyAction(_actionName);
+            return new CheckEnemyCanDoAction(_actionName);
         }
 
         public override void Mutate()

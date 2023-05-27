@@ -44,10 +44,7 @@ namespace Glaidiator.BehaviorTree.Base
 
         public override Node Randomized()
         {
-            if (Child == null) return new UntilFail(BTreeFactory.GetRandomNode().Randomized());
-            var newNode = Clone() as UntilFail;
-            newNode?.ReplaceChild(newNode.Child, newNode.Child.Randomized());
-            return newNode;
+            return new AlwaysSucceed(BTreeFactory.GetRandomNode().Randomized());
         }
     }
     

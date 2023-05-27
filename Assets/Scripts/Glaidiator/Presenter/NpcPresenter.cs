@@ -54,9 +54,9 @@ namespace Glaidiator.Presenter
             
             displayState.text = Character.CurrentState.ToString();
             displayCooldowns.text = "";
-            foreach (ICooldown cd in Character.Cooldowns.OrderBy(cd => cd.Name))
+            foreach (ICooldown cd in Character.Cooldowns.OrderBy(cd => cd.DisplayName))
             {
-                displayCooldowns.text += cd.Name + ": " + cd.Cooldown.Duration.ToString("0.00") + "\n";
+                displayCooldowns.text += cd.DisplayName + ": " + cd.Cooldown.Duration.ToString("0.00") + "\n";
             }
             UpdateHealth();
             UpdateStamina();

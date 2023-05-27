@@ -109,7 +109,7 @@ namespace Glaidiator.Model
 					    new BoxCollider(Vector2.zero, new Vector2(3.5f,3.5f),new Vector2(0, 1.5f), true),
 					    this,
 					    1.2f),
-				    25f, 3.3f, 0.4f));
+				    25f, 3.5f, 0.4f));
 		    Actions.Add("atkRanged",
 			    new AttackRanged(
 				    new ActionInfo((int)ActionLookup.AttackRanged, "atkRanged",15f, false, false, 1.5f), 
@@ -120,8 +120,8 @@ namespace Glaidiator.Model
 					    20f
 				    ), 
 				    10f, 5.5f));
-		    Actions.Add("block", new Block(new ActionInfo((int)ActionLookup.Block, "block",10f, false, false,1.0f), 3.0f));
-		    Actions.Add("dodge", new Dodge(new ActionInfo((int)ActionLookup.Dodge, "dodge",25f,false, false,0.5f), 0.8f));
+		    Actions.Add("block", new Block(new ActionInfo((int)ActionLookup.Block, "block",20f, false, false,1.0f), 5.0f));
+		    Actions.Add("dodge", new Dodge(new ActionInfo((int)ActionLookup.Dodge, "dodge",20f,false, false,0.5f), 1.0f));
 	    }
 	    
 	    #endregion
@@ -135,7 +135,7 @@ namespace Glaidiator.Model
 
 	    public bool IsOnCooldown(string name)
 	    {
-		    return Cooldowns.Exists(c => c.Name == name);
+		    return Cooldowns.Exists(c => c.DisplayName == name);
 	    }
 
 	    #endregion
@@ -286,6 +286,7 @@ namespace Glaidiator.Model
         
         private void Moving_Tick(float deltaTime)
         {
+	        UpdateFacingDirection();
 	        Movement.Move(_inputs.move, deltaTime);
 	        OnMoveTick();
         }

@@ -39,15 +39,16 @@ namespace Glaidiator.BehaviorTree
         }
 
 
+        
         #region Node Methods & Initializers
 
         private static Node GetRandomRoot()
         {
             return _roots[Random.Range(0, _roots.Count)].Clone();
         }
-
+         
         private static Node GetRandomPrototype()
-        {
+        { 
             return _prototypes[Random.Range(0, _prototypes.Count)].Clone();
         }
 
@@ -65,17 +66,11 @@ namespace Glaidiator.BehaviorTree
                 new Sequence()
             };
         }
-
-        // init prototype samples for random mutations
+        
+         // init prototype samples for random mutations
         private static void InitPrototypes() // TODO: Include decorator nodes, especially prototypes with Inverter node
         {
-            const float rangedMinDist = 3f;
-            const float rangedMaxDist = 8f;
-            const float meleeDist = 2f;
-            const float evadeThresholdHealth = 30f;
-            const float evadeThresholdStamina = 20f;
             _prototypesMap = new Dictionary<string, Node>();
-            
             // prototypesMap.Add("TaskLightAtk", new TaskLightAtk());
             // prototypesMap.Add("TaskHeavyAtk", new TaskHeavyAtk());
             // prototypesMap.Add("TaskRangedAtk", new TaskRangedAtk());
@@ -86,14 +81,17 @@ namespace Glaidiator.BehaviorTree
             // prototypesMap.Add("CheckRangedAtk", new CheckCanDoAction("atkRanged"));
             // prototypesMap.Add("CheckBlock", new CheckCanDoAction("block"));
             // prototypesMap.Add("CheckDodge", new CheckCanDoAction("dodge"));
-
+            _prototypesMap.Add("Inverter", new Inverter());
+            _prototypesMap.Add("Repeater", new Repeater());
+            _prototypesMap.Add("AlwaysSucceed", new AlwaysSucceed());
+            _prototypesMap.Add("UntilFail", new UntilFail());
             _prototypesMap.Add("TaskFaceEnemy", new TaskFaceEnemy());
             _prototypesMap.Add("TaskBackEnemy", new TaskBackEnemy());
             _prototypesMap.Add("TaskMoveForward", new TaskMoveForward());
             _prototypesMap.Add("TaskTurnLeft", new TaskTurnLeft());
             _prototypesMap.Add("TaskTurnRight", new TaskTurnRight());
             _prototypesMap.Add("CheckArenaBounds", new CheckArenaBounds(1f));
-
+            
             _prototypesMap.Add("CheckEnemyDistanceMelee", new CheckEnemyDistance(2f));
             _prototypesMap.Add("CheckEnemyDistanceRanged", new CheckEnemyDistance(6f));
             _prototypesMap.Add("CheckOwnHealth", new CheckOwnHealth(50f));
@@ -111,52 +109,49 @@ namespace Glaidiator.BehaviorTree
             _prototypesMap.Add("CheckEnemyRanged", new CheckEnemyAction("atkRanged"));
             _prototypesMap.Add("CheckEnemyBlock", new CheckEnemyAction("block"));
             _prototypesMap.Add("CheckEnemyDodge", new CheckEnemyAction("dodge"));
-            _prototypesMap.Add("ModuleAtkLight",
+            _prototypesMap.Add("ModuleAtkLight", 
                 new Module(
-                    "ModuleAtkLight",
-                    new Sequence(new List<Node>
+                    "ModuleAtkLight", 
+                    new Sequence(new List<Node> 
                     {
                         new CheckCanDoAction("atkLight"),
-                        new CheckEnemyDistance(meleeDist),
                         new TaskFaceEnemy(),
                         new TaskLightAtk(),
                     })
                 )
             );
-
-            _prototypesMap.Add("ModuleAtkHeavy",
+            
+            _prototypesMap.Add("ModuleAtkHeavy", 
                 new Module(
-                    "ModuleAtkHeavy",
-                    new Sequence(new List<Node>
+                    "ModuleAtkHeavy", 
+                    new Sequence(new List<Node> 
                     {
                         new CheckCanDoAction("atkHeavy"),
-                        new CheckEnemyDistance(meleeDist),
                         new TaskFaceEnemy(),
                         new TaskHeavyAtk(),
                     })
                 )
             );
-
+            
             _prototypesMap.Add("ModuleAtkRanged",
                 new Module(
                     "ModuleAtkRanged",
                     new Sequence(new List<Node>
                     {
-                        
+                        new Inverter(new CheckEnemyDistance(3f)),
                         new CheckCanDoAction("atkRanged"),
-                        new Inverter(new CheckEnemyDistance(rangedMinDist)),
-                        new CheckEnemyDistance(rangedMaxDist),
+                        new CheckEnemyDistance(6f),
                         new TaskFaceEnemy(),
                         new CheckRangedDirection(30f),
                         new TaskRangedAtk(),
                     })
                 )
             );
-
-            _prototypesMap.Add("ModuleBlock",
+            
+            _prototypesMap.Add("ModuleBlock", 
                 new Module(
-                    "ModuleBlock",
-                    new Sequence(new List<Node>
+                    "ModuleBlock", 
+                    new Sequence(new List<Node> 
                     {
                         new CheckCanDoAction("block"),
                         new TaskFaceEnemy(),
@@ -164,11 +159,11 @@ namespace Glaidiator.BehaviorTree
                     })
                 )
             );
-
-            _prototypesMap.Add("ModuleDodge",
+            
+            _prototypesMap.Add("ModuleDodge", 
                 new Module(
-                    "ModuleDodge",
-                    new Sequence(new List<Node>
+                    "ModuleDodge", 
+                    new Sequence(new List<Node> 
                     {
                         new CheckCanDoAction("dodge"),
                         new TaskDodge(),
@@ -181,7 +176,6 @@ namespace Glaidiator.BehaviorTree
         }
 
         #endregion
-
 
         #region Custom Tree Declarations
 
@@ -782,5 +776,7 @@ namespace Glaidiator.BehaviorTree
         }
 
         #endregion
+       
+
     }
 }
