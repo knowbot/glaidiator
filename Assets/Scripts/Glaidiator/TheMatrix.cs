@@ -1,4 +1,5 @@
-﻿using Glaidiator.BehaviorTree;
+﻿using System;
+using Glaidiator.BehaviorTree;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -37,14 +38,9 @@ namespace Glaidiator
             SimManager.Instance.Complete();
             if (!SimManager.Instance.IsDone()) return;
             EvoManager.Instance.Evaluate();
-            Plot();
             EvoManager.Instance.Reproduce();
         }
-
-        private void Plot()
-        {
-            
-        }
+        
 
         private void Update()
         {
@@ -69,6 +65,11 @@ namespace Glaidiator
         
 
         private void OnDestroy()
+        {
+            SimManager.Instance.ForceComplete();
+        }
+
+        private void OnDisable()
         {
             SimManager.Instance.ForceComplete();
         }

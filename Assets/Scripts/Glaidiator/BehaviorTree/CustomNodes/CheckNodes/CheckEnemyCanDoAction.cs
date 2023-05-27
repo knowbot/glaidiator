@@ -8,7 +8,7 @@ namespace Glaidiator.BehaviorTree.CustomNodes.CheckNodes
 {
     public class CheckEnemyCanDoAction: Check
     {
-        private readonly string _actionName;
+        private string _actionName;
 
         public CheckEnemyCanDoAction(string actionName)
         {

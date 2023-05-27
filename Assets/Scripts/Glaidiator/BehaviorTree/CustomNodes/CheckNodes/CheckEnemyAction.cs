@@ -9,7 +9,7 @@ namespace Glaidiator.BehaviorTree.CustomNodes.CheckNodes
     public class CheckEnemyAction: Check
     {
 
-        private readonly string _actionName;
+        private string _actionName;
 
         public CheckEnemyAction(string actionName)
         {

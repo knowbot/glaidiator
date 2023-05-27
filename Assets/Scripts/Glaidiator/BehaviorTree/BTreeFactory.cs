@@ -42,12 +42,12 @@ namespace Glaidiator.BehaviorTree
         
         #region Node Methods & Initializers
 
-        private static Node GetRandomRoot()
+        public static Node GetRandomRoot()
         {
             return _roots[Random.Range(0, _roots.Count)].Clone();
         }
          
-        private static Node GetRandomPrototype()
+        public static Node GetRandomPrototype()
         { 
             return _prototypes[Random.Range(0, _prototypes.Count)].Clone();
         }
@@ -84,7 +84,7 @@ namespace Glaidiator.BehaviorTree
             _prototypesMap.Add("Inverter", new Inverter());
             _prototypesMap.Add("Repeater", new Repeater());
             _prototypesMap.Add("AlwaysSucceed", new AlwaysSucceed());
-            _prototypesMap.Add("UntilFail", new UntilFail());
+            // /_prototypesMap.Add("UntilFail", new UntilFail());
             _prototypesMap.Add("TaskFaceEnemy", new TaskFaceEnemy());
             _prototypesMap.Add("TaskBackEnemy", new TaskBackEnemy());
             _prototypesMap.Add("TaskMoveForward", new TaskMoveForward());
@@ -109,6 +109,11 @@ namespace Glaidiator.BehaviorTree
             _prototypesMap.Add("CheckEnemyRanged", new CheckEnemyAction("atkRanged"));
             _prototypesMap.Add("CheckEnemyBlock", new CheckEnemyAction("block"));
             _prototypesMap.Add("CheckEnemyDodge", new CheckEnemyAction("dodge"));
+            _prototypesMap.Add("CheckEnemyCanDoLight", new CheckEnemyCanDoAction("atkLight"));
+            _prototypesMap.Add("CheckEnemyCanDoHeavy", new CheckEnemyCanDoAction("atkHeavy"));
+            _prototypesMap.Add("CheckEnemyCanDoRanged", new CheckEnemyCanDoAction("atkRanged"));
+            _prototypesMap.Add("CheckEnemyCanDoBlock", new CheckEnemyCanDoAction("block"));
+            _prototypesMap.Add("CheckEnemyCanDoDodge", new CheckEnemyCanDoAction("dodge"));
             _prototypesMap.Add("ModuleAtkLight", 
                 new Module(
                     "ModuleAtkLight", 

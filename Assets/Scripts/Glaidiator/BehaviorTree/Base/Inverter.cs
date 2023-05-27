@@ -33,7 +33,7 @@ namespace Glaidiator.BehaviorTree.Base
 
         public override Node Randomized()
         {
-            return new Inverter(BTreeFactory.GetRandomNode().Randomized());
+            return new Inverter(BTreeFactory.GetRandomPrototype().Randomized());
         }
     }
 }

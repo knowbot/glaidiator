@@ -47,7 +47,7 @@ namespace Glaidiator.BehaviorTree.Base
 
         public override Node Randomized()
         {
-            return new UntilFail(BTreeFactory.GetRandomNode().Randomized());
+            return new UntilFail(BTreeFactory.GetRandomPrototype().Randomized());
         }
     }
 }
