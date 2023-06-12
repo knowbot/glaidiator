@@ -2,8 +2,8 @@
 using System.Linq;
 using Glaidiator.BehaviorTree.Base;
 using Glaidiator.BehaviorTree.CustomNodes;
-using Glaidiator.BehaviorTree.CustomNodes.CheckNodes;
-using Glaidiator.BehaviorTree.CustomNodes.TaskNodes;
+using Glaidiator.BehaviorTree.CustomNodes.ActionNodes;
+using Glaidiator.BehaviorTree.CustomNodes.ConditionNodes;
 using Glaidiator.BehaviorTree.LeafNodes.ConditionNodes;
 using Glaidiator.Utils;
 using UnityEngine;
@@ -85,43 +85,43 @@ namespace Glaidiator.BehaviorTree
             _prototypesMap.Add("Repeater", new Repeater());
             _prototypesMap.Add("AlwaysSucceed", new AlwaysSucceed());
             // /_prototypesMap.Add("UntilFail", new UntilFail());
-            _prototypesMap.Add("TaskFaceEnemy", new TaskFaceEnemy());
-            _prototypesMap.Add("TaskBackEnemy", new TaskBackEnemy());
-            _prototypesMap.Add("TaskMoveForward", new TaskMoveForward());
-            _prototypesMap.Add("TaskTurnLeft", new TaskTurnLeft());
-            _prototypesMap.Add("TaskTurnRight", new TaskTurnRight());
-            _prototypesMap.Add("CheckArenaBounds", new CheckArenaBounds(1f));
+            _prototypesMap.Add("TaskFaceEnemy", new ActionFaceEnemy());
+            _prototypesMap.Add("TaskBackEnemy", new ActionBackEnemy());
+            _prototypesMap.Add("TaskMoveForward", new ActionMoveForward());
+            _prototypesMap.Add("TaskTurnLeft", new ActionTurnLeft());
+            _prototypesMap.Add("TaskTurnRight", new ActionTurnRight());
+            _prototypesMap.Add("CheckArenaBounds", new ConditionArenaBounds(1f));
             
-            _prototypesMap.Add("CheckEnemyDistanceMelee", new CheckEnemyDistance(2f));
-            _prototypesMap.Add("CheckEnemyDistanceRanged", new CheckEnemyDistance(6f));
-            _prototypesMap.Add("CheckOwnHealth", new CheckOwnHealth(50f));
-            _prototypesMap.Add("CheckOwnStamina", new CheckOwnStamina(50f));
-            _prototypesMap.Add("CheckEnemyHealth", new CheckEnemyHealth(50f));
-            _prototypesMap.Add("CheckEnemyStamina", new CheckEnemyStamina(50f));
+            _prototypesMap.Add("CheckEnemyDistanceMelee", new ConditionEnemyDistance(2f));
+            _prototypesMap.Add("CheckEnemyDistanceRanged", new ConditionEnemyDistance(6f));
+            _prototypesMap.Add("CheckOwnHealth", new ConditionOwnHealth(50f));
+            _prototypesMap.Add("CheckOwnStamina", new ConditionOwnStamina(50f));
+            _prototypesMap.Add("CheckEnemyHealth", new ConditionEnemyHealth(50f));
+            _prototypesMap.Add("CheckEnemyStamina", new ConditionEnemyStamina(50f));
             // prototypesMap.Add("TaskSetWP", new TaskSetWP(2f));
             // prototypesMap.Add("TaskClearWP", new TaskClearWP());
             // prototypesMap.Add("CheckHasWP", new CheckHasTarget("wp"));
             // prototypesMap.Add("CheckWPDistance", new CheckTargetDistance("wp", 0.01f));
-            _prototypesMap.Add("TaskWait", new TaskWait());
+            _prototypesMap.Add("TaskWait", new ActionWait());
 
-            _prototypesMap.Add("CheckEnemyLight", new CheckEnemyAction("atkLight"));
-            _prototypesMap.Add("CheckEnemyHeavy", new CheckEnemyAction("atkHeavy"));
-            _prototypesMap.Add("CheckEnemyRanged", new CheckEnemyAction("atkRanged"));
-            _prototypesMap.Add("CheckEnemyBlock", new CheckEnemyAction("block"));
-            _prototypesMap.Add("CheckEnemyDodge", new CheckEnemyAction("dodge"));
-            _prototypesMap.Add("CheckEnemyCanDoLight", new CheckEnemyCanDoAction("atkLight"));
-            _prototypesMap.Add("CheckEnemyCanDoHeavy", new CheckEnemyCanDoAction("atkHeavy"));
-            _prototypesMap.Add("CheckEnemyCanDoRanged", new CheckEnemyCanDoAction("atkRanged"));
-            _prototypesMap.Add("CheckEnemyCanDoBlock", new CheckEnemyCanDoAction("block"));
-            _prototypesMap.Add("CheckEnemyCanDoDodge", new CheckEnemyCanDoAction("dodge"));
+            _prototypesMap.Add("CheckEnemyLight", new ConditionEnemyAction("atkLight"));
+            _prototypesMap.Add("CheckEnemyHeavy", new ConditionEnemyAction("atkHeavy"));
+            _prototypesMap.Add("CheckEnemyRanged", new ConditionEnemyAction("atkRanged"));
+            _prototypesMap.Add("CheckEnemyBlock", new ConditionEnemyAction("block"));
+            _prototypesMap.Add("CheckEnemyDodge", new ConditionEnemyAction("dodge"));
+            _prototypesMap.Add("CheckEnemyCanDoLight", new ConditionEnemyCanDoAction("atkLight"));
+            _prototypesMap.Add("CheckEnemyCanDoHeavy", new ConditionEnemyCanDoAction("atkHeavy"));
+            _prototypesMap.Add("CheckEnemyCanDoRanged", new ConditionEnemyCanDoAction("atkRanged"));
+            _prototypesMap.Add("CheckEnemyCanDoBlock", new ConditionEnemyCanDoAction("block"));
+            _prototypesMap.Add("CheckEnemyCanDoDodge", new ConditionEnemyCanDoAction("dodge"));
             _prototypesMap.Add("ModuleAtkLight", 
                 new Module(
                     "ModuleAtkLight", 
                     new Sequence(new List<Node> 
                     {
-                        new CheckCanDoAction("atkLight"),
-                        new TaskFaceEnemy(),
-                        new TaskLightAtk(),
+                        new ConditionCanDoAction("atkLight"),
+                        new ActionFaceEnemy(),
+                        new ActionLightAtk(),
                     })
                 )
             );
@@ -131,9 +131,9 @@ namespace Glaidiator.BehaviorTree
                     "ModuleAtkHeavy", 
                     new Sequence(new List<Node> 
                     {
-                        new CheckCanDoAction("atkHeavy"),
-                        new TaskFaceEnemy(),
-                        new TaskHeavyAtk(),
+                        new ConditionCanDoAction("atkHeavy"),
+                        new ActionFaceEnemy(),
+                        new ActionHeavyAtk(),
                     })
                 )
             );
@@ -143,12 +143,12 @@ namespace Glaidiator.BehaviorTree
                     "ModuleAtkRanged",
                     new Sequence(new List<Node>
                     {
-                        new Inverter(new CheckEnemyDistance(3f)),
-                        new CheckCanDoAction("atkRanged"),
-                        new CheckEnemyDistance(6f),
-                        new TaskFaceEnemy(),
-                        new CheckRangedDirection(30f),
-                        new TaskRangedAtk(),
+                        new Inverter(new ConditionEnemyDistance(3f)),
+                        new ConditionCanDoAction("atkRanged"),
+                        new ConditionEnemyDistance(6f),
+                        new ActionFaceEnemy(),
+                        new ConditionRangedDirection(30f),
+                        new ActionRangedAtk(),
                     })
                 )
             );
@@ -158,9 +158,9 @@ namespace Glaidiator.BehaviorTree
                     "ModuleBlock", 
                     new Sequence(new List<Node> 
                     {
-                        new CheckCanDoAction("block"),
-                        new TaskFaceEnemy(),
-                        new TaskBlock(),
+                        new ConditionCanDoAction("block"),
+                        new ActionFaceEnemy(),
+                        new ActionBlock(),
                     })
                 )
             );
@@ -170,8 +170,8 @@ namespace Glaidiator.BehaviorTree
                     "ModuleDodge", 
                     new Sequence(new List<Node> 
                     {
-                        new CheckCanDoAction("dodge"),
-                        new TaskDodge(),
+                        new ConditionCanDoAction("dodge"),
+                        new ActionDodge(),
                     })
                 )
             );
@@ -195,36 +195,36 @@ namespace Glaidiator.BehaviorTree
 
             return new BTree(new Selector(new List<Node>
             {
-                new CheckEnemyState("Dead"), // success if enemy is dead
+                new ConditionEnemyState("Dead"), // success if enemy is dead
                 
                 // defense branch
                 new Sequence(new List<Node>
                 {
                     // only defend when low hp
-                    new Inverter(new CheckOwnHealth(defenseHealthThreshold)),
+                    new Inverter(new ConditionOwnHealth(defenseHealthThreshold)),
                     new Selector(new List<Node> // if enemy melee
                     {
-                        new CheckEnemyAction("atkLight"),
-                        new CheckEnemyAction("atkHeavy"),
+                        new ConditionEnemyAction("atkLight"),
+                        new ConditionEnemyAction("atkHeavy"),
                     }),
                     
                     new Selector(new List<Node>
                     {
                         new Sequence(new List<Node> // try block or
                         {
-                            new CheckEnemyDistance(meleeDist),
-                            new CheckCanDoAction("block"),
-                            new TaskFaceEnemy(),
-                            new TaskBlock(),
+                            new ConditionEnemyDistance(meleeDist),
+                            new ConditionCanDoAction("block"),
+                            new ActionFaceEnemy(),
+                            new ActionBlock(),
                         }),
                         new Sequence(new List<Node> // try dodge or
                         {
-                            new CheckEnemyDistance(meleeDist),
-                            new CheckCanDoAction("dodge"),
-                            new CheckOwnStamina(dodgeThresholdStamina),
-                            new TaskBackEnemy(),
-                            new TaskMoveForward(),
-                            new TaskDodge(),
+                            new ConditionEnemyDistance(meleeDist),
+                            new ConditionCanDoAction("dodge"),
+                            new ConditionOwnStamina(dodgeThresholdStamina),
+                            new ActionBackEnemy(),
+                            new ActionMoveForward(),
+                            new ActionDodge(),
                         }),
                         /*
                         new Sequence(new List<Node> // try move away
@@ -255,71 +255,71 @@ namespace Glaidiator.BehaviorTree
                 {
                     new Sequence(new List<Node>
                     {
-                        new CheckCanDoAction("atkLight"),
-                        new CheckEnemyDistance(meleeDist),
-                        new TaskFaceEnemy(),
-                        new TaskLightAtk(),
+                        new ConditionCanDoAction("atkLight"),
+                        new ConditionEnemyDistance(meleeDist),
+                        new ActionFaceEnemy(),
+                        new ActionLightAtk(),
                     }),
                     new Sequence(new List<Node>
                     {
-                        new CheckCanDoAction("atkHeavy"),
-                        new CheckEnemyDistance(meleeDist),
-                        new TaskFaceEnemy(),
-                        new TaskHeavyAtk(),
+                        new ConditionCanDoAction("atkHeavy"),
+                        new ConditionEnemyDistance(meleeDist),
+                        new ActionFaceEnemy(),
+                        new ActionHeavyAtk(),
                     }),
                     new Sequence(new List<Node>
                     {
-                        new CheckCanDoAction("atkRanged"),
-                        new CheckEnemyDistance(rangedMaxDist),
-                        new Inverter(new CheckEnemyDistance(rangedMinDist)),
-                        new TaskFaceEnemy(),
-                        new CheckRangedDirection(),
-                        new TaskRangedAtk(),
+                        new ConditionCanDoAction("atkRanged"),
+                        new ConditionEnemyDistance(rangedMaxDist),
+                        new Inverter(new ConditionEnemyDistance(rangedMinDist)),
+                        new ActionFaceEnemy(),
+                        new ConditionRangedDirection(),
+                        new ActionRangedAtk(),
                     }),
                 }),
                 
                 // navigation branch offensive
                 new Sequence(new List<Node> // move to melee dist
                 {
-                    new CheckCompareHealth(-10f),
+                    new ConditionCompareHealth(-10f),
                     //new CheckCompareStamina(-10f),
-                    new Inverter(new CheckEnemyDistance(meleeDist)),
-                    new TaskFaceEnemy(),
-                    new TaskMoveForward(),
+                    new Inverter(new ConditionEnemyDistance(meleeDist)),
+                    new ActionFaceEnemy(),
+                    new ActionMoveForward(),
                 }),
                 new Sequence(new List<Node> // stop when melee dist
                 {
-                    new CheckCompareHealth(-10f),
+                    new ConditionCompareHealth(-10f),
                     //new CheckCompareStamina(-10f),
-                    new CheckEnemyDistance(meleeDist),
-                    new TaskFaceEnemy(),
-                    new TaskStop(),
+                    new ConditionEnemyDistance(meleeDist),
+                    new ActionFaceEnemy(),
+                    new ActionStop(),
                 }),
                 
                 // navigation branch defensive
                 new Sequence(new List<Node>
                 {
-                    new Inverter(new CheckCompareHealth(0f)),
-                    new CheckEnemyDistance(meleeDist * 2f),
+                    new Inverter(new ConditionCompareHealth(0f)),
+                    new ConditionEnemyDistance(meleeDist * 2f),
                     new Selector(new List<Node>
                     {
                         new Sequence(new List<Node>
                         {
-                            new TaskBackEnemy(),
-                            new CheckArenaBounds(wallDist),
-                            new TaskMoveForward(),
+                            new ActionBackEnemy(),
+                            new ConditionArenaBounds(wallDist),
+                            new ActionMoveForward(),
                         }),
                         new Sequence(new List<Node>
                         {
-                            new TaskTurnLeft(),
-                            new CheckArenaBounds(wallDist),
-                            new TaskMoveForward(),
+                            new ActionTurnLeft(),
+                            new ConditionArenaBounds(wallDist),
+                            new ActionMoveForward(),
                         }),
                         new Sequence(new List<Node>
                         {
-                            new TaskTurnLeft(),
-                            new CheckArenaBounds(wallDist),
-                            new TaskMoveForward(),
+                            new ActionTurnLeft(),
+                            new ConditionArenaBounds(wallDist),
+                            new ActionMoveForward(),
                         }),
                     }),
                 }),
@@ -334,55 +334,55 @@ namespace Glaidiator.BehaviorTree
             const float meleeDist = 2f;
             return new BTree(new Selector(new List<Node>
             {
-                new CheckEnemyState("Dead"), // success if enemy is dead
+                new ConditionEnemyState("Dead"), // success if enemy is dead
                 // attack sequence
                 new Sequence(new List<Node>
                 {
                     // conditions for aggression
-                    new CheckEnemyDistance(aggroDist),
+                    new ConditionEnemyDistance(aggroDist),
                     // new CheckOwnHealth(50f), 
                     // new CheckOwnStamina(15f),
                     new Selector(new List<Node>
                     {
                         new Sequence(new List<Node>
                         {
-                            new Inverter(new CheckEnemyDistance(3f)), // min range
-                            new CheckCanDoAction("atkRanged"),
-                            new CheckEnemyDistance(rangedDist),
-                            new TaskFaceEnemy(),
-                            new CheckRangedDirection(30f), // aim good?
-                            new TaskRangedAtk(),
+                            new Inverter(new ConditionEnemyDistance(3f)), // min range
+                            new ConditionCanDoAction("atkRanged"),
+                            new ConditionEnemyDistance(rangedDist),
+                            new ActionFaceEnemy(),
+                            new ConditionRangedDirection(30f), // aim good?
+                            new ActionRangedAtk(),
                         }),
                         new Selector(new List<Node>
                         {
                             new Sequence(new List<Node>
                             {
-                                new CheckCanDoAction("atkHeavy"),
-                                new CheckEnemyDistance(meleeDist),
-                                new TaskFaceEnemy(),
-                                new TaskHeavyAtk(),
+                                new ConditionCanDoAction("atkHeavy"),
+                                new ConditionEnemyDistance(meleeDist),
+                                new ActionFaceEnemy(),
+                                new ActionHeavyAtk(),
                             }),
                             new Sequence(new List<Node>
                             {
-                                new CheckCanDoAction("atkLight"),
-                                new CheckEnemyDistance(meleeDist),
-                                new TaskFaceEnemy(),
-                                new TaskLightAtk(),
+                                new ConditionCanDoAction("atkLight"),
+                                new ConditionEnemyDistance(meleeDist),
+                                new ActionFaceEnemy(),
+                                new ActionLightAtk(),
                             }),
                             new Sequence(new List<Node>
                             {
-                                new CheckEnemyDistance(aggroDist),
-                                new Inverter(new CheckEnemyDistance(0.5f)),
-                                new TaskFaceEnemy(),
-                                new TaskMoveForward(),
+                                new ConditionEnemyDistance(aggroDist),
+                                new Inverter(new ConditionEnemyDistance(0.5f)),
+                                new ActionFaceEnemy(),
+                                new ActionMoveForward(),
                             })
                         }),
                         new Sequence(new List<Node>
                         {
-                            new TaskFaceEnemy(),
-                            new TaskMoveForward(),
-                            new TaskWait(),
-                            new TaskStop(),
+                            new ActionFaceEnemy(),
+                            new ActionMoveForward(),
+                            new ActionWait(),
+                            new ActionStop(),
                         }),
                     }),
                 }),
@@ -396,55 +396,55 @@ namespace Glaidiator.BehaviorTree
                         // block when enemy in melee range
                         new Sequence(new List<Node>
                         {
-                            new CheckEnemyDistance(meleeDist),
-                            new CheckCanDoAction("block"),
-                            new TaskFaceEnemy(),
-                            new TaskBlock(),
+                            new ConditionEnemyDistance(meleeDist),
+                            new ConditionCanDoAction("block"),
+                            new ActionFaceEnemy(),
+                            new ActionBlock(),
                         }),
                         // dodge away if we can't block
                         new Sequence(new List<Node>
                         {
-                            new CheckEnemyDistance(meleeDist),
-                            new CheckCanDoAction("dodge"),
-                            new TaskBackEnemy(),
-                            new TaskDodge(),
+                            new ConditionEnemyDistance(meleeDist),
+                            new ConditionCanDoAction("dodge"),
+                            new ActionBackEnemy(),
+                            new ActionDodge(),
                         }),
                         new Sequence(new List<Node>
                         {
-                            new Inverter(new CheckEnemyDistance(4f)),
-                            new TaskFaceEnemy(),
-                            new TaskMoveForward(),
-                            new TaskWait(),
-                            new TaskStop(),
+                            new Inverter(new ConditionEnemyDistance(4f)),
+                            new ActionFaceEnemy(),
+                            new ActionMoveForward(),
+                            new ActionWait(),
+                            new ActionStop(),
                         }),
                         // run away until threshold distance
                         new Sequence(new List<Node>
                         {
-                            new CheckEnemyDistance(4f),
-                            new TaskBackEnemy(),
-                            new TaskMoveForward(),
-                            new TaskStop(),
-                            new CheckArenaBounds(1f),
-                            new TaskMoveForward(),
+                            new ConditionEnemyDistance(4f),
+                            new ActionBackEnemy(),
+                            new ActionMoveForward(),
+                            new ActionStop(),
+                            new ConditionArenaBounds(1f),
+                            new ActionMoveForward(),
                         }),
                         // turn if hitting wall
                         new Sequence(new List<Node>
                         {
-                            new CheckEnemyDistance(3f),
-                            new Inverter(new CheckArenaBounds(1f)),
-                            new TaskStop(),
-                            new TaskTurnRight(),
-                            new TaskMoveForward(),
-                            new CheckArenaBounds(1f),
+                            new ConditionEnemyDistance(3f),
+                            new Inverter(new ConditionArenaBounds(1f)),
+                            new ActionStop(),
+                            new ActionTurnRight(),
+                            new ActionMoveForward(),
+                            new ConditionArenaBounds(1f),
                         }),
                         new Sequence(new List<Node>
                         {
-                            new CheckEnemyDistance(3f),
-                            new Inverter(new CheckArenaBounds(1f)),
-                            new TaskStop(),
-                            new TaskTurnLeft(),
-                            new TaskMoveForward(),
-                            new CheckArenaBounds(1f),
+                            new ConditionEnemyDistance(3f),
+                            new Inverter(new ConditionArenaBounds(1f)),
+                            new ActionStop(),
+                            new ActionTurnLeft(),
+                            new ActionMoveForward(),
+                            new ConditionArenaBounds(1f),
                         })
                     })
                 }),
@@ -459,7 +459,7 @@ namespace Glaidiator.BehaviorTree
             const float evadeThresholdStamina = 20f;
             return new BTree(new Selector(new List<Node>
             {
-                new CheckEnemyState("Dead"), // success if enemy is dead
+                new ConditionEnemyState("Dead"), // success if enemy is dead
                 
                 // select defense branch
                 new Selector(new List<Node>
@@ -467,27 +467,27 @@ namespace Glaidiator.BehaviorTree
                     // defend melee sequence
                     new Sequence(new List<Node>
                     {
-                        new CheckEnemyDistance(meleeDist),
+                        new ConditionEnemyDistance(meleeDist),
                         new Selector(new List<Node> // if enemy melee
                         {
-                            new CheckEnemyAction("atkLight"),
-                            new CheckEnemyAction("atkHeavy"),
+                            new ConditionEnemyAction("atkLight"),
+                            new ConditionEnemyAction("atkHeavy"),
                         }),
 
                         new Selector(new List<Node>
                         {
                             new Sequence(new List<Node> // try block or
                             {
-                                new CheckCanDoAction("block"),
-                                new TaskFaceEnemy(),
-                                new TaskBlock(),
+                                new ConditionCanDoAction("block"),
+                                new ActionFaceEnemy(),
+                                new ActionBlock(),
                             }),
                             new Sequence(new List<Node> // try dodge
                             {
-                                new CheckCanDoAction("dodge"),
-                                new TaskBackEnemy(),
-                                new TaskMoveForward(),
-                                new TaskDodge(),
+                                new ConditionCanDoAction("dodge"),
+                                new ActionBackEnemy(),
+                                new ActionMoveForward(),
+                                new ActionDodge(),
                             })
                         }),
                     }),
@@ -495,23 +495,23 @@ namespace Glaidiator.BehaviorTree
                     // defend ranged sequence
                     new Sequence(new List<Node>
                     {
-                        new CheckEnemyAction("atkRanged"), // if enemy ranged
+                        new ConditionEnemyAction("atkRanged"), // if enemy ranged
                         new Selector(new List<Node>
                         {
                             new Sequence(new List<Node> // try block or
                             {
-                                new CheckCanDoAction("block"),
-                                new TaskFaceEnemy(),
-                                new TaskBlock(),
+                                new ConditionCanDoAction("block"),
+                                new ActionFaceEnemy(),
+                                new ActionBlock(),
                             }),
                             new Sequence(new List<Node> // try dodge
                             {
-                                new CheckCanDoAction("dodge"),
-                                new TaskBackEnemy(),
-                                new TaskTurnLeft(),
-                                new TaskMoveForward(),
-                                new TaskWait(),
-                                new TaskDodge(),
+                                new ConditionCanDoAction("dodge"),
+                                new ActionBackEnemy(),
+                                new ActionTurnLeft(),
+                                new ActionMoveForward(),
+                                new ActionWait(),
+                                new ActionDodge(),
                             }),
                         }),
                     }),
@@ -522,22 +522,22 @@ namespace Glaidiator.BehaviorTree
                 {
                     new Sequence(new List<Node> // try melee lightAtk
                     {
-                        new CheckEnemyDistance(meleeDist),
-                        new CheckCanDoAction("atkLight"),
-                        new TaskFaceEnemy(),
-                        new TaskLightAtk(),
+                        new ConditionEnemyDistance(meleeDist),
+                        new ConditionCanDoAction("atkLight"),
+                        new ActionFaceEnemy(),
+                        new ActionLightAtk(),
                     }),
                     new Sequence(new List<Node> // try dodge into heavyAtk
                     {
-                        new CheckCanDoAction("dodge"),
-                        new CheckCanDoAction("atkHeavy"), // might not have stam for both
-                        new Inverter(new CheckEnemyDistance(3f)),
-                        new CheckEnemyDistance(5f),
-                        new TaskFaceEnemy(),
-                        new TaskDodge(), // gap close if (3 < dist < 5)
-                        new TaskWait(),
-                        new CheckEnemyDistance(meleeDist),
-                        new TaskHeavyAtk(),
+                        new ConditionCanDoAction("dodge"),
+                        new ConditionCanDoAction("atkHeavy"), // might not have stam for both
+                        new Inverter(new ConditionEnemyDistance(3f)),
+                        new ConditionEnemyDistance(5f),
+                        new ActionFaceEnemy(),
+                        new ActionDodge(), // gap close if (3 < dist < 5)
+                        new ActionWait(),
+                        new ConditionEnemyDistance(meleeDist),
+                        new ActionHeavyAtk(),
                     }),
                 }),
 
@@ -547,52 +547,52 @@ namespace Glaidiator.BehaviorTree
                     // evade sequence
                     new Sequence(new List<Node> // evade if less hp than enemy
                     {
-                        new Inverter(new CheckCompareHealth(0f)),
-                        new CheckEnemyDistance(rangedDist),
+                        new Inverter(new ConditionCompareHealth(0f)),
+                        new ConditionEnemyDistance(rangedDist),
                         new Sequence(new List<Node> // run away until threshold distance
                         {
-                            new TaskBackEnemy(),
-                            new TaskMoveForward(),
-                            new TaskStop(),
-                            new CheckArenaBounds(1f),
-                            new TaskMoveForward(),
+                            new ActionBackEnemy(),
+                            new ActionMoveForward(),
+                            new ActionStop(),
+                            new ConditionArenaBounds(1f),
+                            new ActionMoveForward(),
                         }),
 
-                        new Inverter(new CheckArenaBounds(1f)),
+                        new Inverter(new ConditionArenaBounds(1f)),
                         new Selector(new List<Node> // turn if hitting wall
                         {
                             new Sequence(new List<Node>
                             {
-                                new TaskStop(),
-                                new TaskTurnRight(),
-                                new TaskMoveForward(),
-                                new CheckArenaBounds(1f),
+                                new ActionStop(),
+                                new ActionTurnRight(),
+                                new ActionMoveForward(),
+                                new ConditionArenaBounds(1f),
                             }),
                             new Sequence(new List<Node>
                             {
-                                new TaskStop(),
-                                new TaskTurnLeft(),
-                                new TaskMoveForward(),
-                                new CheckArenaBounds(1f),
+                                new ActionStop(),
+                                new ActionTurnLeft(),
+                                new ActionMoveForward(),
+                                new ConditionArenaBounds(1f),
                             }),
                         }),
                     }),
                     // move to melee sequence
                     new Sequence(new List<Node> // stop when melee dist
                     {
-                        new CheckEnemyDistance(meleeDist), // if less
-                        new CheckOwnHealth(evadeThresholdHealth),
-                        new CheckOwnStamina(evadeThresholdStamina),
-                        new TaskFaceEnemy(),
-                        new TaskStop(),
+                        new ConditionEnemyDistance(meleeDist), // if less
+                        new ConditionOwnHealth(evadeThresholdHealth),
+                        new ConditionOwnStamina(evadeThresholdStamina),
+                        new ActionFaceEnemy(),
+                        new ActionStop(),
                     }),
                     new Sequence(new List<Node> // move until melee dist
                     {
-                        new Inverter(new CheckEnemyDistance(meleeDist)), // if more
-                        new CheckOwnHealth(evadeThresholdHealth),
-                        new CheckOwnStamina(evadeThresholdStamina),
-                        new TaskFaceEnemy(),
-                        new TaskMoveForward(),
+                        new Inverter(new ConditionEnemyDistance(meleeDist)), // if more
+                        new ConditionOwnHealth(evadeThresholdHealth),
+                        new ConditionOwnStamina(evadeThresholdStamina),
+                        new ActionFaceEnemy(),
+                        new ActionMoveForward(),
                     }),
                 }),
             }));
@@ -607,7 +607,7 @@ namespace Glaidiator.BehaviorTree
 
             return new BTree(new Selector(new List<Node>
             {
-                new CheckEnemyState("Dead"), // success if enemy is dead
+                new ConditionEnemyState("Dead"), // success if enemy is dead
                 
                 // select defense branch
                 new Selector(new List<Node>
@@ -618,48 +618,48 @@ namespace Glaidiator.BehaviorTree
                         //new CheckEnemyDistance(meleeDist),
                         new Selector(new List<Node> // if enemy melee
                         {
-                            new CheckEnemyAction("Light Attack"),
-                            new CheckEnemyAction("Heavy Attack"),
+                            new ConditionEnemyAction("Light Attack"),
+                            new ConditionEnemyAction("Heavy Attack"),
                         }),
 
                         new Selector(new List<Node>
                         {
                             new Sequence(new List<Node> // try block or
                             {
-                                new CheckEnemyDistance(meleeDist),
-                                new CheckCanDoAction("block"),
-                                new TaskFaceEnemy(),
-                                new TaskBlock(),
+                                new ConditionEnemyDistance(meleeDist),
+                                new ConditionCanDoAction("block"),
+                                new ActionFaceEnemy(),
+                                new ActionBlock(),
                             }),
                             new Sequence(new List<Node> // try dodge
                             {
-                                new CheckEnemyDistance(meleeDist),
-                                new CheckOwnStamina(40f),
-                                new CheckCanDoAction("dodge"),
-                                new TaskBackEnemy(),
-                                new TaskMoveForward(),
-                                new TaskDodge(),
+                                new ConditionEnemyDistance(meleeDist),
+                                new ConditionOwnStamina(40f),
+                                new ConditionCanDoAction("dodge"),
+                                new ActionBackEnemy(),
+                                new ActionMoveForward(),
+                                new ActionDodge(),
                             }),
                             new Sequence(new List<Node> // try move away
                             {
-                                new CheckEnemyDistance(meleeDist * 2),
-                                new TaskBackEnemy(),
+                                new ConditionEnemyDistance(meleeDist * 2),
+                                new ActionBackEnemy(),
                                 new Selector(new List<Node>
                                 {
-                                    new CheckArenaBounds(1f),
+                                    new ConditionArenaBounds(1f),
                                     // keep direction if no wall
                                     new Sequence(new List<Node> // if wall try turn left
                                     {
-                                        new TaskTurnLeft(),
-                                        new CheckArenaBounds(1f),
+                                        new ActionTurnLeft(),
+                                        new ConditionArenaBounds(1f),
                                     }),
                                     new Sequence(new List<Node> // if wall try turn right
                                     {
-                                        new TaskTurnRight(),
-                                        new CheckArenaBounds(1f),
+                                        new ActionTurnRight(),
+                                        new ConditionArenaBounds(1f),
                                     }),
                                 }),
-                                new TaskMoveForward(),
+                                new ActionMoveForward(),
                             }),
                         }),
                     }),
@@ -667,24 +667,24 @@ namespace Glaidiator.BehaviorTree
                     // defend ranged sequence
                     new Sequence(new List<Node>
                     {
-                        new CheckEnemyAction("Ranged Attack"), // if enemy ranged
+                        new ConditionEnemyAction("Ranged Attack"), // if enemy ranged
                         new Selector(new List<Node>
                         {
                             new Sequence(new List<Node> // try block or
                             {
-                                new CheckCanDoAction("block"),
-                                new TaskFaceEnemy(),
-                                new TaskBlock(),
+                                new ConditionCanDoAction("block"),
+                                new ActionFaceEnemy(),
+                                new ActionBlock(),
                             }),
                             new Sequence(new List<Node> // try dodge
                             {
-                                new CheckOwnStamina(60f),
-                                new CheckCanDoAction("dodge"),
-                                new TaskBackEnemy(),
-                                new TaskTurnLeft(),
-                                new TaskMoveForward(),
-                                new TaskWait(),
-                                new TaskDodge(),
+                                new ConditionOwnStamina(60f),
+                                new ConditionCanDoAction("dodge"),
+                                new ActionBackEnemy(),
+                                new ActionTurnLeft(),
+                                new ActionMoveForward(),
+                                new ActionWait(),
+                                new ActionDodge(),
                             }),
                         }),
                     }),
@@ -695,31 +695,31 @@ namespace Glaidiator.BehaviorTree
                 {
                     new Sequence(new List<Node> // try melee lightAtk
                     {
-                        new CheckEnemyDistance(meleeDist),
-                        new CheckCanDoAction("atkLight"),
-                        new TaskFaceEnemy(),
-                        new TaskLightAtk(),
+                        new ConditionEnemyDistance(meleeDist),
+                        new ConditionCanDoAction("atkLight"),
+                        new ActionFaceEnemy(),
+                        new ActionLightAtk(),
                     }),
                     new Sequence(new List<Node> // try dodge into heavyAtk
                     {
-                        new CheckOwnStamina(50f),
-                        new CheckCanDoAction("dodge"),
-                        new CheckCanDoAction("atkHeavy"), // might not have stam for both
-                        new Inverter(new CheckEnemyDistance(3f)),
-                        new CheckEnemyDistance(5f),
-                        new TaskFaceEnemy(),
-                        new TaskDodge(), // gap close if (3 < dist < 5)
-                        new TaskWait(),
-                        new CheckEnemyDistance(meleeDist),
-                        new TaskHeavyAtk(),
+                        new ConditionOwnStamina(50f),
+                        new ConditionCanDoAction("dodge"),
+                        new ConditionCanDoAction("atkHeavy"), // might not have stam for both
+                        new Inverter(new ConditionEnemyDistance(3f)),
+                        new ConditionEnemyDistance(5f),
+                        new ActionFaceEnemy(),
+                        new ActionDodge(), // gap close if (3 < dist < 5)
+                        new ActionWait(),
+                        new ConditionEnemyDistance(meleeDist),
+                        new ActionHeavyAtk(),
                     }),
                     new Sequence(new List<Node>
                     {
-                        new CheckCanDoAction("atkRanged"),
-                        new CheckEnemyDistance(rangedDist),
-                        new TaskFaceEnemy(),
-                        new CheckRangedDirection(30f), // aim good?
-                        new TaskRangedAtk(),
+                        new ConditionCanDoAction("atkRanged"),
+                        new ConditionEnemyDistance(rangedDist),
+                        new ActionFaceEnemy(),
+                        new ConditionRangedDirection(30f), // aim good?
+                        new ActionRangedAtk(),
                     }),
                 }),
 
@@ -729,52 +729,52 @@ namespace Glaidiator.BehaviorTree
                     // evade sequence
                     new Sequence(new List<Node> // evade if less hp than enemy
                     {
-                        new Inverter(new CheckCompareHealth(0f)),
-                        new CheckEnemyDistance(rangedDist),
+                        new Inverter(new ConditionCompareHealth(0f)),
+                        new ConditionEnemyDistance(rangedDist),
                         new Sequence(new List<Node> // run away until threshold distance
                         {
-                            new TaskBackEnemy(),
-                            new TaskMoveForward(),
-                            new TaskStop(),
-                            new CheckArenaBounds(1f),
-                            new TaskMoveForward(),
+                            new ActionBackEnemy(),
+                            new ActionMoveForward(),
+                            new ActionStop(),
+                            new ConditionArenaBounds(1f),
+                            new ActionMoveForward(),
                         }),
 
-                        new Inverter(new CheckArenaBounds(1f)),
+                        new Inverter(new ConditionArenaBounds(1f)),
                         new Selector(new List<Node> // turn if hitting wall
                         {
                             new Sequence(new List<Node>
                             {
-                                new TaskStop(),
-                                new TaskTurnRight(),
-                                new TaskMoveForward(),
-                                new CheckArenaBounds(1f),
+                                new ActionStop(),
+                                new ActionTurnRight(),
+                                new ActionMoveForward(),
+                                new ConditionArenaBounds(1f),
                             }),
                             new Sequence(new List<Node>
                             {
-                                new TaskStop(),
-                                new TaskTurnLeft(),
-                                new TaskMoveForward(),
-                                new CheckArenaBounds(1f),
+                                new ActionStop(),
+                                new ActionTurnLeft(),
+                                new ActionMoveForward(),
+                                new ConditionArenaBounds(1f),
                             }),
                         }),
                     }),
                     // move to melee sequence
                     new Sequence(new List<Node> // stop when melee dist
                     {
-                        new CheckEnemyDistance(meleeDist), // if less
-                        new CheckOwnHealth(evadeThresholdHealth),
-                        new CheckOwnStamina(evadeThresholdStamina),
-                        new TaskFaceEnemy(),
-                        new TaskStop(),
+                        new ConditionEnemyDistance(meleeDist), // if less
+                        new ConditionOwnHealth(evadeThresholdHealth),
+                        new ConditionOwnStamina(evadeThresholdStamina),
+                        new ActionFaceEnemy(),
+                        new ActionStop(),
                     }),
                     new Sequence(new List<Node> // move until melee dist
                     {
-                        new Inverter(new CheckEnemyDistance(meleeDist)), // if more
-                        new CheckOwnHealth(evadeThresholdHealth),
-                        new CheckOwnStamina(evadeThresholdStamina),
-                        new TaskFaceEnemy(),
-                        new TaskMoveForward(),
+                        new Inverter(new ConditionEnemyDistance(meleeDist)), // if more
+                        new ConditionOwnHealth(evadeThresholdHealth),
+                        new ConditionOwnStamina(evadeThresholdStamina),
+                        new ActionFaceEnemy(),
+                        new ActionMoveForward(),
                     }),
                 }),
             }));
