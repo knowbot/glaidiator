@@ -32,18 +32,7 @@ namespace Glaidiator.BehaviorTree.CustomNodes.ConditionNodes
             float dist = Vector3.Distance(tree.Owner.Movement.Position, target.Position);
             tree.enemyDistance = dist;
 
-            if (dist <= _distance)
-            {
-                state = NodeState.SUCCESS;
-                //Debug.DrawLine(_tree.OwnerCharacter.Movement.Position, target.Position, Color.green, 0.1f);
-                ////Debug.Log("CheckEnemyDistance state = "+state);
-            }
-            else
-            {
-                state = NodeState.FAILURE;
-                //Debug.DrawLine(_tree.OwnerCharacter.Movement.Position, target.Position, Color.red, 0.1f);
-            }
-            
+            state = dist <= _distance ? NodeState.SUCCESS : NodeState.FAILURE;
             return state;
         }
         

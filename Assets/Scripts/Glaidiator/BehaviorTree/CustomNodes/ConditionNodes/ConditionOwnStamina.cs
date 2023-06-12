@@ -19,13 +19,7 @@ namespace Glaidiator.BehaviorTree.CustomNodes.ConditionNodes
         {
             tree.currentNode = this;
 
-            if (tree.Owner.Stamina.Current >= _threshold)
-            {
-                state = NodeState.SUCCESS;
-                return state;
-            }
-
-            state = NodeState.FAILURE;
+            state = tree.Owner.Stamina.Current >= _threshold ? NodeState.SUCCESS : NodeState.FAILURE;
             return state;
         }
 

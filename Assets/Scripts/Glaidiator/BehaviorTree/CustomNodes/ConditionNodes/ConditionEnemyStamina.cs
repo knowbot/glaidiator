@@ -28,14 +28,7 @@ namespace Glaidiator.BehaviorTree.CustomNodes.ConditionNodes
             }
 
             float enemyStamina = enemy.Stamina.Current;
-            if (enemyStamina >= _threshold)
-            {
-                state = NodeState.SUCCESS;
-            }
-            else
-            {
-                state = NodeState.FAILURE;
-            }
+            state = enemyStamina >= _threshold ? NodeState.SUCCESS : NodeState.FAILURE;
             
             return state;
         }
