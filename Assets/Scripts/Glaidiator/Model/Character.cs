@@ -21,7 +21,8 @@ namespace Glaidiator.Model
 		    Moving = 2,
 		    Attacking = 3,
 		    Blocking = 4,
-		    Dodging = 5
+		    Dodging = 5,
+		    Waiting = 6,
 	    }
 
 	    #region Flags

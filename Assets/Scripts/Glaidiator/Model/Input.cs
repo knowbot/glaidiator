@@ -12,5 +12,6 @@ namespace Glaidiator.Model
         public bool dodge;
         public Vector3 move;
         public Vector3 facing;
+        public bool wait;
     }
 }

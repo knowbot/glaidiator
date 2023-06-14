@@ -102,7 +102,7 @@ namespace Glaidiator.BehaviorTree
             // prototypesMap.Add("TaskClearWP", new TaskClearWP());
             // prototypesMap.Add("CheckHasWP", new CheckHasTarget("wp"));
             // prototypesMap.Add("CheckWPDistance", new CheckTargetDistance("wp", 0.01f));
-            _prototypesMap.Add("TaskWait", new ActionWait());
+            _prototypesMap.Add("TaskWait", new ActionWaitTicks());
 
             _prototypesMap.Add("CheckEnemyLight", new ConditionEnemyAction("atkLight"));
             _prototypesMap.Add("CheckEnemyHeavy", new ConditionEnemyAction("atkHeavy"));
@@ -192,18 +192,21 @@ namespace Glaidiator.BehaviorTree
                 {
                     new ActionLightAtk(),
                 }),
-                new ActionWait(60),
+                
                 
                 new Sequence(new List<Node>
                 {
                     new ActionHeavyAtk(),
+                    new ActionWaitState(),
+                    
                 }),
                 
                 
                 new Sequence(new List<Node>
                 {
-                    new ActionWait(60),
+                    new ActionWaitTicks(30),
                     new ActionTurnLeft(),
+                    new ActionWaitTicks(30),
                     new ActionLightAtk(),
                 }),
                 
@@ -407,7 +410,7 @@ namespace Glaidiator.BehaviorTree
                         {
                             new ActionFaceEnemy(),
                             new ActionMoveForward(),
-                            new ActionWait(),
+                            new ActionWaitTicks(),
                             new ActionStop(),
                         }),
                     }),
@@ -440,7 +443,7 @@ namespace Glaidiator.BehaviorTree
                             new Inverter(new ConditionEnemyDistance(4f)),
                             new ActionFaceEnemy(),
                             new ActionMoveForward(),
-                            new ActionWait(),
+                            new ActionWaitTicks(),
                             new ActionStop(),
                         }),
                         // run away until threshold distance
@@ -536,7 +539,7 @@ namespace Glaidiator.BehaviorTree
                                 new ActionBackEnemy(),
                                 new ActionTurnLeft(),
                                 new ActionMoveForward(),
-                                new ActionWait(),
+                                new ActionWaitTicks(),
                                 new ActionDodge(),
                             }),
                         }),
@@ -561,7 +564,7 @@ namespace Glaidiator.BehaviorTree
                         new ConditionEnemyDistance(5f),
                         new ActionFaceEnemy(),
                         new ActionDodge(), // gap close if (3 < dist < 5)
-                        new ActionWait(),
+                        new ActionWaitTicks(),
                         new ConditionEnemyDistance(meleeDist),
                         new ActionHeavyAtk(),
                     }),
@@ -709,7 +712,7 @@ namespace Glaidiator.BehaviorTree
                                 new ActionBackEnemy(),
                                 new ActionTurnLeft(),
                                 new ActionMoveForward(),
-                                new ActionWait(),
+                                new ActionWaitTicks(),
                                 new ActionDodge(),
                             }),
                         }),
@@ -735,7 +738,7 @@ namespace Glaidiator.BehaviorTree
                         new ConditionEnemyDistance(5f),
                         new ActionFaceEnemy(),
                         new ActionDodge(), // gap close if (3 < dist < 5)
-                        new ActionWait(),
+                        new ActionWaitTicks(),
                         new ConditionEnemyDistance(meleeDist),
                         new ActionHeavyAtk(),
                     }),

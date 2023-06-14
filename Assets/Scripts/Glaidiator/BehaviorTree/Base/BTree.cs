@@ -50,6 +50,7 @@ namespace Glaidiator.BehaviorTree.Base
         public bool AttackRanged;
         public bool Block;
         public bool Dodge;
+        public bool Wait;
 
         // for editor debugging info
         public Node currentNode;
@@ -84,6 +85,7 @@ namespace Glaidiator.BehaviorTree.Base
             AttackRanged = false; 
             Block = false;
             Dodge = false;
+            Wait = false;
             //Debug.Log(this.GetType() + " init");
         }
 

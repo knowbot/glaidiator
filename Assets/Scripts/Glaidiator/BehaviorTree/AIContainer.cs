@@ -43,6 +43,9 @@ namespace Glaidiator.BehaviorTree
                     break;
                 case 'g': // g is for groot
                     break;
+                case 't':
+                    btree = BTreeFactory.CreateTreeTester();
+                    break;
                 default:
                     btree = BTreeFactory.CreateAshley();
                     break;
@@ -68,6 +71,7 @@ namespace Glaidiator.BehaviorTree
             _inputs.attackRanged = btree.AttackRanged;
             _inputs.block = btree.Block;
             _inputs.dodge = btree.Dodge;
+            _inputs.wait = btree.Wait;
 
             currentNode = btree.currentNode.ToString(); // for debug info
             currentDistance = btree.enemyDistance;

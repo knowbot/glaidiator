@@ -3,18 +3,18 @@ using Glaidiator.Utils;
 
 namespace Glaidiator.BehaviorTree.CustomNodes.ActionNodes
 {
-    public class ActionWait : Action
+    public class ActionWaitTicks : Action
     {
         private int _totalTicks;
         private int _countTicks;
         
-        public ActionWait(int ticks)
+        public ActionWaitTicks(int ticks)
         {
             _totalTicks = ticks;
             _countTicks = _totalTicks;
         }
 
-        public ActionWait()
+        public ActionWaitTicks()
         {
             _totalTicks = 2;
             _countTicks = _totalTicks;
@@ -41,7 +41,7 @@ namespace Glaidiator.BehaviorTree.CustomNodes.ActionNodes
         #region Genetic Programming
         public override Node Clone()
         {
-            return new ActionWait(_totalTicks);
+            return new ActionWaitTicks(_totalTicks);
         }
 
         public override void Mutate()
@@ -51,7 +51,7 @@ namespace Glaidiator.BehaviorTree.CustomNodes.ActionNodes
 
         public override Node Randomized()
         {
-            return new ActionWait(MathStuff.Rand.NextInt(15));
+            return new ActionWaitTicks(MathStuff.Rand.NextInt(15));
         }
         #endregion
     }
