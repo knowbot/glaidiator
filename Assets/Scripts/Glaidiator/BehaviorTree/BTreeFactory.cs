@@ -184,6 +184,32 @@ namespace Glaidiator.BehaviorTree
 
         #region Custom Tree Declarations
 
+        public static BTree CreateTreeTester()
+        {
+            return new BTree(new Selector(new List<Node>
+            {
+                new Selector(new List<Node>
+                {
+                    new ActionLightAtk(),
+                }),
+                new ActionWait(60),
+                
+                new Sequence(new List<Node>
+                {
+                    new ActionHeavyAtk(),
+                }),
+                
+                
+                new Sequence(new List<Node>
+                {
+                    new ActionWait(60),
+                    new ActionTurnLeft(),
+                    new ActionLightAtk(),
+                }),
+                
+            }));
+        }
+
         public static BTree CreateBaselineEvo()
         {
             const float rangedMinDist = 3f;
