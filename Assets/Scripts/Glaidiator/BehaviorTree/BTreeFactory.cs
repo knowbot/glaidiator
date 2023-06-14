@@ -368,7 +368,7 @@ namespace Glaidiator.BehaviorTree
                 new Sequence(new List<Node>
                 {
                     // conditions for aggression
-                    new ConditionEnemyDistance(aggroDist),
+                    //new ConditionEnemyDistance(aggroDist),
                     // new CheckOwnHealth(50f), 
                     // new CheckOwnStamina(15f),
                     new Selector(new List<Node>
@@ -410,7 +410,7 @@ namespace Glaidiator.BehaviorTree
                         {
                             new ActionFaceEnemy(),
                             new ActionMoveForward(),
-                            new ActionWaitTicks(),
+                            //new ActionWaitTicks(),
                             new ActionStop(),
                         }),
                     }),
@@ -443,7 +443,7 @@ namespace Glaidiator.BehaviorTree
                             new Inverter(new ConditionEnemyDistance(4f)),
                             new ActionFaceEnemy(),
                             new ActionMoveForward(),
-                            new ActionWaitTicks(),
+                            //new ActionWaitTicks(),
                             new ActionStop(),
                         }),
                         // run away until threshold distance
@@ -712,7 +712,7 @@ namespace Glaidiator.BehaviorTree
                                 new ActionBackEnemy(),
                                 new ActionTurnLeft(),
                                 new ActionMoveForward(),
-                                new ActionWaitTicks(),
+                                //new ActionWaitTicks(),
                                 new ActionDodge(),
                             }),
                         }),
@@ -738,7 +738,7 @@ namespace Glaidiator.BehaviorTree
                         new ConditionEnemyDistance(5f),
                         new ActionFaceEnemy(),
                         new ActionDodge(), // gap close if (3 < dist < 5)
-                        new ActionWaitTicks(),
+                        //new ActionWaitTicks(),
                         new ConditionEnemyDistance(meleeDist),
                         new ActionHeavyAtk(),
                     }),

@@ -32,7 +32,8 @@ namespace Glaidiator.BehaviorTree.Base
                         return state;
                 }
             }
-            
+
+            state = NodeState.SUCCESS;
             return state;
         }
 
