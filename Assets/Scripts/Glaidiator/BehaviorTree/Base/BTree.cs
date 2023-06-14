@@ -5,7 +5,6 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using Glaidiator.Model;
 using Glaidiator.Utils;
-using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -40,7 +39,7 @@ namespace Glaidiator.BehaviorTree.Base
 
         public float Fitness = 0;
         
-        private readonly Dictionary<string, object> _dataContext = new Dictionary<string, object>();
+        private readonly Dictionary<string, object> _blackboard = new Dictionary<string, object>();
 
         public Vector3 Direction;
 
@@ -143,20 +142,20 @@ namespace Glaidiator.BehaviorTree.Base
         
         public void SetData(string key, object value)
         {
-            _dataContext[key] = value;
+            _blackboard[key] = value;
         }
 
         
         public object GetData(string key)
         {
-            return _dataContext.TryGetValue(key, out object value) ? value : null;
+            return _blackboard.TryGetValue(key, out object value) ? value : null;
         }
 
 
         public bool ClearData(string key)
         {
-            if (!_dataContext.ContainsKey(key)) return false;
-            _dataContext.Remove(key);
+            if (!_blackboard.ContainsKey(key)) return false;
+            _blackboard.Remove(key);
             return true;
 
         }
