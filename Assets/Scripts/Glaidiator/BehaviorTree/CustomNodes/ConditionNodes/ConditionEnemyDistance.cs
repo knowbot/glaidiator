@@ -18,7 +18,7 @@ namespace Glaidiator.BehaviorTree.CustomNodes.ConditionNodes
 
         public override NodeState Evaluate()
         {
-            tree.currentNode = this;// for debug info
+            tree.Active = this;// for debug info
             if (tree == null) throw new NullReferenceException();
         
             Movement target = ((Character)GetData("enemy"))?.Movement;

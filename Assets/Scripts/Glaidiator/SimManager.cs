@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Glaidiator.BehaviorTree;
+using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Model;
 using Glaidiator.Model.Collision;
 using Unity.Collections;
@@ -15,7 +16,8 @@ namespace Glaidiator
 
         public static float TimeStep = 0.033f;
         public static float MaxDuration = 30f;
-
+        public static BTree FixedTree = BTreeFactory.CreateBob();
+        
         private int _completed = 0;
         private readonly List<Sim> _sims;
         private readonly List<GCHandle> _simHandles;
@@ -109,7 +111,7 @@ namespace Glaidiator
                     enemy = e,
                     //OInputs = new BTInputProvider(BTreeFactory.CreateLovecraft(),o, e),
                     OInputs = new BTInputProvider(EvoManager.Instance.Population[i].Clone(),o, e),
-                    EInputs = new BTInputProvider(BTreeFactory.CreateBob(), e, o)
+                    EInputs = new BTInputProvider(FixedTree.Clone(), e, o)
                 };
                 
                 GCHandle simHandle = GCHandle.Alloc(sim);

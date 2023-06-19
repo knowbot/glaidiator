@@ -22,7 +22,7 @@ namespace Glaidiator.BehaviorTree.CustomNodes.ActionNodes
 
         public override NodeState Evaluate() // TODO: Test this
         {
-            tree.currentNode = this;
+            tree.Active = this;
             // Debug.Log("TaskWait tick = " + _countTicks);
             _countTicks--;
             if (_countTicks > 0)
@@ -34,7 +34,6 @@ namespace Glaidiator.BehaviorTree.CustomNodes.ActionNodes
                 state = NodeState.SUCCESS;
                 _countTicks = _totalTicks;
             }
-            
             return state;
         }
 

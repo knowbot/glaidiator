@@ -8,8 +8,7 @@ namespace Glaidiator.BehaviorTree.CustomNodes.ActionNodes
     {
         public override NodeState Evaluate()
         {
-            tree.currentNode = this;
-
+            tree.Active = this;
             Movement target = ((Character)GetData("enemy"))?.Movement;
             if (target == null)
             {

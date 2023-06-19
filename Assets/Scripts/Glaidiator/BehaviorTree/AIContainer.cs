@@ -1,19 +1,35 @@
 using System;
 using Glaidiator.BehaviorTree.Base;
+using Glaidiator.Model;
 using Glaidiator.Presenter;
 using Glaidiator.Utils;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Input = Glaidiator.Model.Input;
 
 namespace Glaidiator.BehaviorTree
 {
     public class AIContainer : MonoBehaviour, IInputProvider
     {
-        private BTree btree;
+        private BTree _tree;
+        private Character _owner;
+        private Character _enemy;
+
+        public BTree Tree
+        {
+            get => _tree;
+            set
+            {
+                _tree = value;
+                _tree.Owner = _owner;
+                _tree.Enemy = _enemy;
+            }
+        }
+        
         public char selectTree;
         public String currentNode; // for debug info
         public float currentDistance;
-        public GameObject PlayerObject;
+        public GameObject EnemyObject;
         private Input _inputs;
         public Input Inputs
         {
@@ -23,71 +39,65 @@ namespace Glaidiator.BehaviorTree
 
         private void Start()
         {
+            _owner = GetComponent<CharacterPresenter>().GetCharacter();
+            _enemy = EnemyObject.GetComponent<CharacterPresenter>().GetCharacter();
             switch (selectTree) //editor tree selection
             {
                 case 'a':
-                    btree = BTreeFactory.CreateAshley();
+                    Tree = BTreeFactory.CreateAshley();
                     break;
                 case 'b':
-                    btree = BTreeFactory.CreateBob();
+                    Tree = BTreeFactory.CreateBob();
                     break;
                 case 'c':
-                    btree = BTreeFactory.CreateCharlie();
+                    Tree = BTreeFactory.CreateCharlie();
                     break;
                 case 'd':
                     break;    
                 case 'e':
-                    btree = BTreeFactory.CreateBaselineEvo();
+                    Tree = BTreeFactory.CreateBaselineEvo();
                     break;
                 case 'f':
                     break;
                 case 'g': // g is for groot
                     break;
                 case 't':
-                    btree = BTreeFactory.CreateTreeTester();
+                    Tree = BTreeFactory.CreateTreeTester();
+                    break;
+                case 'z':
+                    Tree = BTreeFactory.CreateEmpty();
                     break;
                 default:
-                    btree = BTreeFactory.CreateAshley();
+                    Tree = BTreeFactory.CreateAshley();
                     break;
             }
-            
-            btree.Owner = GetComponent<CharacterPresenter>().GetCharacter();
-            btree.Enemy = PlayerObject.GetComponent<CharacterPresenter>().GetCharacter();
         }
 
         private void Update()
         {
-            btree.Tick();
+            _tree.Tick();
             
             //Vector3 dir = btree.Direction;
             //Inputs.move = btree.Move ? MathUtils.Get8DDirection(dir.x, dir.z) : Vector3.zero;
 
-            Vector3 dir = MathStuff.Get8DDirection(btree.Direction.x, btree.Direction.z);
+            Vector3 dir = MathStuff.Get8DDirection(_tree.Direction.x, _tree.Direction.z);
             //_inputs.facing = btree.Direction;
             _inputs.facing = dir;
-            _inputs.move = btree.Move ? dir : Vector3.zero;
-            _inputs.attackLight = btree.AttackLight;
-            _inputs.attackHeavy = btree.AttackHeavy;
-            _inputs.attackRanged = btree.AttackRanged;
-            _inputs.block = btree.Block;
-            _inputs.dodge = btree.Dodge;
-            _inputs.wait = btree.Wait;
+            _inputs.move = _tree.Move ? dir : Vector3.zero;
+            _inputs.attackLight = _tree.AttackLight;
+            _inputs.attackHeavy = _tree.AttackHeavy;
+            _inputs.attackRanged = _tree.AttackRanged;
+            _inputs.block = _tree.Block;
+            _inputs.dodge = _tree.Dodge;
+            _inputs.wait = _tree.Wait;
 
-            currentNode = btree.currentNode.ToString(); // for debug info
-            currentDistance = btree.enemyDistance;
+            currentNode = _tree.Active.ToString(); // for debug info
+            currentDistance = _tree.enemyDistance;
         }
 
         public Input GetInputs()
         {
             return Inputs;
-        }
-
-        // set and setup new BTree, for runtime use
-        public void SetCurrentBTree(BTree tree)
-        {
-            btree = tree;
-            btree.Owner = GetComponent<CharacterPresenter>().GetCharacter();
-            btree.Enemy = PlayerObject.GetComponent<PlayerCharacterPresenter>().GetCharacter();
         }
     }
     

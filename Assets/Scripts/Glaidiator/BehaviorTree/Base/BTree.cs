@@ -5,6 +5,7 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using Glaidiator.Model;
 using Glaidiator.Utils;
+using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -24,6 +25,7 @@ namespace Glaidiator.BehaviorTree.Base
                 _root?.SetTree(this);
             } 
         }
+        public Node Active;
 
         public Character Owner { get; internal set; }
 
@@ -39,7 +41,7 @@ namespace Glaidiator.BehaviorTree.Base
 
         public float Fitness = 0;
         
-        private readonly Dictionary<string, object> _blackboard = new Dictionary<string, object>();
+        private readonly Dictionary<string, object> _dataContext = new Dictionary<string, object>();
 
         public Vector3 Direction;
 
@@ -52,7 +54,6 @@ namespace Glaidiator.BehaviorTree.Base
         public bool Wait;
 
         // for editor debugging info
-        public Node currentNode;
         public float enemyDistance;
         private Character _enemy;
 
@@ -78,25 +79,17 @@ namespace Glaidiator.BehaviorTree.Base
         private void Init()
         {
             Direction = Vector3.forward;
-            Move = false;
-            AttackLight = false;
-            AttackHeavy = false;
-            AttackRanged = false; 
-            Block = false;
-            Dodge = false;
-            Wait = false;
+            Active = Root;
+            ResetInputs();
             //Debug.Log(this.GetType() + " init");
         }
 
         public void Tick()
         {
             //Direction = MathStuff.Get8DDirection(Direction.x, Direction.z); // FIXME: where to discretize?
-            Move = false;
-            AttackLight = false;
-            AttackHeavy = false;
-            AttackRanged = false; 
-            Block = false;
-            Dodge = false;
+            ResetInputs();
+            // if (Active.Evaluate() != NodeState.RUNNING)
+            //     Active = Active.parent;
             Root?.Evaluate();
         }
 
@@ -142,22 +135,31 @@ namespace Glaidiator.BehaviorTree.Base
         
         public void SetData(string key, object value)
         {
-            _blackboard[key] = value;
+            _dataContext[key] = value;
         }
 
         
         public object GetData(string key)
         {
-            return _blackboard.TryGetValue(key, out object value) ? value : null;
+            return _dataContext.TryGetValue(key, out object value) ? value : null;
         }
 
 
         public bool ClearData(string key)
         {
-            if (!_blackboard.ContainsKey(key)) return false;
-            _blackboard.Remove(key);
+            if (!_dataContext.ContainsKey(key)) return false;
+            _dataContext.Remove(key);
             return true;
+        }
 
+        public void ResetInputs()
+        {
+            Move = false;
+            AttackLight = false;
+            AttackHeavy = false;
+            AttackRanged = false; 
+            Block = false;
+            Dodge = false;
         }
 
         public XmlSchema GetSchema()

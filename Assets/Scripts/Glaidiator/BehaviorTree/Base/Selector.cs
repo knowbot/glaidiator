@@ -16,6 +16,7 @@ namespace Glaidiator.BehaviorTree.Base
 
         public override NodeState Evaluate()
         {
+            tree.Active = this;
             foreach (Node node in Children)
             {
                 switch (node.Evaluate())

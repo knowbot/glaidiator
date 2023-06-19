@@ -22,7 +22,7 @@ namespace Glaidiator.BehaviorTree.CustomNodes.ActionNodes
 
         public override NodeState Evaluate()
         {
-            tree.currentNode = this; // for debug info
+            tree.Active = this; // for debug info
 
             // if (_hasDistance)
             // {
@@ -60,7 +60,6 @@ namespace Glaidiator.BehaviorTree.CustomNodes.ActionNodes
                 tree.Move = true;
                 state = NodeState.SUCCESS;
             }
-            
             return state;
         }
 

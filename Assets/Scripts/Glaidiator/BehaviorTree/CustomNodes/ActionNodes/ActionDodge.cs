@@ -6,7 +6,7 @@ namespace Glaidiator.BehaviorTree.CustomNodes.ActionNodes
     {
         public override NodeState Evaluate()
         {
-            tree.currentNode = this;
+            tree.Active = this;
             tree.Dodge = true;
             state = NodeState.SUCCESS;
             return state;

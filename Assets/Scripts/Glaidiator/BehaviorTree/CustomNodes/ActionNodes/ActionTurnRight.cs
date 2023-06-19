@@ -1,4 +1,5 @@
-﻿using Glaidiator.BehaviorTree.Base;
+﻿using System;
+using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Utils;
 using UnityEngine;
 
@@ -20,18 +21,21 @@ namespace Glaidiator.BehaviorTree.CustomNodes.ActionNodes
 
         public override NodeState Evaluate()
         {
-            tree.currentNode = this;// for debug info
+            tree.Active = this;// for debug info
             
-            Vector3 currDir = tree.Direction;
+            Vector3 currDir = tree.Owner.Movement.LastDir;
 
-            if (_turnSteps == 2) // 90 degree turn
+            int currInd = Direction.GetIndex(currDir);
+            if (currInd == -1)
+                throw new Exception($"Direction {currDir} is not discretized!");
+
+            for (int i = 0; i < _turnSteps; i++)
             {
-                tree.Direction = MathStuff.Get8DDirection(currDir.z, currDir.x * -1);
+                if (currInd == 7) currInd = 0;
+                else currInd++;
             }
-            else // 45 degree turn * turn steps
-            {
-                
-            }
+
+            tree.Direction = Direction.Get(currInd);
             
             state = NodeState.SUCCESS;
             return state;

@@ -809,6 +809,11 @@ namespace Glaidiator.BehaviorTree
             }));
         }
 
+        public static BTree CreateEmpty()
+        {
+            return new BTree();
+        }
+
         #endregion
        
 

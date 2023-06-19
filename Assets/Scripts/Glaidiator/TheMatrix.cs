@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using Glaidiator.BehaviorTree;
+using Glaidiator.BehaviorTree.Base;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -18,7 +20,12 @@ namespace Glaidiator
         [Header("Simulation Params")]
         [SerializeField] public float maxDuration = 30f;
         [SerializeField] public float timeStep = 0.033f;
-        
+        [SerializeField] public List<BTree> fixedTrees;
+
+        [Header("Scene References")] [SerializeField]
+        public AIContainer fixedAgent;
+        public AIContainer adaptiveAgent;
+
         public static TheMatrix instance;
 
         private void Awake(){
@@ -44,6 +51,7 @@ namespace Glaidiator
 
         private void Update()
         {
+            if (EvoManager.Instance.Generation % 5 == 0) adaptiveAgent.Tree = EvoManager.Instance.Champion.Clone();
             if (EvoManager.Instance.Generation == EvoManager.MaxGenerations) EvoManager.Instance.NewEra();
             if(!SimManager.Instance.IsRunning()) SimManager.Instance.Schedule();
         }
@@ -62,7 +70,11 @@ namespace Glaidiator
             SimManager.MaxDuration = maxDuration;
             SimManager.TimeStep = timeStep;
         }
-        
+
+        private void ResetLiveGame()
+        {
+            
+        }
 
         private void OnDestroy()
         {

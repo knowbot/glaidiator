@@ -59,7 +59,7 @@ namespace Glaidiator
             var best = Population.Max(t => t.Fitness);
             var worst = Population.Min(t => t.Fitness);
             Debug.Log($"era{Era}, generation {Generation}: avg = {avg} best = {best} worst = {worst}");
-            Debug.Log("zeroIndex " + Population.FindIndex(t=> t.Fitness == 0));
+            //Debug.Log("zeroIndex " + Population.FindIndex(t=> t.Fitness == 0));
             _logger.Write(new[]{Era, Generation, avg, best, worst}.Select(v => v.ToString(CultureInfo.InvariantCulture)).ToArray());
             UpdateChampion();
         }
@@ -68,6 +68,7 @@ namespace Glaidiator
         {
             BTree newChamp = Population.OrderByDescending(t => t.Fitness).ToArray()[0];
             if (newChamp.Fitness <= Champion.Fitness) return;
+            Debug.Log($"New champ at gen {Generation} with fitness {newChamp.Fitness}");
             Champion = newChamp.Clone();
             Serializer.Serialize(Champion, $"era{Era}_gen{Generation}_tree_{Population.IndexOf(newChamp)}", $"Test~/{_runPrefix}/Champions/");
         }

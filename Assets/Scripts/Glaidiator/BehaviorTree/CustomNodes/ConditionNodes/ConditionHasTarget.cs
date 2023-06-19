@@ -14,7 +14,7 @@ namespace Glaidiator.BehaviorTree.CustomNodes.ConditionNodes
 
         public override NodeState Evaluate()
         {
-            tree.currentNode = this;
+            tree.Active = this;
             
             state = GetData(_targetName) != null ? NodeState.SUCCESS : NodeState.FAILURE;
 

@@ -24,7 +24,7 @@ namespace Glaidiator.BehaviorTree.LeafNodes.ConditionNodes
         
         public override NodeState Evaluate()
         {
-            tree.currentNode = this;
+            tree.Active = this;
 
             Vector3 target = tree.Owner.Movement.Position + (tree.Direction * _distance);
             if (target.x < 0f || target.x > Arena.MaxSize ||

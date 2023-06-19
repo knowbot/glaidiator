@@ -17,7 +17,7 @@ namespace Glaidiator.BehaviorTree.CustomNodes.ConditionNodes
 
         public override NodeState Evaluate()
         {
-            tree.currentNode = this;
+            tree.Active = this;
 
             state = tree.Owner.Stamina.Current >= _threshold ? NodeState.SUCCESS : NodeState.FAILURE;
             return state;

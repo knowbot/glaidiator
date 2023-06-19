@@ -1,4 +1,5 @@
 ﻿using System;
+using Glaidiator.Utils;
 using UnityEngine;
 
 namespace Glaidiator.Model
@@ -8,7 +9,7 @@ namespace Glaidiator.Model
 	    private const float SPEED = 6f;
 	    private const float DODGE_SPEED = 10f;
 	    private const float ROT_SPEED = 100f;
-	    public Vector3 LastDir;
+	    public Vector3 LastDir = Direction.Get(Direction.Name.Up);
 	    private Vector3 _position;
 
 	    public Vector3 CurrVelocity { get; private set; }
@@ -36,7 +37,6 @@ namespace Glaidiator.Model
 			if (dir!= Vector3.zero) LastDir = dir;
 	    }
 
-
 	    private void Rotate(Vector3 dir, float deltaTime)
 	    {
 		    if (dir == Vector3.zero) return;
@@ -46,6 +46,7 @@ namespace Glaidiator.Model
 	    public void Face(Vector3 dir)
 	    {
 		    Rotation = Quaternion.LookRotation(dir);
+		    if (dir!= Vector3.zero) LastDir = dir;
 	    }
 
 	    public void Dodge(Vector3 dir, float deltaTime)
@@ -53,6 +54,7 @@ namespace Glaidiator.Model
 		    Rotate(dir, deltaTime);
 		    CurrVelocity = dir * DODGE_SPEED;
 		    Position += CurrVelocity * deltaTime;
+		    if (dir!= Vector3.zero) LastDir = dir;
 	    }
 	    
 	    public void Stop()

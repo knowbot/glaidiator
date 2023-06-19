@@ -6,7 +6,6 @@ namespace Glaidiator.BehaviorTree.Base
 {
     public class Sequence : Composite
     {
-        
         public Sequence() : base() { }
 
         public Sequence(List<Node> children) : base(children) { }
@@ -15,6 +14,9 @@ namespace Glaidiator.BehaviorTree.Base
 
         public override NodeState Evaluate()
         {
+            tree.Active = this;
+            bool hasChildRunning = false;
+            
             foreach (Node node in Children)
             {
                 switch (node.Evaluate())
@@ -26,6 +28,7 @@ namespace Glaidiator.BehaviorTree.Base
                         continue;
                     case NodeState.RUNNING:
                         state = NodeState.RUNNING;
+                        hasChildRunning = true;
                         return state;
                     default:
                         state = NodeState.SUCCESS;
@@ -33,7 +36,7 @@ namespace Glaidiator.BehaviorTree.Base
                 }
             }
 
-            state = NodeState.SUCCESS;
+            state = hasChildRunning ? NodeState.RUNNING : NodeState.SUCCESS;
             return state;
         }
 

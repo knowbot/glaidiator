@@ -30,29 +30,27 @@ namespace Glaidiator.Utils
                 float half = absX * 0.4142f;
                 if (x < 0) {
                     // left side
-                    if (y > half) return new Vector3(-1, 0, -1).normalized;
-                    if (y < -half) return new Vector3(-1, 0, 1).normalized;
-                    return new Vector3(-1,0, 0).normalized;
-                } else {
-                    // right side
-                    if (y > half) return new Vector3(1, 0, -1).normalized;
-                    if (y < -half) return new Vector3(1, 0, 1).normalized;
-                    return new Vector3(1, 0,0).normalized;
+                    if (y > half) return Direction.Get(Direction.Name.DownLeft);
+                    if (y < -half) return Direction.Get(Direction.Name.UpLeft);
+                    return Direction.Get(Direction.Name.Left);
                 }
+                // right side
+                if (y > half) return Direction.Get(Direction.Name.DownRight);
+                if (y < -half) return Direction.Get(Direction.Name.UpRight);
+                return Direction.Get(Direction.Name.Right);
             } else {
                 // horizontal side
                 float half = absY * 0.4142f;
                 if (y < 0) {
                     // bottom
-                    if (x > half) return new Vector3(1, 0, -1).normalized;
-                    if (x < -half) return new Vector3(-1, 0, -1).normalized;
-                    return new Vector3(0, 0,-1).normalized;
-                } else {
-                    // top
-                    if (x > half) return new Vector3(1, 0, 1).normalized;
-                    if (x < -half) return new Vector3(-1, 0, 1).normalized;
-                    return new Vector3(0, 0, 1).normalized;
+                    if (x > half) return Direction.Get(Direction.Name.DownRight);
+                    if (x < -half) return Direction.Get(Direction.Name.DownLeft);
+                    return Direction.Get(Direction.Name.Down);
                 }
+                // top
+                if (x > half) return Direction.Get(Direction.Name.UpRight);
+                if (x < -half) return Direction.Get(Direction.Name.UpLeft);
+                return Direction.Get(Direction.Name.Up);
             }
         }
 

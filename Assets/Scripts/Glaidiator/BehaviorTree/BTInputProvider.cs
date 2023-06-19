@@ -47,7 +47,7 @@ namespace Glaidiator.BehaviorTree
             _inputs.dodge = _btree.Dodge;
             _inputs.wait = _btree.Wait;
 
-            currentNode = _btree.currentNode.ToString(); // for debug info
+            currentNode = _btree.Active.ToString(); // for debug info
             currentDistance = _btree.enemyDistance;
             return _inputs;
         }
