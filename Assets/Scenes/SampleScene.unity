@@ -353,6 +353,10 @@ PrefabInstance:
       propertyPath: displayCooldowns
       value: 
       objectReference: {fileID: 1662370967}
+    - target: {fileID: 7667910454755226159, guid: ff8e2ceecd2e5334ea3416004b3b5bef, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 85b498b8d6b029c42acf42d1b743c279, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ff8e2ceecd2e5334ea3416004b3b5bef, type: 3}
 --- !u!1 &609778384
@@ -1333,7 +1337,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -6828681789028139135, guid: ff8e2ceecd2e5334ea3416004b3b5bef, type: 3}
       propertyPath: selectTree
-      value: 99
+      value: 98
       objectReference: {fileID: 0}
     - target: {fileID: -6828681789028139135, guid: ff8e2ceecd2e5334ea3416004b3b5bef, type: 3}
       propertyPath: EnemyObject
