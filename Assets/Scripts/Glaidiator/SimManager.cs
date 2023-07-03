@@ -101,8 +101,8 @@ namespace Glaidiator
                 _fitnessRef[i] = new NativeReference<float>(0f, Allocator.Persistent);
                 _fitnessRef[i].Value = 69f;
                 var world = new World();
-                var o = new Character(Arena.BossStartPos, Arena.BossStartRot);
-                var e = new Character(Arena.PlayerStartPos, Arena.PlayerStartRot);
+                var o = new Character(Arena.P2StartPos, Arena.P2StartRot);
+                var e = new Character(Arena.P1StartPos, Arena.P1StartRot);
                 var sim = new Sim
                 {
                     simID = i,

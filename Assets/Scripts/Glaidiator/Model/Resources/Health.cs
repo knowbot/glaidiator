@@ -34,5 +34,10 @@ namespace Glaidiator.Model.Resources
         {
             Add(Total * RegenRate * deltaTime);
         }
+
+        public void Set(float value)
+        {
+            Current = Mathf.Clamp(value, 0, Total);
+        }
     }
 }

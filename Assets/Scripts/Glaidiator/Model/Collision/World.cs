@@ -64,7 +64,7 @@ namespace Glaidiator.Model.Collision
         
         public void Add(IHitbox hitbox)
         {
-            _hitboxes.Add(hitbox);
+            if(!_hitboxes.Contains(hitbox)) _hitboxes.Add(hitbox);
         }
         public void Remove(IHitbox hitbox)
         {

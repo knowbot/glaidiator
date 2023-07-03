@@ -24,10 +24,10 @@ namespace Glaidiator.Model
 	    public Vector3 Position
 	    {
 		    get => _position;
-		    private set => _position = new Vector3(Math.Clamp(value.x, 0f, Arena.Size.x), 0, Math.Clamp(value.z, 0f, Arena.Size.y));
+		    internal set => _position = new Vector3(Math.Clamp(value.x, 0f, Arena.Size.x), 0, Math.Clamp(value.z, 0f, Arena.Size.y));
 	    }
 
-	    public Quaternion Rotation { get; private set; }
+	    public Quaternion Rotation { get; set; }
 	    
 	    public void Move(Vector3 dir, float deltaTime)
 	    {

@@ -58,6 +58,7 @@ namespace Glaidiator.Model
 
 	    #region Events
 
+	    public Action? onAlive;
 	    public Action? onDeath;
 	    public Action? onLowStamina;
 	    public Action? onMoveTick;
@@ -69,6 +70,7 @@ namespace Glaidiator.Model
 	    public Action? onDodgeStart;
 	    public Action? onDodgeEnd;
 
+	    private void OnAlive() => onAlive?.Invoke();
 	    private void OnDeath() => onDeath?.Invoke();
 	    private void OnLowStamina() => onLowStamina?.Invoke();
 	    private void OnMoveTick() => onMoveTick?.Invoke();
@@ -95,15 +97,15 @@ namespace Glaidiator.Model
 		    IsDead = false; 
 
 		    // init actions
-		    Actions.Add("atkLight", 
+		    Actions.Add("atkLight",
 			    new Attack(
 					new ActionInfo((int)ActionLookup.AttackLight, "atkLight", 15f, false, false, 0.9f), 
 					new Hitbox<Attack>(
-						new BoxCollider(Vector2.zero, new Vector2(2, 2), new Vector2(0, 1), true), 
+						new BoxCollider(Vector2.zero, new Vector2(2, 2), new Vector2(0, 1), true),
 						this,
 						0.6f),
 					12.5f, 1.2f, 0.2f));
-		    Actions.Add("atkHeavy", 
+		    Actions.Add("atkHeavy",
 			    new Attack(
 				    new ActionInfo((int)ActionLookup.AttackHeavy, "atkHeavy",35f, false, false, 1.8f), 
 				    new Hitbox<Attack>(
@@ -117,12 +119,28 @@ namespace Glaidiator.Model
 				    new ProjectileHitbox(
 					    new CircleCollider(Vector2.zero, 1.0f,Vector2.zero, true),
 					    this,
-					    15f, 
+					    15f,
 					    20f
 				    ), 
 				    10f, 5.5f));
 		    Actions.Add("block", new Block(new ActionInfo((int)ActionLookup.Block, "block",20f, false, false,1.0f), 5.0f));
 		    Actions.Add("dodge", new Dodge(new ActionInfo((int)ActionLookup.Dodge, "dodge",20f,false, false,0.5f), 1.0f));
+	    }
+
+	    public void Revive(Vector3 position, Quaternion rotation)
+	    {
+		    ActiveAction = null;
+		    Hitbox.Register();
+		    Cooldowns.Clear();
+		    IsDead = false;
+		    Movement.Position = position;
+		    Movement.Rotation = rotation;
+		    Health.Set(Health.Total);
+		    Stamina.Set(Stamina.Total);
+		    CurrentState = CharacterState.Idling;
+		    _canAction = true;
+		    _canMove = true;
+		    OnAlive();
 	    }
 	    
 	    #endregion
