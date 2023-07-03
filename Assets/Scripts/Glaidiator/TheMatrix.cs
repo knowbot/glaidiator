@@ -85,5 +85,11 @@ namespace Glaidiator
         {
             SimManager.Instance.ForceComplete();
         }
+
+        public void ResetActiveTrees()
+        {
+            adaptiveAgent.Tree.Init();
+            fixedAgent.Tree.Init();
+        }
     }
 }

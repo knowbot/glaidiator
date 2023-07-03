@@ -46,6 +46,7 @@ namespace Glaidiator.Presenter
 		protected virtual void OnEnable()
 		{
 			// Register observer methods
+			Character.onAlive += OnAlive;
 			Character.onDeath += OnDeath;
 			Character.onMoveTick += OnMoveTick;
 			Character.onMoveEnd += OnMoveEnd;
@@ -60,6 +61,7 @@ namespace Glaidiator.Presenter
 		protected virtual void OnDisable()
 		{
 			// Deregister observer methods
+			Character.onAlive -= OnAlive;
 			Character.onDeath -= OnDeath;
 			Character.onMoveTick -= OnMoveTick;
 			Character.onMoveEnd -= OnMoveEnd;
@@ -75,6 +77,16 @@ namespace Glaidiator.Presenter
 		protected abstract void LateUpdate();
 
 		// Observer methods
+		private void OnAlive()
+		{
+			ResetTriggers();
+			animator.SetInteger(Action, 0);
+			animator.SetInteger(TriggerNumber, 0);
+			animator.SetBool(Moving, false);
+			animator.SetBool(Blocking, false);
+			animator.SetFloat(VelocityX, 0);
+			animator.SetFloat(VelocityZ, 0);
+		}
 
 		private void OnMoveTick()
 		{

@@ -76,7 +76,7 @@ namespace Glaidiator.BehaviorTree.Base
             Init();
         }
 
-        private void Init()
+        internal void Init()
         {
             Direction = Vector3.forward;
             Active = Root;

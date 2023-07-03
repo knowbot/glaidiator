@@ -8,5 +8,6 @@
         public void Add(float value);
         public void Subtract(float value);
         public void Regen(float deltaTime);
+        public void Set(float value);
     }
 }
