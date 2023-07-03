@@ -220,6 +220,7 @@ namespace Glaidiator.BehaviorTree
             const float meleeDist = 2f;
             const float wallDist = 1f;
             const float dodgeThresholdStamina = 40f;
+            const float aggroThresholdStamina = 20f;
             const float defenseHealthThreshold = 30f;
 
             return new BTree(new Selector(new List<Node>
@@ -486,6 +487,7 @@ namespace Glaidiator.BehaviorTree
             const float meleeDist = 2f;
             const float evadeThresholdHealth = 30f;
             const float evadeThresholdStamina = 20f;
+            const float dodgeThresholdStamina = 40f;
             return new BTree(new Selector(new List<Node>
             {
                 new ConditionEnemyState("Dead"), // success if enemy is dead
@@ -558,6 +560,7 @@ namespace Glaidiator.BehaviorTree
                     }),
                     new Sequence(new List<Node> // try dodge into heavyAtk
                     {
+                        new ConditionOwnStamina(dodgeThresholdStamina),
                         new ConditionCanDoAction("dodge"),
                         new ConditionCanDoAction("atkHeavy"), // might not have stam for both
                         new Inverter(new ConditionEnemyDistance(3f)),
@@ -576,7 +579,8 @@ namespace Glaidiator.BehaviorTree
                     // evade sequence
                     new Sequence(new List<Node> // evade if less hp than enemy
                     {
-                        new Inverter(new ConditionCompareHealth(0f)),
+                        new Inverter(new ConditionCompareHealth(-10f)),
+                        new Inverter(new ConditionOwnStamina(evadeThresholdStamina)),
                         new ConditionEnemyDistance(rangedDist),
                         new Sequence(new List<Node> // run away until threshold distance
                         {
@@ -610,7 +614,8 @@ namespace Glaidiator.BehaviorTree
                     new Sequence(new List<Node> // stop when melee dist
                     {
                         new ConditionEnemyDistance(meleeDist), // if less
-                        new ConditionOwnHealth(evadeThresholdHealth),
+                        //new ConditionOwnHealth(evadeThresholdHealth),
+                        new ConditionCompareHealth(-10f),
                         new ConditionOwnStamina(evadeThresholdStamina),
                         new ActionFaceEnemy(),
                         new ActionStop(),
@@ -618,7 +623,8 @@ namespace Glaidiator.BehaviorTree
                     new Sequence(new List<Node> // move until melee dist
                     {
                         new Inverter(new ConditionEnemyDistance(meleeDist)), // if more
-                        new ConditionOwnHealth(evadeThresholdHealth),
+                        //new ConditionOwnHealth(evadeThresholdHealth),
+                        new ConditionCompareHealth(-10f),
                         new ConditionOwnStamina(evadeThresholdStamina),
                         new ActionFaceEnemy(),
                         new ActionMoveForward(),
