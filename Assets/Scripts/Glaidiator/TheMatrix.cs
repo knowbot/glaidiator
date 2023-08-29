@@ -18,7 +18,6 @@ namespace Glaidiator
         [SerializeField][Range(0, 1)] public float mutationFactor = 0.05f;
 
         [Header("Simulation Params")]
-        [SerializeField] public char opponentTree = 'a';
         [SerializeField] public float maxDuration = 30f;
         [SerializeField] public float timeStep = 0.033f;
         [SerializeField] public List<BTree> fixedTrees;
