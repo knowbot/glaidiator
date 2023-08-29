@@ -251,7 +251,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -6828681789028139135, guid: ff8e2ceecd2e5334ea3416004b3b5bef, type: 3}
       propertyPath: selectTree
-      value: 98
+      value: 101
       objectReference: {fileID: 0}
     - target: {fileID: -6828681789028139135, guid: ff8e2ceecd2e5334ea3416004b3b5bef, type: 3}
       propertyPath: EnemyObject
@@ -1012,11 +1012,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   populationCapacity: 50
   variantRatio: 0.5
-  variantMutateChance: 0.1
+  variantMutateChance: 0.2
   elitismPct: 20
   crossoverFactor: 0.75
-  mutationFactor: 0.1
-  opponentTree: 99
+  mutationFactor: 0.2
   maxDuration: 45
   timeStep: 0.033
   fixedAgent: {fileID: 1914518449}
