@@ -60,7 +60,7 @@ namespace Glaidiator
             var worst = Population.Min(t => t.Fitness);
             Debug.Log($"era{Era}, generation {Generation}: avg = {avg} best = {best} worst = {worst}");
             // Debug.Log("zeroIndex " + Population.FindIndex(t=> t.Fitness == 0));
-            _logger.Write(new[]{Era, Generation, avg, best, worst}.Select(v => v.ToString(CultureInfo.InvariantCulture)).ToArray());
+            _logger.Write(new[]{Era, Generation, avg, best, worst}.Select(v => v.ToString("0.0000")).ToArray());
             UpdateChampion();
         }
 
@@ -105,8 +105,8 @@ namespace Glaidiator
             // calc normalised fitness
             // windowing to make fitness positive
             float minFit = popArray.Min(tree => tree.Fitness);
-            minFit = (minFit < 0) ? Math.Abs(minFit) : 0f;
-            float fitSum = popArray.Sum(tree => tree.Fitness + minFit) + 0.0001f; // to avoid division by 0
+            minFit = (minFit < 0) ? Math.Abs(minFit + 0.01f) : 0f;
+            float fitSum = popArray.Sum(tree => tree.Fitness + minFit); // to avoid division by 0
             List<Candidate> candidates = popArray.Select(tree => new Candidate
                 {
                     tree = tree, 
