@@ -43,7 +43,6 @@ namespace Glaidiator
         #region Singleton
         private EvoManager()
         {
-            Champion = BTreeFactory.CreateBob();
             _logger = new CsvWriter($"Test~/{_runPrefix}", 
                 "fitness", 
                 new []{"era","generation","avg","best","worst"},
