@@ -331,11 +331,12 @@ namespace Glaidiator.BehaviorTree
                 {
                     new Inverter(new ConditionCompareHealth(0f)),
                     new ConditionEnemyDistance(meleeDist * 2f),
+                    new ActionBackEnemy(),
                     new Selector(new List<Node>
                     {
                         new Sequence(new List<Node>
                         {
-                            new ActionBackEnemy(),
+                            //new ActionBackEnemy(),
                             new ConditionArenaBounds(wallDist),
                             new ActionMoveForward(),
                         }),
@@ -635,8 +636,10 @@ namespace Glaidiator.BehaviorTree
         {
             const float rangedDist = 8f;
             const float meleeDist = 2f;
+            const float wallDist = 1f;
             const float evadeThresholdHealth = 30f;
             const float evadeThresholdStamina = 20f;
+            const float dodgeThresholdStamina = 50f;
 
             return new BTree(new Selector(new List<Node>
             {
@@ -651,7 +654,8 @@ namespace Glaidiator.BehaviorTree
                         //new CheckEnemyDistance(meleeDist),
                         new Selector(new List<Node> // if enemy melee
                         {
-                            new ConditionEnemyAction("Light Attack"),
+                            //new ConditionEnemyAction("Light Attack"),
+                            // try only defend against heavy
                             new ConditionEnemyAction("Heavy Attack"),
                         }),
 
@@ -667,7 +671,7 @@ namespace Glaidiator.BehaviorTree
                             new Sequence(new List<Node> // try dodge
                             {
                                 new ConditionEnemyDistance(meleeDist),
-                                new ConditionOwnStamina(40f),
+                                new ConditionOwnStamina(dodgeThresholdStamina),
                                 new ConditionCanDoAction("dodge"),
                                 new ActionBackEnemy(),
                                 new ActionMoveForward(),
@@ -675,21 +679,22 @@ namespace Glaidiator.BehaviorTree
                             }),
                             new Sequence(new List<Node> // try move away
                             {
+                                new Inverter(new ConditionCompareHealth(0f)),
                                 new ConditionEnemyDistance(meleeDist * 2),
                                 new ActionBackEnemy(),
                                 new Selector(new List<Node>
                                 {
-                                    new ConditionArenaBounds(1f),
+                                    new ConditionArenaBounds(wallDist),
                                     // keep direction if no wall
                                     new Sequence(new List<Node> // if wall try turn left
                                     {
                                         new ActionTurnLeft(),
-                                        new ConditionArenaBounds(1f),
+                                        new ConditionArenaBounds(wallDist),
                                     }),
                                     new Sequence(new List<Node> // if wall try turn right
                                     {
                                         new ActionTurnRight(),
-                                        new ConditionArenaBounds(1f),
+                                        new ConditionArenaBounds(wallDist),
                                     }),
                                 }),
                                 new ActionMoveForward(),
@@ -726,6 +731,21 @@ namespace Glaidiator.BehaviorTree
                 // select offense branch
                 new Selector(new List<Node>
                 {
+                    new Sequence(new List<Node> // try melee heavyAtk
+                    {
+                        new ConditionEnemyDistance(meleeDist),
+                        new ConditionCanDoAction("atkHeavy"),
+                        new ActionFaceEnemy(),
+                        new ActionHeavyAtk(),
+                    }),
+                    new Sequence(new List<Node> // try ranged
+                    {
+                        new ConditionCanDoAction("atkRanged"),
+                        new ConditionEnemyDistance(rangedDist),
+                        new ActionFaceEnemy(),
+                        new ConditionRangedDirection(30f), // aim good?
+                        new ActionRangedAtk(),
+                    }),
                     new Sequence(new List<Node> // try melee lightAtk
                     {
                         new ConditionEnemyDistance(meleeDist),
@@ -733,6 +753,7 @@ namespace Glaidiator.BehaviorTree
                         new ActionFaceEnemy(),
                         new ActionLightAtk(),
                     }),
+                    /* // this sequence performs badly
                     new Sequence(new List<Node> // try dodge into heavyAtk
                     {
                         new ConditionOwnStamina(50f),
@@ -746,23 +767,17 @@ namespace Glaidiator.BehaviorTree
                         new ConditionEnemyDistance(meleeDist),
                         new ActionHeavyAtk(),
                     }),
-                    new Sequence(new List<Node>
-                    {
-                        new ConditionCanDoAction("atkRanged"),
-                        new ConditionEnemyDistance(rangedDist),
-                        new ActionFaceEnemy(),
-                        new ConditionRangedDirection(30f), // aim good?
-                        new ActionRangedAtk(),
-                    }),
+                    */
                 }),
 
                 // select movement branch
                 new Selector(new List<Node>
                 {
                     // evade sequence
-                    new Sequence(new List<Node> // evade if less hp than enemy
+                    new Sequence(new List<Node> // evade if less hp+stam than enemy
                     {
                         new Inverter(new ConditionCompareHealth(0f)),
+                        new Inverter(new ConditionCompareStamina(0f)),
                         new ConditionEnemyDistance(rangedDist),
                         new Sequence(new List<Node> // run away until threshold distance
                         {
@@ -786,7 +801,7 @@ namespace Glaidiator.BehaviorTree
                             new Sequence(new List<Node>
                             {
                                 new ActionStop(),
-                                new ActionTurnLeft(),
+                                new ActionTurnRight(), // was turn left, trying a double right
                                 new ActionMoveForward(),
                                 new ConditionArenaBounds(1f),
                             }),
@@ -796,16 +811,16 @@ namespace Glaidiator.BehaviorTree
                     new Sequence(new List<Node> // stop when melee dist
                     {
                         new ConditionEnemyDistance(meleeDist), // if less
-                        new ConditionOwnHealth(evadeThresholdHealth),
-                        new ConditionOwnStamina(evadeThresholdStamina),
+                        //new ConditionOwnHealth(evadeThresholdHealth),
+                        //new ConditionOwnStamina(evadeThresholdStamina),
                         new ActionFaceEnemy(),
                         new ActionStop(),
                     }),
                     new Sequence(new List<Node> // move until melee dist
                     {
                         new Inverter(new ConditionEnemyDistance(meleeDist)), // if more
-                        new ConditionOwnHealth(evadeThresholdHealth),
-                        new ConditionOwnStamina(evadeThresholdStamina),
+                        //new ConditionOwnHealth(evadeThresholdHealth),
+                        //new ConditionOwnStamina(evadeThresholdStamina),
                         new ActionFaceEnemy(),
                         new ActionMoveForward(),
                     }),
