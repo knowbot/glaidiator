@@ -1011,11 +1011,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   populationCapacity: 50
-  variantRatio: 1
-  variantChance: 0.1
+  variantRatio: 0.5
+  variantMutateChance: 0.1
   elitismPct: 20
   crossoverFactor: 0.75
   mutationFactor: 0.1
+  opponentTree: 99
   maxDuration: 45
   timeStep: 0.033
   fixedAgent: {fileID: 1914518449}

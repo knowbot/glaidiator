@@ -20,13 +20,14 @@ namespace Glaidiator
             public float fitness;
         }
 
-        public BTree Champion; 
+        public BTree Champion;
+        public bool HasNewChampion = false;
         public int Era = 0; // # of population resets (to adapt to changing playstyle)
         public int Generation = 0; // # of curr generation
         public const int MaxGenerations = 1000; // # of generations before a reset
         // ? Default values, can be changed in Matrix script
         public static float VariantRatio = 0.5f;
-        public static float VariantChance = 0.5f;
+        public static float VariantMutateChance = 0.5f;
         public static int PopulationCapacity = 50;
         public static int ElitismPct = 10;
         public static float CrossoverFactor = 0.85f;
@@ -59,7 +60,7 @@ namespace Glaidiator
             var best = Population.Max(t => t.Fitness);
             var worst = Population.Min(t => t.Fitness);
             Debug.Log($"era{Era}, generation {Generation}: avg = {avg} best = {best} worst = {worst}");
-            //Debug.Log("zeroIndex " + Population.FindIndex(t=> t.Fitness == 0));
+            // Debug.Log("zeroIndex " + Population.FindIndex(t=> t.Fitness == 0));
             _logger.Write(new[]{Era, Generation, avg, best, worst}.Select(v => v.ToString(CultureInfo.InvariantCulture)).ToArray());
             UpdateChampion();
         }
@@ -68,6 +69,7 @@ namespace Glaidiator
         {
             BTree newChamp = Population.OrderByDescending(t => t.Fitness).ToArray()[0];
             if (newChamp.Fitness <= Champion.Fitness) return;
+            HasNewChampion = true;
             Debug.Log($"New champ at gen {Generation} with fitness {newChamp.Fitness}");
             Champion = newChamp.Clone();
             Serializer.Serialize(Champion, $"era{Era}_gen{Generation}_tree_{Population.IndexOf(newChamp)}", $"Test~/{_runPrefix}/Champions/");
@@ -102,11 +104,14 @@ namespace Glaidiator
                 With added elitism, the worst 50% elites are seeded directly into the pool.
              */
             // calc normalised fitness
-            float fitSum = popArray.Sum(tree => tree.Fitness) + 0.0001f; // to avoid division by 0
+            // windowing to make fitness positive
+            float minFit = popArray.Min(tree => tree.Fitness);
+            minFit = (minFit < 0) ? Math.Abs(minFit) : 0f;
+            float fitSum = popArray.Sum(tree => tree.Fitness + minFit) + 0.0001f; // to avoid division by 0
             List<Candidate> candidates = popArray.Select(tree => new Candidate
                 {
                     tree = tree, 
-                    fitness = tree.Fitness / fitSum // normalized fitness
+                    fitness = (tree.Fitness + minFit) / fitSum // normalized fitness
                 }).ToList();
 
             // sort candidates list for best fitness first
@@ -152,7 +157,7 @@ namespace Glaidiator
             {
                 i++;
                 BTree tree = (float)i / PopulationCapacity < VariantRatio 
-                    ? BTreeFactory.CreateVariant(Champion, VariantChance) 
+                    ? BTreeFactory.CreateVariant(Champion, VariantMutateChance) 
                     : BTreeFactory.CreateRandom();
                 Population.Add(tree);
             }

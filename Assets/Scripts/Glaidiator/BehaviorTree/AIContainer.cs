@@ -37,10 +37,8 @@ namespace Glaidiator.BehaviorTree
             private set => _inputs = value;
         }
 
-        private void Start()
+        private void Awake()
         {
-            _owner = GetComponent<CharacterPresenter>().GetCharacter();
-            _enemy = EnemyObject.GetComponent<CharacterPresenter>().GetCharacter();
             switch (selectTree) //editor tree selection
             {
                 case 'a':
@@ -71,6 +69,14 @@ namespace Glaidiator.BehaviorTree
                     Tree = BTreeFactory.CreateAshley();
                     break;
             }
+        }
+
+        private void Start()
+        {
+            _owner = GetComponent<CharacterPresenter>().GetCharacter();
+            _enemy = EnemyObject.GetComponent<CharacterPresenter>().GetCharacter();
+            Tree.Owner = _owner;
+            Tree.Enemy = _enemy;
         }
 
         private void Update()

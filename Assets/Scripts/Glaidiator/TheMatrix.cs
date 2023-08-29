@@ -12,12 +12,13 @@ namespace Glaidiator
         [Header("Evolution Params")]
         [SerializeField] public int populationCapacity = 50;
         [SerializeField][Range(0, 1)] public float variantRatio = 0.5f;
-        [SerializeField][Range(0, 1)] public float variantChance = 0.5f;
+        [SerializeField][Range(0, 1)] public float variantMutateChance = 0.5f;
         [SerializeField][Range(0, 100)] public int elitismPct = 10;
         [SerializeField][Range(0, 1)] public float crossoverFactor = 0.75f;
         [SerializeField][Range(0, 1)] public float mutationFactor = 0.05f;
 
         [Header("Simulation Params")]
+        [SerializeField] public char opponentTree = 'a';
         [SerializeField] public float maxDuration = 30f;
         [SerializeField] public float timeStep = 0.033f;
         [SerializeField] public List<BTree> fixedTrees;
@@ -35,6 +36,10 @@ namespace Glaidiator
             } else {
                 Destroy(this);
             }
+        }
+
+        private void Start()
+        {
             SetEvolutionParameters();
             SetSimulationParameters();
             EvoManager.Instance.GenPopulation();
@@ -51,22 +56,29 @@ namespace Glaidiator
 
         private void Update()
         {
-            if (EvoManager.Instance.Generation % 5 == 0) adaptiveAgent.Tree = EvoManager.Instance.Champion.Clone();
+            if (EvoManager.Instance.HasNewChampion)
+            {
+                Debug.Log("Adaptive agent BT was updated!");
+                adaptiveAgent.Tree = EvoManager.Instance.Champion.Clone();
+                EvoManager.Instance.HasNewChampion = false;
+            }
             if (EvoManager.Instance.Generation == EvoManager.MaxGenerations) EvoManager.Instance.NewEra();
             if(!SimManager.Instance.IsRunning()) SimManager.Instance.Schedule();
         }
 
         private void SetEvolutionParameters()
         {
+            EvoManager.Instance.Champion = adaptiveAgent.Tree.Clone();
             EvoManager.PopulationCapacity = populationCapacity;
             EvoManager.VariantRatio = variantRatio;
-            EvoManager.VariantChance = variantChance;
+            EvoManager.VariantMutateChance = variantMutateChance;
             EvoManager.ElitismPct = elitismPct;
             EvoManager.CrossoverFactor = crossoverFactor;
             EvoManager.MutationFactor = mutationFactor;
         }
         private void SetSimulationParameters()
         {
+            SimManager.FixedTree = fixedAgent.Tree.Clone();
             SimManager.MaxDuration = maxDuration;
             SimManager.TimeStep = timeStep;
         }

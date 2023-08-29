@@ -28,13 +28,13 @@ namespace Glaidiator.BehaviorTree
             return new BTree(GetRandomRoot().Randomized());
         }
 
-        public static BTree CreateVariant(BTree tree, float variantChance)
+        public static BTree CreateVariant(BTree tree, float variantMutateChance)
         {
             BTree variant = tree.Clone();
             variant.Mutate();
             List<Node> nodes = new();
             variant.Root.Flatten(nodes);
-            foreach (Node node in nodes.Where(node => MathStuff.Rand.NextFloat() < variantChance)) node.Mutate();
+            foreach (Node node in nodes.Where(node => MathStuff.Rand.NextFloat() < variantMutateChance)) node.Mutate();
             return variant;
         }
 

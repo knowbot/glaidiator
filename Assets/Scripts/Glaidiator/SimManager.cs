@@ -16,7 +16,7 @@ namespace Glaidiator
 
         public static float TimeStep = 0.033f;
         public static float MaxDuration = 30f;
-        public static BTree FixedTree = BTreeFactory.CreateBob();
+        public static BTree FixedTree;
         
         private int _completed = 0;
         private readonly List<Sim> _sims;
@@ -59,6 +59,15 @@ namespace Glaidiator
             {
                 return owner.IsDead || enemy.IsDead;
             }
+
+            private int Outcome() // 0 for draw, -1 for loss, 1 for win
+            {
+                if (owner.IsDead && enemy.IsDead)
+                    return 0;
+                if (owner.IsDead)
+                    return -1;
+                return 1;
+            }
             public float Execute()
             {
                 float duration = 0f;
@@ -75,9 +84,9 @@ namespace Glaidiator
                     world.Update(step);
                 }
 
-                return (((enemy.IsDead && !owner.IsDead) ? 1 : 0) * 1000f // reward wins
-                       + owner.Health.Current // reward keeping health
-                       + enemy.DamageTaken * 5.0f)  // reward dealing more damage
+                return (Outcome() * 1000f // reward wins
+                       + enemy.DamageTaken * 5.0f // reward dealing more damage
+                       + owner.Health.Current)  // reward keeping health up
                        / duration;
             }
         }
@@ -110,7 +119,7 @@ namespace Glaidiator
                     owner = o,
                     enemy = e,
                     //OInputs = new BTInputProvider(BTreeFactory.CreateLovecraft(),o, e),
-                    OInputs = new BTInputProvider(EvoManager.Instance.Population[i].Clone(),o, e),
+                    OInputs = new BTInputProvider(EvoManager.Instance.Population[i].Clone(), o, e),
                     EInputs = new BTInputProvider(FixedTree.Clone(), e, o)
                 };
                 
