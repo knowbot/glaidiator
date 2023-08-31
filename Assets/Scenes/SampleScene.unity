@@ -1012,14 +1012,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   populationCapacity: 100
   variantRatio: 0.5
-  variantMutateChance: 0.2
+  variantMutateChance: 0.25
   elitismPct: 10
-  crossoverFactor: 0.5
-  mutationFactor: 0.5
+  crossoverFactor: 0.7
+  mutationFactor: 0.25
   maxDuration: 20
   timeStep: 0.033
   fixedAgent: {fileID: 1914518449}
   adaptiveAgent: {fileID: 2141813226}
+  cycleOpponentTrees: 1
+  randomizeCycle: 0
 --- !u!4 &1504368521
 Transform:
   m_ObjectHideFlags: 0

@@ -13,7 +13,6 @@ namespace Glaidiator
 {
     public class EvoManager
     {
-        
         private class Candidate
         {
             public BTree tree;
@@ -24,7 +23,7 @@ namespace Glaidiator
         public bool HasNewChampion = false;
         public int Era = 0; // # of population resets (to adapt to changing playstyle)
         public int Generation = 0; // # of curr generation
-        public const int MaxGenerations = 1000; // # of generations before a reset
+        public const int MaxGenerations = 500; // # of generations before a reset
         // ? Default values, can be changed in Matrix script
         public static float VariantRatio = 0.5f;
         public static float VariantMutateChance = 0.5f;
@@ -45,7 +44,7 @@ namespace Glaidiator
         {
             _logger = new CsvWriter($"Test~/{_runPrefix}", 
                 "fitness", 
-                new []{"era","generation","avg","best","worst"},
+                new []{"era","generation","opponent","avg","best","worst","avg_depth","max_depth","min_depth","avg_size","max_size","min_size","champ_depth","champ_size"},
                 ';');
         }
         
@@ -55,12 +54,34 @@ namespace Glaidiator
 
         public void Evaluate()
         {
-            var avg = Population.Average(t => t.Fitness);
-            var best = Population.Max(t => t.Fitness);
-            var worst = Population.Min(t => t.Fitness);
-            Debug.Log($"era{Era}, generation {Generation}: avg = {avg} best = {best} worst = {worst}");
+            var avgFitness = Population.Average(t => t.Fitness);
+            var maxFitness = Population.Max(t => t.Fitness);
+            var minFitness = Population.Min(t => t.Fitness);            
+            var avgDepth = Population.Average(t => t.Root.GetDepth());
+            var maxDepth = Population.Max(t => t.Root.GetDepth());
+            var minDepth = Population.Min(t => t.Root.GetDepth());
+            var avgSize = Population.Average(t => t.Root.GetSize());
+            var maxSize = Population.Max(t => t.Root.GetSize());
+            var minSize = Population.Min(t => t.Root.GetSize());
+            Debug.Log($"era{Era}, generation {Generation}: avg = {avgFitness} best = {maxFitness} worst = {minFitness}");
             // Debug.Log("zeroIndex " + Population.FindIndex(t=> t.Fitness == 0));
-            _logger.Write(new[]{Era, Generation, avg, best, worst}.Select(v => v.ToString("0.0000")).ToArray());
+            _logger.Write(new[]
+            {
+                Era, 
+                Generation,
+                SimManager.FixedTree.Name.GetHashCode(),
+                avgFitness, 
+                maxFitness,
+                minFitness, 
+                avgDepth, 
+                maxDepth, 
+                minDepth,
+                avgSize,
+                maxSize,
+                minSize,
+                Champion.Root.GetDepth(),
+                Champion.Root.GetSize()
+            }.Select(v => v.ToString("0.0000")).ToArray());
             UpdateChampion();
         }
 
@@ -118,11 +139,11 @@ namespace Glaidiator
             // fill pool with roulette wheel selection
             while (pool.Count < PopulationCapacity)
             {
-                float accProp = 0f;
-                float randVal = Random.value;
+                var accProp = 0f;
+                var randVal = Random.value;
                 foreach (Candidate c in candidates)
                 {
-                    if ((c.fitness + accProp) < randVal) pool.Add(c.tree.Clone());
+                    if ((c.fitness + accProp) > randVal) pool.Add(c.tree.Clone());
                     accProp += c.fitness;
                 }
             }

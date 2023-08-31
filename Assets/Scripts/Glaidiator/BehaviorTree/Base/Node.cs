@@ -28,6 +28,7 @@ namespace Glaidiator.BehaviorTree.Base
         internal NodeState state;
         internal BTree tree;
         internal Node parent;
+        internal int depth = 0;
 
         public Node()
         {
@@ -37,7 +38,18 @@ namespace Glaidiator.BehaviorTree.Base
         public Node(BTree btree)
         {
             tree = btree;
+            
         }
+        
+        public virtual int GetDepth()
+        {
+            return 1;
+        }
+        public virtual int GetSize()
+        {
+            return 1;
+        }
+        
 
         public abstract NodeState Evaluate();
 

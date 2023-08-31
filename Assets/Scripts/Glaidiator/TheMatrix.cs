@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using Glaidiator.BehaviorTree;
 using Glaidiator.BehaviorTree.Base;
+using Glaidiator.Utils;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -20,11 +22,13 @@ namespace Glaidiator
         [Header("Simulation Params")]
         [SerializeField] public float maxDuration = 30f;
         [SerializeField] public float timeStep = 0.033f;
-        [SerializeField] public List<BTree> fixedTrees;
+        private readonly List<BTree> fixedTrees = new List<BTree>();
 
         [Header("Scene References")] [SerializeField]
         public AIContainer fixedAgent;
         public AIContainer adaptiveAgent;
+        public bool cycleOpponentTrees = false;
+        public bool randomizeCycle = true;
 
         public static TheMatrix instance;
 
@@ -35,6 +39,15 @@ namespace Glaidiator
             } else {
                 Destroy(this);
             }
+            fixedTrees.Add(BTreeFactory.CreateBob());
+            fixedTrees.Add(BTreeFactory.CreateCharlie());
+            fixedTrees.Add(BTreeFactory.CreateAshley());
+            
+            foreach (var tree in fixedTrees)
+            {
+                Debug.Log("Adding opponent " + tree.Name + " to the opponent list with id " + tree.Name.GetHashCode());
+            }
+            if(randomizeCycle) fixedTrees.Shuffle();
         }
 
         private void Start()
@@ -61,7 +74,20 @@ namespace Glaidiator
                 adaptiveAgent.Tree = EvoManager.Instance.Champion.Clone();
                 EvoManager.Instance.HasNewChampion = false;
             }
-            if (EvoManager.Instance.Generation == EvoManager.MaxGenerations) EvoManager.Instance.NewEra();
+
+            if (EvoManager.Instance.Generation == EvoManager.MaxGenerations)
+            {
+                EvoManager.Instance.NewEra();
+                if(EvoManager.Instance.Era % fixedTrees.Count == 0 && randomizeCycle)
+                    fixedTrees.Shuffle();
+                if (cycleOpponentTrees)
+                {
+                    BTree newOpp = fixedTrees[EvoManager.Instance.Era % fixedTrees.Count];
+                    SimManager.FixedTree = newOpp.Clone();
+                    fixedAgent.Tree = newOpp.Clone();
+                    print("Now evaluating against " + newOpp.Name);
+                }
+            }
             if(!SimManager.Instance.IsRunning()) SimManager.Instance.Schedule();
         }
 
@@ -77,7 +103,8 @@ namespace Glaidiator
         }
         private void SetSimulationParameters()
         {
-            SimManager.FixedTree = fixedAgent.Tree.Clone();
+            SimManager.FixedTree = cycleOpponentTrees ? fixedTrees[0].Clone() : fixedAgent.Tree.Clone();
+            print("Now evaluating against " + SimManager.FixedTree.Name);
             SimManager.MaxDuration = maxDuration;
             SimManager.TimeStep = timeStep;
         }

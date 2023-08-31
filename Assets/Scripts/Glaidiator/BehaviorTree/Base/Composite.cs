@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using Glaidiator.Model;
 using Glaidiator.Utils;
@@ -25,7 +26,18 @@ namespace Glaidiator.BehaviorTree.Base
             tree = btree;
             foreach (Node node in children) Attach(node);
         }
-        
+
+        public override int GetDepth()
+        {
+            var maxDepth = Children.Select(c => c.GetDepth()).Prepend(0).Max();
+            return maxDepth + 1;
+        }
+        public override int GetSize()
+        {
+            var branchSize = Children.Sum(c => c.GetSize());
+            return branchSize + 1;
+        }
+
         #region Children Management
 
         public void Attach(Node node) // add child

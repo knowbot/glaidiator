@@ -24,6 +24,15 @@ namespace Glaidiator.BehaviorTree.CustomNodes
             return _root.Evaluate();
         }
 
+        public override int GetDepth()
+        {
+            return _root.GetDepth();
+        }
+        public override int GetSize()
+        {
+            return _root.GetSize();
+        }
+
         public override void Flatten(List<Node> nodes)
         {
             nodes.Add(this);

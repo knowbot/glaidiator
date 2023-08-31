@@ -57,6 +57,9 @@ namespace Glaidiator.BehaviorTree.Base
         public float enemyDistance;
         private Character _enemy;
 
+        public string Name = "btree";
+        public int Size = 0;
+
         public BTree(Character owner)
         {
             Owner = owner ?? throw new NullReferenceException("BTree init with null owner");
@@ -65,6 +68,15 @@ namespace Glaidiator.BehaviorTree.Base
 
         public BTree(Node root)
         {
+            Root = root;
+            root.SetTree(this);
+            SetData("enemy", Enemy);
+            Init();
+        }
+        
+        public BTree(string name, Node root)
+        {
+            Name = name;
             Root = root;
             root.SetTree(this);
             SetData("enemy", Enemy);
@@ -97,6 +109,7 @@ namespace Glaidiator.BehaviorTree.Base
         {
            return new BTree
             {
+                Name = Name,
                 Root = Root.Clone(),
                 Fitness = Fitness
             };

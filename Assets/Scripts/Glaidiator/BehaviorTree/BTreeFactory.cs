@@ -223,7 +223,7 @@ namespace Glaidiator.BehaviorTree
             const float aggroThresholdStamina = 20f;
             const float defenseHealthThreshold = 30f;
 
-            return new BTree(new Selector(new List<Node>
+            return new BTree("evo", new Selector(new List<Node>
             {
                 new ConditionEnemyState("Dead"), // success if enemy is dead
                 
@@ -363,7 +363,7 @@ namespace Glaidiator.BehaviorTree
             const float aggroDist = 45f;
             const float rangedDist = 6f;
             const float meleeDist = 2f;
-            return new BTree(new Selector(new List<Node>
+            return new BTree("ASHLEY",new Selector(new List<Node>
             {
                 new ConditionEnemyState("Dead"), // success if enemy is dead
                 // attack sequence
@@ -490,7 +490,7 @@ namespace Glaidiator.BehaviorTree
             const float evadeThresholdHealth = 30f;
             const float evadeThresholdStamina = 20f;
             const float dodgeThresholdStamina = 60f;
-            return new BTree(new Selector(new List<Node>
+            return new BTree("BOB",new Selector(new List<Node>
             {
                 new ConditionEnemyState("Dead"), // success if enemy is dead
                 
@@ -641,7 +641,7 @@ namespace Glaidiator.BehaviorTree
             const float evadeThresholdStamina = 20f;
             const float dodgeThresholdStamina = 50f;
 
-            return new BTree(new Selector(new List<Node>
+            return new BTree("CHARLIE",new Selector(new List<Node>
             {
                 new ConditionEnemyState("Dead"), // success if enemy is dead
                 

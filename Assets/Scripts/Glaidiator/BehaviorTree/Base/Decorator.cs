@@ -37,6 +37,15 @@ namespace Glaidiator.BehaviorTree.Base
             Child = child;
             child.SetParent(this);
         }
+        
+        public override int GetDepth()
+        {
+            return Child.GetDepth() + 1 ;
+        } 
+        public override int GetSize()
+        {
+            return Child.GetSize() + 1 ;
+        }
 
         public override void Flatten(List<Node> nodes)
         {
