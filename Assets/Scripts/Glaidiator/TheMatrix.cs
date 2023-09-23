@@ -39,9 +39,9 @@ namespace Glaidiator
             } else {
                 Destroy(this);
             }
+            fixedTrees.Add(BTreeFactory.CreateAshley());
             fixedTrees.Add(BTreeFactory.CreateBob());
             fixedTrees.Add(BTreeFactory.CreateCharlie());
-            fixedTrees.Add(BTreeFactory.CreateAshley());
             
             foreach (var tree in fixedTrees)
             {
