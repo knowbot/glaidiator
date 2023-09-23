@@ -10,9 +10,12 @@ using UnityEngine.Serialization;
 namespace Glaidiator
 {
     public class TheMatrix : MonoBehaviour
-    { 
+    {
         [Header("Evolution Params")]
+        [SerializeField] public bool toggleStreak = false;
         [SerializeField] public int populationCapacity = 50;
+        [SerializeField] public int maxGenerations = 500;
+        [SerializeField] public int maxStreak = 50;
         [SerializeField][Range(0, 1)] public float variantRatio = 0.5f;
         [SerializeField][Range(0, 1)] public float variantMutateChance = 0.5f;
         [SerializeField][Range(0, 100)] public int elitismPct = 10;
@@ -88,6 +91,12 @@ namespace Glaidiator
                     print("Now evaluating against " + newOpp.Name);
                 }
             }
+
+            if (toggleStreak && EvoManager.Instance.ReachedMaxStreak())
+            {
+                Debug.Log("Population fitness hit a plateau, reseeding with current champion.");
+                EvoManager.Instance.GenPopulation();
+            }
             if(!SimManager.Instance.IsRunning()) SimManager.Instance.Schedule();
         }
 
@@ -95,6 +104,8 @@ namespace Glaidiator
         {
             EvoManager.Instance.Champion = adaptiveAgent.Tree.Clone();
             EvoManager.PopulationCapacity = populationCapacity;
+            EvoManager.MaxGenerations = maxGenerations;
+            EvoManager.MaxStreak = maxStreak;
             EvoManager.VariantRatio = variantRatio;
             EvoManager.VariantMutateChance = variantMutateChance;
             EvoManager.ElitismPct = elitismPct;

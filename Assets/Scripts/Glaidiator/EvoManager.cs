@@ -5,6 +5,7 @@ using System.Linq;
 using Glaidiator.BehaviorTree;
 using Glaidiator.BehaviorTree.Base;
 using Glaidiator.Utils;
+using UnityEditor.XR;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using Serializer = Glaidiator.Utils.Serializer;
@@ -23,7 +24,9 @@ namespace Glaidiator
         public bool HasNewChampion = false;
         public int Era = 0; // # of population resets (to adapt to changing playstyle)
         public int Generation = 0; // # of curr generation
-        public const int MaxGenerations = 500; // # of generations before a reset
+        public int ChampionStreak = 0; // # of generations with same champion
+        public static int MaxGenerations = 500; // # of generations before a reset
+        public static int MaxStreak = 50; // max # of gens with a same champion before population is reseeded
         // ? Default values, can be changed in Matrix script
         public static float VariantRatio = 0.5f;
         public static float VariantMutateChance = 0.5f;
@@ -34,7 +37,7 @@ namespace Glaidiator
 
         public const int MaxChildren = 6;
 
-        public List<BTree> Population;
+        public List<BTree> Population = new List<BTree>();
         
         private readonly string _runPrefix = Guid.NewGuid().ToString();
         private readonly CsvWriter _logger;
@@ -51,6 +54,11 @@ namespace Glaidiator
         private static readonly Lazy<EvoManager> Lazy = new(() => new EvoManager());
         public static EvoManager Instance => Lazy.Value;
         #endregion
+
+        public bool ReachedMaxStreak()
+        {
+            return ChampionStreak >= MaxStreak;
+        }
 
         public void Evaluate()
         {
@@ -90,6 +98,7 @@ namespace Glaidiator
             BTree newChamp = Population.OrderByDescending(t => t.Fitness).ToArray()[0];
             if (newChamp.Fitness <= Champion.Fitness) return;
             HasNewChampion = true;
+            ChampionStreak = 0;
             Debug.Log($"New champ at gen {Generation} with fitness {newChamp.Fitness}");
             Champion = newChamp.Clone();
             Serializer.Serialize(Champion, $"era{Era}_gen{Generation}_tree_{Population.IndexOf(newChamp)}", $"Test~/{_runPrefix}/Champions/");
@@ -166,11 +175,14 @@ namespace Glaidiator
             // # INITIALIZE NEW GENERATION
             Population = offspring;
             Generation++;
+            ChampionStreak++;
         }
 
         // Mixed r
         public void GenPopulation()
         {
+            if(Population.Count > 0) Population.Clear();
+            ChampionStreak = 0;
             Population = new List<BTree> { Champion };
             int i = 0;
             while (Population.Count < PopulationCapacity)
@@ -185,9 +197,8 @@ namespace Glaidiator
 
         public void NewEra()
         {
-            Era++;
             Generation = 0;
-            Population.Clear();
+            Era++;
             GenPopulation();
         }
 
